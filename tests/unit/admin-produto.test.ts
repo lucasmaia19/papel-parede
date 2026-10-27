@@ -31,23 +31,37 @@ describe("admin — produto", () => {
   })
 
   it("não deixa repetir o endereço de outro produto", () => {
-    const form = { ...produtoVazio(80), nome: "Borboletas" }
+    const form = { ...produtoVazio(80), nome: "Delicado" }
     expect(validarProduto(form, produtosIniciais).erros.slug).toMatch(/Já existe/)
   })
 
   it("aceita vírgula no preço e no acréscimo", () => {
     const form = produtoVazio(80)
     form.nome = "Novo Papel"
-    form.precoM2 = "92,50"
+    form.materiais[0].precoM2 = "92,50"
+    form.materiais[1].precoM2 = "99"
     form.imagens = [{ id: "i", url: "/x.svg", alt: "x" }]
     form.cores[0].nome = "Verde"
     form.gruposPersonalizacao = [{ id: "g", nome: "Tamanho", opcoes: [{ id: "o", rotulo: "G", acrescimoM2: "7,5" }] }]
     const { produto, erros } = validarProduto(form, produtosIniciais)
     expect(erros).toEqual({})
-    expect(produto?.precoM2).toBe(92.5)
+    expect(produto?.precoM2).toBe(92.5) // o menor preço entre os materiais ativos
+    expect(produto?.materiais.map((m) => m.precoM2)).toEqual([92.5, 99])
     expect(produto?.slug).toBe("novo-papel")
     expect(produto?.gruposPersonalizacao[0].opcoes[0].acrescimoM2).toBe(7.5)
     expect(produto?.regua).toBeNull()
+  })
+
+  it("exige um material ativo com nome e preço", () => {
+    const form = produtoVazio(80)
+    form.materiais[0].ativo = false
+    form.materiais[1].ativo = false
+    form.materiais[1].precoM2 = "abc"
+    form.materiais[0].nome = " "
+    const { erros } = validarProduto(form, produtosIniciais)
+    expect(erros.materiais).toBe("Deixe pelo menos um material ativo.")
+    expect(erros["materiais.0.nome"]).toBeTruthy()
+    expect(erros["materiais.1.preco"]).toMatch(/preço por m²/)
   })
 
   it("calibra a régua por dois cliques", () => {

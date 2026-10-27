@@ -49,7 +49,7 @@ export function ehCategoria(valor: string | null): valor is Categoria {
 }
 
 export function imagemPrincipal(produto: Product): string {
-  return produto.imagens[0]?.url ?? produto.cores[0]?.imagem ?? "/img/produtos/liso-fosco-branco.svg"
+  return produto.imagens[0]?.url ?? produto.cores[0]?.imagem ?? "/img/produtos/linho-texturizado-off-white.webp"
 }
 
 export function textoPrazo(produto: Pick<Product, "prontaEntrega" | "prazoProducaoDias">): string {

@@ -1,6 +1,7 @@
 import { defineConfig, devices } from "@playwright/test"
 
-const PORTA = 3100
+// PORTA_TESTES permite rodar em paralelo com outro servidor já aberto na 3100
+const PORTA = Number(process.env.PORTA_TESTES ?? 3100)
 
 export default defineConfig({
   testDir: "./tests/e2e",

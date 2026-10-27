@@ -6,7 +6,7 @@ const PAGINAS = [
   "/",
   "/produtos",
   "/pronta-entrega",
-  "/produtos/xadrez-vichy",
+  "/produtos/xadrez-3cm",
   "/trabalhos",
   "/contato",
   "/carrinho",

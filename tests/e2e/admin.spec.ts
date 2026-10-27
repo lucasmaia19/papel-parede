@@ -13,7 +13,7 @@ test("painel: aviso, números, atalhos e restaurar dados", async ({ page }, test
   await expect(page.locator("[data-slot=aviso-admin]")).toContainText(
     "Área administrativa — no sistema final esta tela será acessível apenas pelo administrador, com login. Nesta versão de protótipo ela está aberta.",
   )
-  await expect(page.locator("[data-slot=numero-painel]").first()).toContainText("12")
+  await expect(page.locator("[data-slot=numero-painel]").first()).toContainText("13")
   for (const atalho of ["Papéis de parede", "Trabalhos realizados", "Configurações", "Pedidos"]) {
     await expect(page.locator("main").getByRole("link", { name: new RegExp(atalho) }).first()).toBeVisible()
   }
@@ -28,29 +28,29 @@ test("painel: aviso, números, atalhos e restaurar dados", async ({ page }, test
 test("produtos: buscar, desativar, duplicar e excluir", async ({ page }, testInfo) => {
   await page.goto("/admin/produtos")
   await esperarHidratacao(page)
-  await expect(visiveis(page, "[data-slot=produto-admin]")).toHaveCount(12)
+  await expect(visiveis(page, "[data-slot=produto-admin]")).toHaveCount(13)
   await verificarLayout(page)
   await screenshot(page, testInfo, "fase7-produtos")
 
-  await page.getByRole("searchbox", { name: "Buscar papel de parede" }).fill("borbo")
+  await page.getByRole("searchbox", { name: "Buscar papel de parede" }).fill("toile")
   await expect(visiveis(page, "[data-slot=produto-admin]")).toHaveCount(1)
-  await page.getByRole("button", { name: "Desativar Borboletas" }).click()
+  await page.getByRole("button", { name: "Desativar Toile de Jouy" }).click()
   await expect(visiveis(page, "[data-slot=produto-admin]").first()).toContainText("Desativado")
 
   // Some da loja
   await page.goto("/produtos")
-  await expect(visiveis(page, "main [data-slot=produto-card]")).toHaveCount(11)
+  await expect(visiveis(page, "main [data-slot=produto-card]")).toHaveCount(12)
 
   await page.goto("/admin/produtos")
-  await page.getByRole("button", { name: "Duplicar Xadrez Vichy" }).click()
+  await page.getByRole("button", { name: "Duplicar Xadrez 3 cm" }).click()
   await expect(page).toHaveURL(/\/admin\/produtos\/p.+/)
-  await expect(page.getByRole("textbox", { name: "Nome", exact: true })).toHaveValue("Xadrez Vichy (cópia)")
+  await expect(page.getByRole("textbox", { name: "Nome", exact: true })).toHaveValue("Xadrez 3 cm (cópia)")
 
   await page.goto("/admin/produtos")
-  await expect(visiveis(page, "[data-slot=produto-admin]")).toHaveCount(13)
-  await page.getByRole("button", { name: "Excluir Xadrez Vichy (cópia)" }).click()
+  await expect(visiveis(page, "[data-slot=produto-admin]")).toHaveCount(14)
+  await page.getByRole("button", { name: "Excluir Xadrez 3 cm (cópia)" }).click()
   await page.getByRole("alertdialog").getByRole("button", { name: "Sim, excluir" }).click()
-  await expect(visiveis(page, "[data-slot=produto-admin]")).toHaveCount(12)
+  await expect(visiveis(page, "[data-slot=produto-admin]")).toHaveCount(13)
 })
 
 test("cadastro de produto completo aparece na loja", async ({ page }, testInfo) => {
@@ -65,12 +65,15 @@ test("cadastro de produto completo aparece na loja", async ({ page }, testInfo) 
   await page.getByRole("textbox", { name: "Nome", exact: true }).fill("Linho Natural")
   await expect(page.getByText("Fica assim: /produtos/linho-natural")).toBeVisible()
   await page.getByLabel("Estilo (categoria)").selectOption("texturizado")
-  await page.getByRole("textbox", { name: "Preço por m²" }).fill("90,5")
+  // Materiais: cada um com o seu preço
+  await expect(visiveis(page, "[data-slot=material-admin]")).toHaveCount(2)
+  await page.getByRole("textbox", { name: "Preço por m²" }).nth(0).fill("90,5")
+  await page.getByRole("textbox", { name: "Preço por m²" }).nth(1).fill("99")
 
   // Fotos
   await page.locator("[data-slot=entrada-fotos]").first().setInputFiles([
-    "public/img/produtos/grade-fina-areia.svg",
-    "public/img/produtos/grade-fina-ambiente.svg",
+    "public/img/produtos/xadrez-aquarela.webp",
+    "public/img/produtos/cimento-queimado-areia.webp",
   ])
   await expect(visiveis(page, "[data-slot=foto-produto]")).toHaveCount(2)
   await page.getByRole("button", { name: "Descer foto 1" }).click()
@@ -97,7 +100,8 @@ test("cadastro de produto completo aparece na loja", async ({ page }, testInfo) 
   await expect(page.getByText(/2 pontos marcados/)).toBeVisible()
   await page.getByRole("textbox", { name: "Distância entre os pontos" }).fill("30")
   await page.getByRole("button", { name: "Calcular" }).click()
-  await expect(page.getByText(/Régua calibrada: (19,9|20)/)).toBeVisible()
+  // A escala depende do tamanho da foto enviada: basta ter calibrado
+  await expect(page.getByText(/Régua calibrada: [\d,]+ pixels por cm/)).toBeVisible()
   await page.getByRole("button", { name: "Adicionar medida" }).click()
   await page.getByRole("textbox", { name: "Nome da medida 1" }).fill("Cada quadrado")
   await page.locator("[data-slot=medida-admin]").getByRole("textbox", { name: "Largura" }).fill("10")
@@ -119,7 +123,17 @@ test("cadastro de produto completo aparece na loja", async ({ page }, testInfo) 
   await page.goto("/produtos/linho-natural")
   await esperarHidratacao(page)
   await expect(page.getByRole("heading", { level: 1, name: "Linho Natural" })).toBeVisible()
-  await expect(page.getByText("R$ 90,50").first()).toBeVisible()
+  await expect(page.locator("[data-slot=preco-m2]")).toContainText("a partir de R$ 90,50")
+  // Trocar o material atualiza o total na hora: 2 × 2,5 = 5 m² + 10% = 5,5 m²
+  const parede = page.locator("[data-slot=parede]").first()
+  await parede.getByRole("textbox", { name: "Largura" }).fill("2")
+  await parede.getByRole("textbox", { name: "Altura" }).fill("2,5")
+  const totalLoja = page.locator("main [data-slot=resumo-preco]").filter({ visible: true }).first().locator("[data-slot=total]")
+  await page.getByRole("button", { name: /^Texturizado linho/ }).click()
+  await expect(totalLoja).toHaveText("R$ 497,75")
+  await page.getByRole("button", { name: /^Adesivo liso/ }).click()
+  await expect(totalLoja).toHaveText("R$ 544,50")
+  await expect(page.locator("[data-slot=preco-m2]")).toContainText("R$ 99,00")
   await page.getByRole("button", { name: "Mostrar régua" }).click()
   await expect(page.getByText("Cada quadrado mede 10 cm x 10 cm")).toBeVisible()
   await expect(page.getByRole("button", { name: /5 cm/ })).toBeVisible()
@@ -129,24 +143,25 @@ test("cadastro de produto completo aparece na loja", async ({ page }, testInfo) 
 test("trabalhos: cadastrar e aparecer na loja", async ({ page }, testInfo) => {
   await page.goto("/admin/trabalhos")
   await esperarHidratacao(page)
-  await expect(visiveis(page, "[data-slot=trabalho-admin]")).toHaveCount(4)
+  await expect(visiveis(page, "[data-slot=trabalho-admin]")).toHaveCount(1)
   await verificarLayout(page)
   await screenshot(page, testInfo, "fase7-trabalhos")
 
   await page.getByRole("button", { name: "Novo trabalho" }).click()
   const dialogo = page.getByRole("dialog", { name: "Novo trabalho" })
   await dialogo.getByRole("button", { name: "Salvar trabalho" }).click()
-  await expect(dialogo.getByText("Envie a foto de antes.")).toBeVisible()
+  await expect(dialogo.getByText("Envie a foto de depois.")).toBeVisible()
+  await expect(dialogo.getByText("Envie a foto de antes.")).toHaveCount(0)
   await dialogo.getByRole("textbox", { name: "Título" }).fill("Lavabo xadrez")
   await dialogo.getByRole("textbox", { name: "Cidade" }).fill("Monte Carmelo")
-  await dialogo.locator("[data-slot=entrada-fotos]").nth(0).setInputFiles("public/img/trabalhos/hall-arabesco-antes.svg")
-  await dialogo.locator("[data-slot=entrada-fotos]").nth(1).setInputFiles("public/img/trabalhos/hall-arabesco-depois.svg")
-  await dialogo.getByLabel("Papel de parede usado (opcional)").selectOption({ label: "Xadrez Vichy" })
+  await dialogo.locator("[data-slot=entrada-fotos]").nth(0).setInputFiles("public/img/produtos/cimento-queimado-areia.webp")
+  await dialogo.locator("[data-slot=entrada-fotos]").nth(1).setInputFiles("public/img/produtos/xadrez-3cm.webp")
+  await dialogo.getByLabel("Papel de parede usado (opcional)").selectOption({ label: "Xadrez 3 cm" })
   await dialogo.getByRole("button", { name: "Salvar trabalho" }).click()
   await expect(dialogo).toBeHidden()
-  await expect(visiveis(page, "[data-slot=trabalho-admin]")).toHaveCount(5)
+  await expect(visiveis(page, "[data-slot=trabalho-admin]")).toHaveCount(2)
   await page.getByRole("button", { name: "Subir Lavabo xadrez" }).click()
-  await expect(visiveis(page, "[data-slot=trabalho-admin]").nth(3)).toContainText("Lavabo xadrez")
+  await expect(visiveis(page, "[data-slot=trabalho-admin]").nth(0)).toContainText("Lavabo xadrez")
 
   await page.goto("/trabalhos")
   await page.getByRole("button", { name: "Monte Carmelo" }).click()
@@ -170,7 +185,7 @@ test("configurações mudam os preços da loja", async ({ page }, testInfo) => {
   await page.getByRole("button", { name: "Salvar configurações" }).click()
   await expect(page.getByText("Configurações salvas. Já valem na loja.")).toBeVisible()
 
-  await page.goto("/produtos/liso-fosco")
+  await page.goto("/produtos/linho-texturizado-off-white")
   await esperarHidratacao(page)
   const parede = page.locator("[data-slot=parede]").first()
   await parede.getByRole("textbox", { name: "Largura" }).fill("2")
@@ -189,18 +204,19 @@ test("pedidos: filtros, status e detalhes", async ({ page }, testInfo) => {
       itens: [
         {
           id: "i1",
-          produtoId: "p5",
-          produtoNome: "Borboletas",
-          produtoSlug: "borboletas",
-          imagem: "/img/produtos/borboletas-azul.svg",
-          cor: { nome: "Azul", hex: "#7E9CC0" },
+          produtoId: "p1",
+          produtoNome: "Delicado",
+          produtoSlug: "delicado",
+          imagem: "/img/produtos/delicado.webp",
+          cor: { nome: "Azul", hex: "#8FA6D6" },
+          material: { id: "adesivo", nome: "Adesivo liso" },
           personalizacoes: [{ grupo: "Tamanho da estampa", opcao: "M", acrescimoM2: 0 }],
           paredes: [{ id: "w", largura: 3, altura: 2.5, aberturas: [] }],
           m2: 8.25,
           m2Parede: 7.5,
           precoM2: 80,
           servicos: { aplicacao: true, visita: false },
-          simulacao: { tipo: "estampa", observacao: "Borboletas lilás" },
+          simulacao: { tipo: "estampa", observacao: "Flores em rosa" },
           prontaEntrega: false,
           prazoProducaoDias: 7,
           subtotalPapel: 660,
@@ -241,7 +257,8 @@ test("pedidos: filtros, status e detalhes", async ({ page }, testInfo) => {
 
   await pedido.getByLabel("Status").selectOption("Em produção")
   await pedido.getByText(/Ver detalhes/).click()
-  await expect(pedido).toContainText("Borboletas lilás")
+  await expect(pedido).toContainText("Flores em rosa")
+  await expect(pedido).toContainText("Material: Adesivo liso")
   await expect(pedido).toContainText("8,25 m²")
   await expect(pedido).toContainText("aplicação")
 

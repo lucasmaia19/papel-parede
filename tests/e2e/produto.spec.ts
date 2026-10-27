@@ -15,10 +15,10 @@ async function digitarMedida(page: Page, indice: number, largura: string, altura
 }
 
 test("régua, cor e personalização", async ({ page }, testInfo) => {
-  await page.goto("/produtos/xadrez-vichy")
+  await page.goto("/produtos/xadrez-3cm")
   await esperarHidratacao(page)
 
-  await expect(page.getByRole("heading", { level: 1, name: "Xadrez Vichy" })).toBeVisible()
+  await expect(page.getByRole("heading", { level: 1, name: "Xadrez 3 cm" })).toBeVisible()
   await expect(page.locator("[data-slot=prazo]")).toHaveText("Produção em 7 dias úteis + entrega")
 
   // Régua oculta: a foto ocupa a largura toda da galeria
@@ -30,7 +30,7 @@ test("régua, cor e personalização", async ({ page }, testInfo) => {
   await page.getByRole("button", { name: "Mostrar régua" }).click()
   const foto = page.locator("[data-slot=foto-regua]")
   await expect(foto).toBeVisible()
-  await expect(page.getByText("Cada quadrado mede 10 cm x 10 cm")).toBeVisible()
+  await expect(page.getByText("Cada quadrado mede 3 cm x 3 cm")).toBeVisible()
   await expect(page.getByRole("button", { name: "Ocultar régua" })).toBeVisible()
 
   // Nada da régua sobre a foto: réguas e cotas ficam nas margens de fora
@@ -49,32 +49,39 @@ test("régua, cor e personalização", async ({ page }, testInfo) => {
   })
   expect(sobreAFoto, "elementos da régua sobre a foto").toBe(0)
 
-  // Escala: a amostra tem 60 cm de largura, então a cota de 10 cm = 1/6 da foto
+  // Escala: na foto (736 × 1308 px) cada quadrado de 3 cm tem 32 px
   const cota = (await page.locator("[data-slot=cota-horizontal] rect").boundingBox())!
-  expect(cota.width / caixaFoto.width).toBeCloseTo(10 / 60, 2)
+  expect(cota.width / caixaFoto.width).toBeCloseTo(32 / 736, 2)
   const cotaV = (await page.locator("[data-slot=cota-vertical] rect").boundingBox())!
-  expect(cotaV.height / caixaFoto.height).toBeCloseTo(10 / 60, 2)
-  await expect(page.locator("[data-slot=cota-horizontal] text")).toHaveText("10 cm")
+  expect(cotaV.height / caixaFoto.height).toBeCloseTo(32 / 1308, 2)
+  await expect(page.locator("[data-slot=cota-horizontal] text")).toHaveText("3 cm")
   await expect(page.locator("[data-slot=regua-horizontal] text", { hasText: /^20$/ })).toHaveCount(1)
 
   await page.locator("[data-slot=galeria]").scrollIntoViewIfNeeded()
   await screenshot(page, testInfo, "fase3-regua", false)
   await page.getByRole("button", { name: "Ocultar régua" }).click()
 
-  await conteudo(page).getByRole("button", { name: "Verde", exact: true }).click()
-  await expect(page.locator("[data-slot=galeria] img").first()).toHaveAttribute("src", /xadrez-vichy-verde/)
+  await expect(page.locator("[data-slot=galeria] img").first()).toHaveAttribute("src", /xadrez-3cm/)
 
-  await conteudo(page).getByRole("button", { name: /^5 cm/ }).click()
-  await expect(page.getByRole("heading", { level: 1 }).locator("..").getByText("R$ 88,00")).toBeVisible()
-  await conteudo(page).getByRole("button", { name: /^10 cm/ }).click()
+  // Personalização com acréscimo: estampa G = + R$ 6,00/m²
+  await page.goto("/produtos/delicado")
+  await esperarHidratacao(page)
+  await conteudo(page).getByRole("button", { name: /^G(\s|$)/ }).click()
+  await expect(page.getByRole("heading", { level: 1 }).locator("..").getByText("R$ 86,00")).toBeVisible()
+  await conteudo(page).getByRole("button", { name: /^M(\s|$)/ }).click()
   await expect(page.getByRole("heading", { level: 1 }).locator("..").getByText("R$ 80,00")).toBeVisible()
 })
 
 test("calculadora, CEP da região, frete e carrinho", async ({ page }, testInfo) => {
-  await page.goto("/produtos/xadrez-vichy")
+  await page.goto("/produtos/xadrez-3cm")
   await esperarHidratacao(page)
 
-  await expect(page.getByText("Você está aqui")).toBeVisible()
+  // O primeiro passo pendente é o material
+  await expect(page.locator("#material").getByText("Você está aqui")).toBeVisible()
+  await page.getByRole("button", { name: /^Adesivo liso/ }).click()
+  await expect(page.getByRole("button", { name: /^Adesivo liso/ })).toHaveAttribute("aria-pressed", "true")
+  await expect(page.locator("#material")).toContainText("Material escolhido: Adesivo liso")
+  await expect(page.locator("#medidas").getByText("Você está aqui")).toBeVisible()
   await digitarMedida(page, 0, "3,20", "2.60")
   const resultado = page.locator("[data-slot=resultado-metragem]")
   await expect(resultado).toContainText("8,32 m²")
@@ -137,8 +144,21 @@ test("calculadora, CEP da região, frete e carrinho", async ({ page }, testInfo)
 })
 
 test("avisa quando falta medida e mostra o guia de medição", async ({ page }, testInfo) => {
-  await page.goto("/produtos/borboletas")
+  await page.goto("/produtos/delicado")
   await esperarHidratacao(page)
+  // Sem material: mensagem clara perto do seletor
+  const duvidasAntes = decodeURIComponent(
+    (await page.getByRole("link", { name: "Tirar dúvidas no WhatsApp" }).filter({ visible: true }).first().getAttribute("href")) ?? "",
+  )
+  expect(duvidasAntes).toContain("Material: ainda não escolhi")
+  await page.getByRole("button", { name: "Adicionar ao carrinho" }).filter({ visible: true }).first().click()
+  const avisoMaterial = page.locator("#material").getByRole("alert")
+  await expect(avisoMaterial).toContainText("Escolha o material antes de adicionar ao carrinho")
+  await expect(avisoMaterial).toBeInViewport()
+  await screenshot(page, testInfo, "ajuste4-material-obrigatorio", false)
+  await page.getByRole("button", { name: /^Texturizado linho/ }).click()
+  await expect(avisoMaterial).toBeHidden()
+
   await page.getByRole("button", { name: "Adicionar ao carrinho" }).filter({ visible: true }).first().click()
   await expect(page.getByRole("alert").filter({ hasText: "digite a largura e a altura" })).toBeVisible()
 
@@ -154,14 +174,19 @@ test("avisa quando falta medida e mostra o guia de medição", async ({ page }, 
   // Mensagem de dúvidas no WhatsApp leva produto e cor
   const duvidas = page.getByRole("link", { name: "Tirar dúvidas no WhatsApp" }).filter({ visible: true }).first()
   const href = decodeURIComponent((await duvidas.getAttribute("href")) ?? "")
-  expect(href).toContain("Borboletas")
+  expect(href).toContain("Delicado")
   expect(href).toContain("Cor: Azul")
+  expect(href).toContain("Material: Texturizado linho (não adesivo)")
 })
 
 test("produto pronta entrega mostra envio imediato", async ({ page }, testInfo) => {
-  await page.goto("/produtos/linho-texturizado-branco")
+  await page.goto("/produtos/linho-texturizado-off-white")
   await esperarHidratacao(page)
   await expect(page.locator("[data-slot=prazo]")).toHaveText("Pronta entrega — envio imediato")
+  // Linho sem estampa: só o material texturizado, já escolhido
+  await expect(page.locator("[data-slot=opcao-material]")).toHaveCount(1)
+  await expect(page.locator("[data-slot=opcao-material]")).toHaveAttribute("aria-pressed", "true")
+  await expect(page.locator("#material")).toContainText("Material escolhido: Texturizado linho (não adesivo)")
   if (!ehMobile(testInfo)) {
     // Com a página no topo, nada pode cobrir o card lateral (ex.: WhatsApp flutuante)
     await expect(page.locator("[data-slot=whatsapp-flutuante]")).toBeHidden()

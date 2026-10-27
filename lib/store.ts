@@ -5,6 +5,7 @@ import { create } from "zustand"
 import { createJSONStorage, persist, type StateStorage } from "zustand/middleware"
 import { produtosIniciais, settingsIniciais, trabalhosIniciais } from "@/lib/data"
 import { gerarIdSimples as gerarId } from "@/lib/id"
+import { comMateriais } from "@/lib/materiais"
 import type { CartItem, Order, Product, Settings, StatusPedido, WorkGallery } from "@/types"
 
 
@@ -168,7 +169,20 @@ export const useLoja = create<LojaState>()(
     }),
     {
       name: "rodovalho-loja",
-      version: 1,
+      // v2: produtos ganharam "materiais" (texturizado / adesivo)
+      // v3: produtos e trabalhos de exemplo trocados pelas fotos reais da loja
+      version: 3,
+      migrate: (salvo, versao) => {
+        const estado = salvo as Partial<LojaState>
+        if (versao < 2 && Array.isArray(estado.produtos)) {
+          estado.produtos = estado.produtos.map(comMateriais)
+        }
+        if (versao < 3) {
+          estado.produtos = produtosIniciais
+          estado.trabalhos = trabalhosIniciais
+        }
+        return estado as LojaState
+      },
       storage: createJSONStorage(() => armazenamentoSeguro),
       // Só lê o localStorage no cliente, depois da hidratação do React (ver <StoreHydration />)
       skipHydration: true,

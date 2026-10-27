@@ -102,16 +102,20 @@ export function textoPersonalizacoes(lista: PersonalizacaoEscolhida[]): string {
 export function mensagemDuvidaProduto(args: {
   produto: Product
   cor: string
+  material: string | null
   personalizacoes: PersonalizacaoEscolhida[]
   m2: number
+  /** Preço/m² do item (material + acréscimos) */
+  precoM2: number
   url?: string
 }): string {
   const linhas = [
     `Olá! Tenho uma dúvida sobre o papel de parede *${args.produto.nome}*.`,
     `Cor: ${args.cor}`,
+    `Material: ${args.material ?? "ainda não escolhi"}`,
     ...args.personalizacoes.map((p) => `${p.grupo}: ${p.opcao}`),
     args.m2 > 0 ? `Metragem: ${formatarM2(args.m2)}` : "Ainda não calculei a metragem.",
-    `Preço: ${formatarMoeda(args.produto.precoM2)}/m²`,
+    `Preço: ${formatarMoeda(args.precoM2)}/m²`,
   ]
   if (args.url) linhas.push(args.url)
   return linhas.join("\n")

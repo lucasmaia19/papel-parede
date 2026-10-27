@@ -51,6 +51,16 @@ export interface Regua {
   medidas: MedidaElemento[]
 }
 
+/** Material em que a estampa é vendida (ex.: texturizado linho, adesivo liso) */
+export interface MaterialProduto {
+  id: string
+  nome: string
+  /** Uma linha, em linguagem simples */
+  descricao: string
+  precoM2: number
+  ativo: boolean
+}
+
 export interface Product {
   id: string
   slug: string
@@ -59,7 +69,9 @@ export interface Product {
   categoria: Categoria
   /** Ordenadas; a primeira é a principal */
   imagens: ImagemProduto[]
+  /** Menor preço/m² entre os materiais ativos ("a partir de") */
   precoM2: number
+  materiais: MaterialProduto[]
   prontaEntrega: boolean
   prazoProducaoDias: number
   ativo: boolean
@@ -154,6 +166,8 @@ export interface CartItem {
   produtoSlug: string
   imagem: string
   cor: { nome: string; hex: string }
+  /** Opcional só para itens antigos, salvos antes de existir a escolha de material */
+  material?: { id: string; nome: string }
   personalizacoes: PersonalizacaoEscolhida[]
   paredes: Parede[]
   /** m² cobrados (já com margem de perda) */

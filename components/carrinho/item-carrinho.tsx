@@ -81,6 +81,7 @@ export function ItemCarrinho({ item, naRegiao, somenteLeitura }: ItemCarrinhoPro
                 {item.cor.nome}
               </span>
             </Detalhe>
+            {item.material && <Detalhe rotulo="Material">{item.material.nome}</Detalhe>}
             {item.personalizacoes.length > 0 && <Detalhe rotulo="Personalização">{textoPersonalizacoes(item.personalizacoes)}</Detalhe>}
             <Detalhe rotulo="Metragem">
               {formatarM2(item.m2)} <span className="font-normal text-foreground-subtle">({textoParedes(item)})</span>

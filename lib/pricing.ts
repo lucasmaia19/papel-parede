@@ -105,6 +105,18 @@ export function precoM2ComAcrescimos(
   )
 }
 
+/**
+ * Preço/m² do item: preço do material escolhido (texturizado, adesivo…) + acréscimos das personalizações.
+ * Sem material escolhido, usa o mais barato ("a partir de") só como estimativa.
+ */
+export function precoM2DoItem(
+  material: { precoM2: number } | null | undefined,
+  precoAPartirDe: number,
+  personalizacoes: Pick<PersonalizacaoEscolhida, "acrescimoM2">[],
+): number {
+  return precoM2ComAcrescimos(material ? material.precoM2 : precoAPartirDe, personalizacoes)
+}
+
 export function calcularValorPapel(m2: number, precoM2: number): number {
   return arredondarDinheiro(positivo(m2) * positivo(precoM2))
 }

@@ -10,7 +10,7 @@ test.beforeEach(async ({ page }) => {
 })
 
 test("simulação com IA nas duas abas e envio para o carrinho", async ({ page }, testInfo) => {
-  await page.goto("/produtos/borboletas")
+  await page.goto("/produtos/delicado")
   await esperarHidratacao(page)
 
   const secao = page.locator("[data-slot=simulacao-ia]")
@@ -21,8 +21,8 @@ test("simulação com IA nas duas abas e envio para o carrinho", async ({ page }
   await expect(secao.locator("[data-slot=aviso-ia]").filter({ visible: true })).toContainText(
     "Esta é uma simulação aproximada feita por inteligência artificial",
   )
-  await secao.getByRole("button", { name: "Trocar a cor das borboletas para lilás" }).click()
-  await expect(secao.getByLabel(/O que você gostaria de mudar/)).toHaveValue("Trocar a cor das borboletas para lilás")
+  await secao.getByRole("button", { name: "Trocar as flores azuis por rosas" }).click()
+  await expect(secao.getByLabel(/O que você gostaria de mudar/)).toHaveValue("Trocar as flores azuis por rosas")
   await secao.getByRole("button", { name: "Ver simulação" }).click()
   await expect(secao.getByText(/Gerando a simulação/)).toBeVisible()
   const resultado = secao.locator("[data-slot=resultado-simulacao]")
@@ -47,8 +47,8 @@ test("simulação com IA nas duas abas e envio para o carrinho", async ({ page }
   await secao.getByRole("button", { name: "Ver na minha parede" }).click()
   await expect(secao.getByRole("alert")).toHaveText("Primeiro tire ou escolha uma foto da sua parede.")
 
-  // Foto de exemplo: uma sala com parede lisa
-  await secao.locator("[data-slot=entrada-galeria]").setInputFiles("public/img/trabalhos/sala-listrada-antes.svg")
+  // Foto de exemplo: uma parede lisa
+  await secao.locator("[data-slot=entrada-galeria]").setInputFiles("public/img/produtos/cimento-queimado-areia.webp")
   await expect(secao.getByRole("img", { name: "Foto da sua parede" })).toBeVisible()
   await secao.getByRole("button", { name: "Ver na minha parede" }).click()
   await expect(secao.locator("[data-slot=resultado-simulacao]")).toBeVisible({ timeout: 15_000 })
@@ -61,18 +61,19 @@ test("simulação com IA nas duas abas e envio para o carrinho", async ({ page }
   const parede = page.locator("[data-slot=parede]").first()
   await parede.getByRole("textbox", { name: "Largura" }).fill("2")
   await parede.getByRole("textbox", { name: "Altura" }).fill("2,5")
+  await page.getByRole("button", { name: /^Adesivo liso/ }).click()
   await page.getByRole("button", { name: "Adicionar ao carrinho" }).filter({ visible: true }).first().click()
   await page.getByRole("link", { name: "Ver carrinho" }).click()
   const item = page.locator("[data-slot=item-carrinho]")
   await expect(item).toContainText("Simulação com IA")
-  await expect(item).toContainText("Trocar a cor das borboletas para lilás")
+  await expect(item).toContainText("Trocar as flores azuis por rosas")
   await expect(item.getByRole("img", { name: "Simulação feita com IA" })).toBeVisible()
 })
 
 test("produto sem IA não mostra a simulação", async ({ page }) => {
-  await page.goto("/produtos/liso-fosco")
+  await page.goto("/produtos/linho-texturizado-off-white")
   await esperarHidratacao(page)
-  await expect(page.getByRole("heading", { level: 1, name: "Liso Fosco" })).toBeVisible()
+  await expect(page.getByRole("heading", { level: 1, name: "Linho texturizado Off-white" })).toBeVisible()
   await expect(page.locator("[data-slot=simulacao-ia]")).toHaveCount(0)
 })
 
@@ -83,7 +84,7 @@ test("API: valida o pedido e limita simulações por sessão", async ({ request 
   expect(semFoto.status()).toBe(400)
   expect((await semFoto.json()).erro).toContain("foto da parede")
 
-  const corpo = { tipo: "estampa", produto: "Borboletas", cor: "Azul", observacao: "teste", amostra: PNG_MINIMO }
+  const corpo = { tipo: "estampa", produto: "Delicado", cor: "Azul", observacao: "teste", amostra: PNG_MINIMO }
   for (let i = 1; i <= 6; i++) {
     const r = await request.post("/api/simular", { data: corpo })
     expect(r.status()).toBe(200)

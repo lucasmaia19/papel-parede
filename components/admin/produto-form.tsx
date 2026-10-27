@@ -139,23 +139,18 @@ export function ProdutoForm({ inicial, novo }: ProdutoFormProps) {
             erro={erros.slug}
           />
           <CampoArea rotulo="Descrição" valor={f.descricao} onChange={(descricao) => alterar({ descricao })} rows={4} />
-          <div className="grid gap-4 sm:grid-cols-2">
-            <CampoSelect rotulo="Estilo (categoria)" valor={f.categoria} onChange={(v) => alterar({ categoria: v as Categoria })}>
-              {CATEGORIAS.map((c) => (
-                <option key={c} value={c}>
-                  {ROTULO_CATEGORIA[c]}
-                </option>
-              ))}
-            </CampoSelect>
-            <CampoTexto
-              rotulo="Preço por m²"
-              valor={f.precoM2}
-              onChange={(precoM2) => alterar({ precoM2 })}
-              inputMode="decimal"
-              sufixo="R$/m²"
-              erro={erros.precoM2}
-            />
-          </div>
+          <CampoSelect
+            rotulo="Estilo (categoria)"
+            valor={f.categoria}
+            onChange={(v) => alterar({ categoria: v as Categoria })}
+            className="sm:max-w-sm"
+          >
+            {CATEGORIAS.map((c) => (
+              <option key={c} value={c}>
+                {ROTULO_CATEGORIA[c]}
+              </option>
+            ))}
+          </CampoSelect>
           <Interruptor
             rotulo="Pronta entrega"
             descricao="Envio imediato (aparece na aba Pronta entrega)"
@@ -179,6 +174,67 @@ export function ProdutoForm({ inicial, novo }: ProdutoFormProps) {
             marcado={f.ativo}
             onChange={(ativo) => alterar({ ativo })}
           />
+        </SecaoAdmin>
+
+        {/* Materiais: cada um com seu preço por m² */}
+        <SecaoAdmin
+          titulo="Materiais"
+          descricao="Em que material esta estampa é vendida. O cliente escolhe um; o preço por m² vem do material."
+        >
+          <ul className="flex flex-col gap-4">
+            {f.materiais.map((m, i) => {
+              const atualizar = (dados: Partial<Form["materiais"][number]>) =>
+                alterar({ materiais: f.materiais.map((x) => (x.id === m.id ? { ...x, ...dados } : x)) })
+              return (
+                <li key={m.id} data-slot="material-admin" className="flex flex-col gap-3 rounded-md border border-border bg-surface-raised p-4">
+                  <Interruptor
+                    rotulo={`Material ${i + 1} ativo`}
+                    descricao={m.ativo ? "Aparece para o cliente" : "Escondido do cliente"}
+                    marcado={m.ativo}
+                    onChange={(ativo) => atualizar({ ativo })}
+                  />
+                  <CampoTexto rotulo="Nome do material" valor={m.nome} onChange={(nome) => atualizar({ nome })} erro={erros[`materiais.${i}.nome`]} />
+                  <CampoTexto
+                    rotulo="Descrição (uma linha)"
+                    placeholder="Ex.: Liso, fácil de aplicar"
+                    valor={m.descricao}
+                    onChange={(descricao) => atualizar({ descricao })}
+                  />
+                  <CampoTexto
+                    rotulo="Preço por m²"
+                    valor={m.precoM2}
+                    onChange={(precoM2) => atualizar({ precoM2 })}
+                    inputMode="decimal"
+                    sufixo="R$/m²"
+                    erro={erros[`materiais.${i}.preco`]}
+                    className="sm:max-w-xs"
+                  />
+                  {f.materiais.length > 1 && (
+                    <BotaoRemover
+                      rotulo={`material ${m.nome || i + 1}`}
+                      onClick={() => alterar({ materiais: f.materiais.filter((x) => x.id !== m.id) })}
+                    />
+                  )}
+                </li>
+              )
+            })}
+          </ul>
+          <ErroCampo>{erros.materiais}</ErroCampo>
+          <Button
+            variant="outline"
+            className="sm:self-start"
+            onClick={() =>
+              alterar({
+                materiais: [
+                  ...f.materiais,
+                  { id: gerarIdSimples("mat"), nome: "", descricao: "", precoM2: f.materiais[0]?.precoM2 ?? "", ativo: true },
+                ],
+              })
+            }
+          >
+            <PlusIcon aria-hidden />
+            Adicionar material
+          </Button>
         </SecaoAdmin>
 
         {/* b) Fotos */}

@@ -49,13 +49,23 @@ export function GaleriaTrabalhos() {
           const produto = produtos.find((p) => p.id === t.produtoId && p.ativo)
           return (
             <li key={t.id} data-slot="trabalho" className="flex flex-col gap-3">
-              <ComparacaoSlider
-                antes={t.fotoAntes}
-                depois={t.fotoDepois}
-                altAntes={`Antes: ${t.titulo}`}
-                altDepois={`Depois: ${t.titulo}`}
-                proporcao="aspect-[16/11]"
-              />
+              {t.fotoAntes ? (
+                <ComparacaoSlider
+                  antes={t.fotoAntes}
+                  depois={t.fotoDepois}
+                  altAntes={`Antes: ${t.titulo}`}
+                  altDepois={`Depois: ${t.titulo}`}
+                  proporcao="aspect-[16/11]"
+                />
+              ) : (
+                // Sem foto de antes: só o resultado, sem o slider
+                // eslint-disable-next-line @next/next/no-img-element -- pode ser base64
+                <img
+                  src={t.fotoDepois}
+                  alt={t.titulo}
+                  className="aspect-[4/5] w-full rounded-md border border-border bg-muted object-cover"
+                />
+              )}
               <div className="flex flex-col gap-1">
                 <h2 className="font-sans text-lg">{t.titulo}</h2>
                 <p className="text-foreground-subtle">{t.cidade}</p>

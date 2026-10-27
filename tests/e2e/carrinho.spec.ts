@@ -3,18 +3,19 @@ import { ehMobile, esperarHidratacao, limparDados, nadaCobreBotoes, screenshot, 
 
 const itemExemplo = {
   id: "c-teste",
-  produtoId: "p3",
-  produtoNome: "Xadrez Vichy",
-  produtoSlug: "xadrez-vichy",
-  imagem: "/img/produtos/xadrez-vichy-azul.svg",
-  cor: { nome: "Azul", hex: "#5F84AA" },
-  personalizacoes: [{ grupo: "Tamanho do quadrado", opcao: "10 cm", acrescimoM2: 0 }],
+  produtoId: "p1",
+  produtoNome: "Delicado",
+  produtoSlug: "delicado",
+  imagem: "/img/produtos/delicado.webp",
+  cor: { nome: "Azul", hex: "#8FA6D6" },
+  material: { id: "adesivo", nome: "Adesivo liso" },
+  personalizacoes: [{ grupo: "Tamanho da estampa", opcao: "M", acrescimoM2: 0 }],
   paredes: [{ id: "w1", largura: 3.2, altura: 2.6, aberturas: [{ id: "a1", tipo: "janela", largura: 1.2, altura: 1 }] }],
   m2: 7.84,
   m2Parede: 7.12,
   precoM2: 80,
   servicos: { aplicacao: false, visita: false },
-  simulacao: { tipo: "estampa", observacao: "Trocar o azul por amarelo-mostarda" },
+  simulacao: { tipo: "estampa", observacao: "Trocar as flores azuis por rosas" },
   prontaEntrega: false,
   prazoProducaoDias: 7,
 }
@@ -48,20 +49,22 @@ test.beforeEach(async ({ page }) => {
 
 test("compra completa pelo site", async ({ page }, testInfo) => {
   // Produto → carrinho
-  await page.goto("/produtos/listrado-classico")
+  await page.goto("/produtos/listra-e-flores")
   await esperarHidratacao(page)
   const parede = page.locator("[data-slot=parede]").first()
   await parede.getByRole("textbox", { name: "Largura" }).fill("3")
   await parede.getByRole("textbox", { name: "Altura" }).fill("2,5")
+  await page.getByRole("button", { name: /^Texturizado linho/ }).click()
   await page.getByRole("button", { name: "Adicionar ao carrinho" }).filter({ visible: true }).first().click()
   await page.getByRole("link", { name: "Ver carrinho" }).click()
 
   // Carrinho: 3 × 2,5 = 7,5 → 8,25 m² → R$ 660,00
   await expect(page.getByRole("heading", { level: 1, name: "Seu carrinho" })).toBeVisible()
   const item = page.locator("[data-slot=item-carrinho]")
-  await expect(item).toContainText("Listrado Clássico")
-  await expect(item).toContainText("Azul")
-  await expect(item).toContainText("Largura da listra: 5 cm")
+  await expect(item).toContainText("Listra e Flores")
+  await expect(item).toContainText("Lavanda e rosa")
+  await expect(item).toContainText("Texturizado linho (não adesivo)")
+  await expect(item).toContainText("Tamanho da estampa: P")
   await expect(item).toContainText("8,25 m²")
   await expect(item).toContainText("R$ 660,00")
 
@@ -124,6 +127,7 @@ test("compra completa pelo site", async ({ page }, testInfo) => {
   await expect(page.getByRole("heading", { level: 1, name: "Pedido confirmado!" })).toBeVisible()
   await expect(page.getByText("Pedido nº 1001")).toBeVisible()
   await expect(page.getByText(/Produção em até 7 dias úteis/)).toBeVisible()
+  await expect(page.locator("[data-slot=item-carrinho]").filter({ visible: true }).first()).toContainText("Texturizado linho (não adesivo)")
   await expect(page.getByRole("link", { name: "Falar com a loja no WhatsApp" })).toHaveAttribute("href", /wa\.me\/5534996804044\?text=/)
   await expect(page.getByRole("link", { name: "Carrinho, 0 itens" })).toBeVisible()
   await verificarLayout(page)
@@ -137,7 +141,7 @@ test("finalizar pelo WhatsApp envia o orçamento completo", async ({ page }, tes
   await esperarHidratacao(page)
 
   await expect(page.getByText("Entrega para SP: R$ 45,00")).toBeVisible()
-  await expect(page.locator("[data-slot=item-carrinho]")).toContainText("Trocar o azul por amarelo-mostarda")
+  await expect(page.locator("[data-slot=item-carrinho]")).toContainText("Trocar as flores azuis por rosas")
   await page.getByRole("button", { name: "Finalizar pelo WhatsApp" }).click()
   const dialogo = page.getByRole("dialog", { name: "Finalizar pelo WhatsApp" })
   await dialogo.getByRole("button", { name: "Abrir WhatsApp com o orçamento" }).click()
@@ -150,11 +154,12 @@ test("finalizar pelo WhatsApp envia o orçamento completo", async ({ page }, tes
   const url = await page.evaluate(() => (window as unknown as { __aberto: string }).__aberto)
   expect(url).toMatch(/^https:\/\/wa\.me\/5534996804044\?text=/)
   const texto = decodeURIComponent(url.split("?text=")[1])
-  expect(texto).toContain("*1. Xadrez Vichy*")
+  expect(texto).toContain("*1. Delicado*")
   expect(texto).toContain("Cor: Azul")
-  expect(texto).toContain("Tamanho do quadrado: 10 cm")
+  expect(texto).toContain("Material: Adesivo liso")
+  expect(texto).toContain("Tamanho da estampa: M")
   expect(texto).toContain("Metragem: 7,84 m²")
-  expect(texto).toContain("Observação (simulação com IA): Trocar o azul por amarelo-mostarda")
+  expect(texto).toContain("Observação (simulação com IA): Trocar as flores azuis por rosas")
   expect(texto).toContain("CEP: 01310-100 (SP)")
   expect(texto).toContain("Frete (Sudeste)")
   expect(texto).toMatch(/\*Total: R\$\s672,20\*/)
@@ -167,11 +172,11 @@ test("remover item pede confirmação", async ({ page }, testInfo) => {
   await semearCarrinho(page)
   await page.goto("/carrinho")
   await esperarHidratacao(page)
-  await page.getByRole("button", { name: "Remover Xadrez Vichy" }).click()
+  await page.getByRole("button", { name: "Remover Delicado" }).click()
   const confirma = page.getByRole("alertdialog", { name: "Remover do carrinho?" })
   await confirma.getByRole("button", { name: "Não, manter" }).click()
   await expect(page.locator("[data-slot=item-carrinho]")).toHaveCount(1)
-  await page.getByRole("button", { name: "Remover Xadrez Vichy" }).click()
+  await page.getByRole("button", { name: "Remover Delicado" }).click()
   await page.getByRole("alertdialog").getByRole("button", { name: "Sim, remover" }).click()
   await expect(page.getByRole("heading", { level: 1, name: "Seu carrinho está vazio" })).toBeVisible()
   await verificarLayout(page)

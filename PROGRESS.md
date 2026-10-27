@@ -139,7 +139,17 @@ Para ativar a IA real: criar `.env.local` com `OPENAI_API_KEY=...` (ver `.env.ex
   - Números da régua 13px e cotas 14px (legíveis em 360px); conferido em xadrez, listrado e borboletas
   - Playwright: tempo de espera das asserções 10 s (a suíte paralela no build de produção ficou mais lenta e um teste oscilou)
   - Verificação: lint, tsc, build, 41 Vitest, 115 Playwright + screenshots revisados
-- [ ] 4. Material (Texturizado linho / Adesivo liso) por produto: modelo, seletor obrigatório, preço por material, todo o fluxo até o admin, pricing + testes
+- [x] 4. Material por produto (Texturizado linho / Adesivo liso)
+  - Modelo: `Product.materiais: { id, nome, descricao, precoM2, ativo }[]`; `precoM2` do produto = menor preço entre os ativos ("a partir de"); `CartItem.material`
+  - `lib/materiais.ts` (padrões, ativos, "a partir de", migração) e `precoM2DoItem` em `lib/pricing.ts` + testes (preço por material, estimativa sem material, total mudando ao trocar)
+  - Página do produto: passo "Escolha o material" logo após a cor, dois botões grandes lado a lado (nome, descrição de uma linha, preço/m²); obrigatório (mensagem no seletor, rola até ele); o linho sem estampa já vem com o único material escolhido
+  - Material no carrinho, checkout, confirmação, "Finalizar pelo WhatsApp", "Tirar dúvidas no WhatsApp" e pedidos do admin
+  - Admin: seção "Materiais" (ativar/desativar, nome, descrição, preço/m², adicionar, remover; ao menos um ativo); "Preço por m²" saiu dos dados básicos
+  - Store persist v2 (migração adiciona materiais a produtos antigos salvos no navegador)
+  - Junto neste commit, da sessão paralela papel-parede-be (pedido do usuário): seeds trocados pelas fotos reais de `papel-fotos/` (13 produtos .webp, 1 cor cada, régua só no Xadrez 3 cm com 10,667 px/cm ⚠️ estimado; 1 trabalho realizado sem foto de antes), `scripts/importar-fotos.mjs`, store v3 (recarrega os seeds no navegador) e testes adaptados aos slugs novos — corrigi 4 desses testes que não tinham rodado
+  - Infra: `NEXT_DIST_DIR` (build separado por sessão) e `PORTA_TESTES` no Playwright, para várias sessões testarem ao mesmo tempo sem pisar no `.next` nem na porta 3100
+  - Verificação: lint, tsc, 45 Vitest, build, 131 Playwright (4 larguras, inclui axe)
+  - ⚠️ Ponto aberto: o texto da pronta entrega diz "branco e off-white", mas os seeds novos só têm o linho off-white
 - [ ] 5. WhatsApp flutuante só ícone (52px, verde suave), sem sobrepor clicáveis (teste de interseção); demais botões de WhatsApp no estilo secundário
 - [ ] CLAUDE.md atualizado (direção visual, modelo de dados, página do produto)
 

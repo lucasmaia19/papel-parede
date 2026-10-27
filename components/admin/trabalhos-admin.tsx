@@ -26,7 +26,6 @@ function validar(t: WorkGallery): Erros {
   const e: Erros = {}
   if (!t.titulo.trim()) e.titulo = "Digite um título. Exemplo: Sala de estar com listras."
   if (!t.cidade.trim()) e.cidade = "Digite a cidade."
-  if (!t.fotoAntes) e.fotoAntes = "Envie a foto de antes."
   if (!t.fotoDepois) e.fotoDepois = "Envie a foto de depois."
   return e
 }
@@ -98,7 +97,9 @@ export function TrabalhosAdmin() {
               {[
                 { src: t.fotoAntes, rotulo: "Antes" },
                 { src: t.fotoDepois, rotulo: "Depois" },
-              ].map((f) => (
+              ]
+                .filter((f) => f.src)
+                .map((f) => (
                 <figure key={f.rotulo} className="flex flex-col gap-1">
                   {/* eslint-disable-next-line @next/next/no-img-element -- base64 ou /public */}
                   <img src={f.src} alt={`${f.rotulo}: ${t.titulo}`} className="aspect-[16/11] w-full rounded-sm border border-border object-cover" />
@@ -145,7 +146,7 @@ export function TrabalhosAdmin() {
             <div className="flex flex-col gap-4">
               <CampoTexto rotulo="Título" valor={editando.titulo} onChange={(titulo) => setEditando({ ...editando, titulo })} erro={erros.titulo} />
               <CampoTexto rotulo="Cidade" valor={editando.cidade} onChange={(cidade) => setEditando({ ...editando, cidade })} erro={erros.cidade} />
-              <FotoCampo rotulo="Foto de antes" valor={editando.fotoAntes} onChange={(fotoAntes) => setEditando({ ...editando, fotoAntes })} erro={erros.fotoAntes} />
+              <FotoCampo rotulo="Foto de antes (opcional)" valor={editando.fotoAntes} onChange={(fotoAntes) => setEditando({ ...editando, fotoAntes })} erro={erros.fotoAntes} />
               <FotoCampo rotulo="Foto de depois" valor={editando.fotoDepois} onChange={(fotoDepois) => setEditando({ ...editando, fotoDepois })} erro={erros.fotoDepois} />
               <CampoSelect
                 rotulo="Papel de parede usado (opcional)"

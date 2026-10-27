@@ -1,4 +1,5 @@
 import { gerarIdSimples } from "@/lib/id"
+import { materiaisPadrao } from "@/lib/materiais"
 import { normalizar } from "@/lib/catalogo"
 import { parseDecimal } from "@/lib/pricing"
 import type { Categoria, ImagemProduto, Product } from "@/types"
@@ -11,7 +12,7 @@ export interface ProdutoForm {
   descricao: string
   categoria: Categoria
   imagens: ImagemProduto[]
-  precoM2: string
+  materiais: { id: string; nome: string; descricao: string; precoM2: string; ativo: boolean }[]
   prontaEntrega: boolean
   prazoProducaoDias: string
   ativo: boolean
@@ -41,7 +42,7 @@ export function produtoVazio(precoM2Padrao: number): ProdutoForm {
     descricao: "",
     categoria: "estampado",
     imagens: [],
-    precoM2: txt(precoM2Padrao),
+    materiais: materiaisPadrao(precoM2Padrao).map((m) => ({ ...m, precoM2: txt(m.precoM2) })),
     prontaEntrega: false,
     prazoProducaoDias: "7",
     ativo: true,
@@ -57,7 +58,7 @@ export function produtoParaForm(p: Product): ProdutoForm {
   return {
     ...p,
     imagens: [...p.imagens],
-    precoM2: txt(p.precoM2),
+    materiais: p.materiais.map((m) => ({ ...m, precoM2: txt(m.precoM2) })),
     prazoProducaoDias: String(p.prazoProducaoDias),
     cores: p.cores.map((c) => ({ ...c })),
     gruposPersonalizacao: p.gruposPersonalizacao.map((g) => ({
@@ -99,8 +100,14 @@ export function validarProduto(
   else if (outros.some((p) => p.id !== form.id && p.slug === slug))
     erros.slug = "Já existe outro papel com esse endereço. Mude o nome ou o endereço."
 
-  const preco = numero(form.precoM2)
-  if (preco === null || preco <= 0) erros.precoM2 = "Digite o preço por m². Exemplo: 80"
+  if (!form.materiais.some((m) => m.ativo)) erros.materiais = "Deixe pelo menos um material ativo."
+  const materiais = form.materiais.map((m, i) => {
+    if (!m.nome.trim()) erros[`materiais.${i}.nome`] = "Digite o nome do material."
+    const preco = numero(m.precoM2)
+    if (preco === null || preco <= 0) erros[`materiais.${i}.preco`] = "Digite o preço por m². Exemplo: 80"
+    return { id: m.id, nome: m.nome.trim(), descricao: m.descricao.trim(), precoM2: preco ?? 0, ativo: m.ativo }
+  })
+  const precosAtivos = materiais.filter((m) => m.ativo).map((m) => m.precoM2)
 
   const prazo = numero(form.prazoProducaoDias)
   if (!form.prontaEntrega && (prazo === null || prazo < 0 || !Number.isInteger(prazo)))
@@ -145,7 +152,8 @@ export function validarProduto(
       descricao: form.descricao.trim(),
       categoria: form.categoria,
       imagens: form.imagens,
-      precoM2: preco!,
+      precoM2: Math.min(...precosAtivos),
+      materiais,
       prontaEntrega: form.prontaEntrega,
       prazoProducaoDias: form.prontaEntrega ? 0 : prazo!,
       ativo: form.ativo,

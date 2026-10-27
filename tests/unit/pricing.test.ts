@@ -11,6 +11,7 @@ import {
   formatarMoeda,
   parseDecimal,
   precoM2ComAcrescimos,
+  precoM2DoItem,
   type ItemParaCalculo,
 } from "@/lib/pricing"
 import type { CidadeAtendida, FaixaFrete, Parede } from "@/types"
@@ -122,6 +123,28 @@ describe("preço do papel", () => {
     const preco = precoM2ComAcrescimos(80, [{ acrescimoM2: 5 }, { acrescimoM2: 0 }, { acrescimoM2: 7.5 }])
     expect(preco).toBe(92.5)
     expect(calcularValorPapel(10, preco)).toBe(925)
+  })
+})
+
+describe("material", () => {
+  const texturizado = { precoM2: 80 }
+  const adesivo = { precoM2: 95 }
+
+  it("o preço/m² vem do material escolhido, mais os acréscimos", () => {
+    expect(precoM2DoItem(texturizado, 80, [])).toBe(80)
+    expect(precoM2DoItem(adesivo, 80, [{ acrescimoM2: 5 }])).toBe(100)
+  })
+
+  it("sem material escolhido, estima pelo mais barato", () => {
+    expect(precoM2DoItem(null, 80, [{ acrescimoM2: 5 }])).toBe(85)
+  })
+
+  it("trocar o material muda o total", () => {
+    const m2 = 10
+    const resumo = (precoM2: number) =>
+      calcularResumo([{ m2, m2Parede: 9, precoM2, servicos: { aplicacao: false, visita: false } }], null, settings)
+    expect(resumo(precoM2DoItem(texturizado, 80, [])).total).toBe(800)
+    expect(resumo(precoM2DoItem(adesivo, 80, [])).total).toBe(950)
   })
 })
 

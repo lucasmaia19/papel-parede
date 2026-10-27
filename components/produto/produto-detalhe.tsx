@@ -2,7 +2,7 @@
 
 import Link from "next/link"
 import { useState, useSyncExternalStore } from "react"
-import { ArrowLeftIcon, ChevronUpIcon, ClockIcon, PackageCheckIcon, ShoppingBagIcon } from "lucide-react"
+import { ArrowLeftIcon, CheckIcon, ChevronUpIcon, ClockIcon, PackageCheckIcon, ShoppingBagIcon } from "lucide-react"
 import { CampoCep, useResultadoCep } from "@/components/entrega/campo-cep"
 import { InfoFrete, ServicosRegiao, type EscolhaServicos } from "@/components/entrega/info-entrega"
 import { ResumoPrecoLista } from "@/components/entrega/resumo-preco"
@@ -16,6 +16,7 @@ import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } f
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet"
 import { WhatsappLink } from "@/components/whatsapp-link"
 import { textoPrazo } from "@/lib/catalogo"
+import { materiaisAtivos, precoAPartirDe, temPrecosDiferentes } from "@/lib/materiais"
 import {
   mensagemDuvidaProduto,
   paredeInicial,
@@ -30,7 +31,7 @@ import {
   calcularMetragem,
   calcularResumo,
   formatarMoeda,
-  precoM2ComAcrescimos,
+  precoM2DoItem,
   type LocalEntrega,
 } from "@/lib/pricing"
 import { useHidratado, useLoja } from "@/lib/store"
@@ -98,6 +99,10 @@ function Configurador({ produto }: { produto: Product }) {
   const adicionarAoCarrinho = useLoja((s) => s.adicionarAoCarrinho)
 
   const [corId, setCorId] = useState(produto.cores[0]?.id ?? "")
+  // Material: obrigatório. Se só existe um, já vem escolhido
+  const opcoesMaterial = materiaisAtivos(produto)
+  const [materialId, setMaterialId] = useState<string | null>(opcoesMaterial.length === 1 ? opcoesMaterial[0].id : null)
+  const [erroMaterial, setErroMaterial] = useState(false)
   const [escolhas, setEscolhas] = useState(() => opcoesPadrao(produto))
   const [paredes, setParedes] = useState<ParedeForm[]>(() => [paredeInicial()])
   const [servicos, setServicos] = useState<EscolhaServicos>({ aplicacao: null, visita: null })
@@ -110,7 +115,10 @@ function Configurador({ produto }: { produto: Product }) {
 
   const cor = produto.cores.find((c) => c.id === corId) ?? produto.cores[0]
   const personalizacoes = personalizacoesEscolhidas(produto, escolhas)
-  const precoFinal = precoM2ComAcrescimos(produto.precoM2, personalizacoes)
+  const material = opcoesMaterial.find((m) => m.id === materialId) ?? null
+  const aPartirDe = precoAPartirDe(produto)
+  // Sem material escolhido, a conta usa o mais barato como estimativa
+  const precoFinal = precoM2DoItem(material, aPartirDe, personalizacoes)
   const paredesNumeros = paredes.map(paredeFormParaParede)
   const metragem = calcularMetragem(paredesNumeros, settings.margemPerda)
 
@@ -136,22 +144,32 @@ function Configurador({ produto }: { produto: Product }) {
   const temPersonalizacao = produto.gruposPersonalizacao.length > 0
   const temIA = produto.iaHabilitada
   // Numeração dos passos conforme o que o produto tem
-  const ordem = ["cor", temPersonalizacao && "personalizar", temIA && "ia", "medidas", "entrega"].filter(Boolean)
+  const ordem = ["cor", "material", temPersonalizacao && "personalizar", temIA && "ia", "medidas", "entrega"].filter(Boolean)
   const nPasso = (nome: string) => ordem.indexOf(nome) + 1
 
   // Indicação de "você está aqui": o primeiro passo ainda não resolvido
   const medidasOk = metragem.m2 > 0
   const entregaOk = Boolean(local) && (!naRegiao || (servicos.aplicacao !== null && servicos.visita !== null))
-  const passoAtual = !medidasOk ? "medidas" : !entregaOk ? "entrega" : null
+  const passoAtual = !material ? "material" : !medidasOk ? "medidas" : !entregaOk ? "entrega" : null
 
   const mensagemWhatsapp = mensagemDuvidaProduto({
     produto,
     cor: cor?.nome ?? "",
+    material: material?.nome ?? null,
     personalizacoes,
     m2: metragem.m2,
+    precoM2: precoFinal,
   })
 
   function adicionar() {
+    if (!material) {
+      setErroMaterial(true)
+      setDetalhesAbertos(false)
+      const secao = document.getElementById("material")
+      secao?.scrollIntoView({ behavior: "smooth", block: "start" })
+      secao?.querySelector("button")?.focus({ preventScroll: true })
+      return
+    }
     if (!medidasOk) {
       setErroMedidas(true)
       setDetalhesAbertos(false)
@@ -166,6 +184,7 @@ function Configurador({ produto }: { produto: Product }) {
       produtoSlug: produto.slug,
       imagem: imagens[0]?.url ?? "",
       cor: { nome: cor?.nome ?? "", hex: cor?.hex ?? "" },
+      material: { id: material.id, nome: material.nome },
       personalizacoes,
       paredes: paredesNumeros,
       m2: metragem.m2,
@@ -205,7 +224,8 @@ function Configurador({ produto }: { produto: Product }) {
 
               <div className="flex flex-col gap-4">
                 <h1 className="text-3xl md:text-4xl">{produto.nome}</h1>
-                <p className="text-2xl">
+                <p className="text-2xl" data-slot="preco-m2">
+                  {!material && temPrecosDiferentes(produto) && <span className="text-lg text-foreground-subtle">a partir de </span>}
                   <strong className="font-medium">{formatarMoeda(precoFinal)}</strong>
                   <span className="text-foreground-subtle">/m²</span>
                 </p>
@@ -236,6 +256,47 @@ function Configurador({ produto }: { produto: Product }) {
                   </OpcaoBotao>
                 ))}
               </div>
+            </Passo>
+
+            <Passo
+              id="material"
+              numero={nPasso("material")}
+              titulo="Escolha o material"
+              concluido={Boolean(material)}
+              atual={passoAtual === "material"}
+              descricao={material ? <>Material escolhido: <strong className="text-foreground">{material.nome}</strong></> : "O preço por m² depende do material."}
+            >
+              <div className="grid grid-cols-2 gap-2" role="group" aria-label="Material">
+                {opcoesMaterial.map((m) => {
+                  const ativo = m.id === material?.id
+                  return (
+                    <button
+                      key={m.id}
+                      type="button"
+                      aria-pressed={ativo}
+                      data-slot="opcao-material"
+                      onClick={() => {
+                        setMaterialId(m.id)
+                        setErroMaterial(false)
+                      }}
+                      className={cn(
+                        "relative flex min-h-12 flex-col items-start gap-1 rounded-md border p-3 pr-9 text-left transition-colors outline-none focus-visible:ring-3 focus-visible:ring-ring/50",
+                        ativo ? "border-primary bg-primary text-primary-foreground" : "border-input bg-surface-raised hover:bg-accent",
+                      )}
+                    >
+                      {ativo && <CheckIcon className="absolute top-3 right-3 size-5" aria-hidden />}
+                      <span className="leading-snug font-medium">{m.nome}</span>
+                      {m.descricao && <span className={cn("text-sm leading-snug", !ativo && "text-foreground-subtle")}>{m.descricao}</span>}
+                      <span className="mt-auto pt-1 font-medium tabular-nums">{formatarMoeda(m.precoM2)}/m²</span>
+                    </button>
+                  )
+                })}
+              </div>
+              {erroMaterial && !material && (
+                <p role="alert" className="rounded-md border border-destructive/40 bg-destructive/10 p-3 font-medium text-destructive">
+                  Escolha o material antes de adicionar ao carrinho: {opcoesMaterial.map((m) => m.nome).join(" ou ")}.
+                </p>
+              )}
             </Passo>
 
             {temPersonalizacao && (

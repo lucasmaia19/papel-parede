@@ -69,7 +69,7 @@ A loja vende para todo o Brasil (com frete) e oferece aplicação e visita técn
 
 ## 2. MODELO DE DADOS (`types/index.ts`)
 
-**Product:** id, slug, nome, descricao, categoria (`estampado | listrado | quadriculado | floral | infantil | texturizado | liso`), imagens (ordenadas, com principal), precoM2 (padrão 80), prontaEntrega, prazoProducaoDias, ativo, cores (`{nome, hex, imagem}`), gruposPersonalizacao (`{nome, opcoes: {rotulo, acrescimoM2?}[]}`), regua (`{pixelsPorCm, medidas: {rotulo, larguraCm, alturaCm}[]}`), iaHabilitada, sugestoesIA (string[]).
+**Product:** id, slug, nome, descricao, categoria (`estampado | listrado | quadriculado | floral | infantil | texturizado | liso`), imagens (ordenadas, com principal), precoM2 (derivado: menor preço entre os materiais ativos — "a partir de"), materiais (`{id, nome, descricao, precoM2, ativo}[]`), prontaEntrega, prazoProducaoDias, ativo, cores (`{nome, hex, imagem}`), gruposPersonalizacao (`{nome, opcoes: {rotulo, acrescimoM2?}[]}`), regua (`{pixelsPorCm, medidas: {rotulo, larguraCm, alturaCm}[]}`), iaHabilitada, sugestoesIA (string[]).
 
 **Settings:**
 - precoM2Padrao: 80
@@ -112,6 +112,8 @@ a) **Galeria** com swipe e zoom por toque. **Régua fora da imagem**: a foto fic
 
 b) **Cor:** botões grandes com amostra e nome; a foto troca ao selecionar.
 
+b2) **Material** (logo depois da cor): dois botões grandes lado a lado (nunca dropdown), cada um com nome, descrição curta de uma linha e preço por m². Padrão das estampas: "Texturizado linho (não adesivo)" — "Acabamento em textura de linho, aplicado com cola" e "Adesivo liso" — "Liso, fácil de aplicar, só tirar o papel e colar" (⚠️ preços fictícios: R$ 80/m² cada). O linho sem estampa (pronta entrega) só tem o texturizado, já escolhido. Escolha obrigatória antes de adicionar ao carrinho (mensagem clara junto do seletor). O preço/m² do material escolhido (+ acréscimos de personalização) alimenta a calculadora e o resumo; sem material, mostra "a partir de" e estima pelo mais barato.
+
 c) **Personalizações fixas** cadastradas no admin (largura da listra 3/5/8 cm, tamanho do quadrado 5/10/15 cm, estampa P/M/G), em botões grandes.
 
 d) **Prazo** perto do preço: "Pronta entrega — envio imediato" ou "Produção em X dias úteis + entrega".
@@ -149,10 +151,10 @@ i) Botões "Adicionar ao carrinho" e "Tirar dúvidas no WhatsApp" (mensagem com 
 
 ### Carrinho e checkout
 
-- Carrinho com itens detalhados (cor, personalização, m², observação/imagem de IA, serviços, subtotal), editar/remover, resumo com frete/deslocamento e desconto Pix.
+- Carrinho com itens detalhados (cor, material, personalização, m², observação/imagem de IA, serviços, subtotal), editar/remover, resumo com frete/deslocamento e desconto Pix.
 - Duas formas de finalizar, mesmo destaque:
   1. **Finalizar compra no site:** 3 passos — Seus dados; Endereço (CEP recalcula frete/serviços); Pagamento (Pix com desconto, cartão, boleto — simulado).
-  2. **Finalizar pelo WhatsApp:** abre `https://wa.me/5534996804044?text=...` com o orçamento completo formatado (itens, cor, personalização, m², observação de IA, serviços, cidade/CEP, frete ou deslocamento, total e total no Pix), via `encodeURIComponent`. Salva o pedido com canal `whatsapp`.
+  2. **Finalizar pelo WhatsApp:** abre `https://wa.me/5534996804044?text=...` com o orçamento completo formatado (itens, cor, material, personalização, m², observação de IA, serviços, cidade/CEP, frete ou deslocamento, total e total no Pix), via `encodeURIComponent`. Salva o pedido com canal `whatsapp`.
 - Pedido confirmado: resumo, prazo estimado, botão de WhatsApp.
 
 ### Rodapé / contato (todas as páginas)
@@ -176,7 +178,8 @@ Responsivo e usável no celular, mesmo padrão visual. Botão "Restaurar dados d
 - **Painel** `/admin`: atalhos (Papéis de parede, Trabalhos realizados, Configurações, Pedidos) e números (produtos, pedidos novos, pedidos via WhatsApp).
 - **Produtos** `/admin/produtos`: cards com foto, nome, preço/m², selo "Pronta entrega"; busca; Editar, Duplicar, Ativar/Desativar, Excluir (com confirmação).
 - **Cadastro/edição** `/admin/produtos/novo` e `/admin/produtos/[id]`:
-  a) Dados básicos: nome, descrição, categoria, preço/m², pronta entrega, prazo de produção, ativo.
+  a) Dados básicos: nome, descrição, categoria, pronta entrega, prazo de produção, ativo.
+  a2) Materiais: ativar/desativar cada material, editar nome, descrição e preço/m², adicionar novos (pelo menos um ativo).
   b) Fotos: upload múltiplo (redimensionar e salvar em base64), reordenar, definir principal.
   c) Cores: nome, seletor, foto da variação.
   d) Personalizações: grupos com opções e acréscimo opcional por m²; adicionar, editar, remover, reordenar.
@@ -185,7 +188,7 @@ Responsivo e usável no celular, mesmo padrão visual. Botão "Restaurar dados d
   g) "Ver como o cliente vê" e "Salvar" fixo no rodapé no celular. Validação com mensagens claras.
 - **Trabalhos** `/admin/trabalhos`: CRUD + reordenar (título, cidade, antes, depois, produto relacionado, destaque).
 - **Configurações** `/admin/configuracoes`: todos os campos de Settings. Tudo reflete na loja.
-- **Pedidos** `/admin/pedidos`: cliente, cidade/UF, canal, itens, m², cor, personalização, observação e imagem de IA, serviços, frete/deslocamento, desconto, total, status editável (Novo, Medição agendada, Em produção, Enviado, Aplicado, Concluído). Filtros por status e canal. "Chamar no WhatsApp".
+- **Pedidos** `/admin/pedidos`: cliente, cidade/UF, canal, itens, m², cor, material, personalização, observação e imagem de IA, serviços, frete/deslocamento, desconto, total, status editável (Novo, Medição agendada, Em produção, Enviado, Aplicado, Concluído). Filtros por status e canal. "Chamar no WhatsApp".
 
 ---
 

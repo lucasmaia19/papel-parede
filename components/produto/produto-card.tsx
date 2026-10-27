@@ -2,6 +2,7 @@ import Image from "next/image"
 import Link from "next/link"
 import { Badge } from "@/components/ui/badge"
 import { imagemPrincipal } from "@/lib/catalogo"
+import { precoAPartirDe, temPrecosDiferentes } from "@/lib/materiais"
 import { formatarMoeda } from "@/lib/pricing"
 import { cn } from "@/lib/utils"
 import type { Product } from "@/types"
@@ -44,7 +45,8 @@ export function ProdutoCard({ produto, className, prioridade, nivelTitulo = 3 }:
           </Link>
         </Titulo>
         <p className="text-foreground-subtle">
-          <span className="font-medium text-foreground">{formatarMoeda(produto.precoM2)}</span>/m²
+          {temPrecosDiferentes(produto) && "a partir de "}
+          <span className="font-medium text-foreground">{formatarMoeda(precoAPartirDe(produto))}</span>/m²
         </p>
         <div className="flex gap-1.5" aria-label={`Cores: ${produto.cores.map((c) => c.nome).join(", ")}`}>
           {produto.cores.map((c) => (

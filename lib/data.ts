@@ -7,6 +7,7 @@ import type {
   Settings,
   WorkGallery,
 } from "@/types"
+import { materiaisPadrao } from "@/lib/materiais"
 
 export const settingsIniciais: Settings = {
   precoM2Padrao: 80,
@@ -62,11 +63,7 @@ export const ROTULO_CATEGORIA: Record<Categoria, string> = {
   liso: "Lisos",
 }
 
-const img = (slug: string, sufixo: string) => `/img/produtos/${slug}-${sufixo}.svg`
-
-function cores(slug: string, lista: [id: string, nome: string, hex: string][]): CorProduto[] {
-  return lista.map(([id, nome, hex]) => ({ id, nome, hex, imagem: img(slug, id) }))
-}
+const img = (arquivo: string) => `/img/produtos/${arquivo}.webp`
 
 function grupo(id: string, nome: string, opcoes: [rotulo: string, acrescimo?: number][]): GrupoPersonalizacao {
   return {
@@ -89,35 +86,42 @@ interface Base {
   nome: string
   descricao: string
   categoria: Categoria
-  cores: [string, string, string][]
+  /** Cor única de cada papel: [id, nome, hex] */
+  cor: [string, string, string]
+  /** Fotos em public/img/produtos (sem extensão); a primeira é a principal. Ver scripts/importar-fotos.mjs */
+  fotos: { arquivo: string; alt: string }[]
+  /** Preço/m² dos materiais (⚠️ fictício: R$ 80 nas estampas) */
   precoM2?: number
+  /** Linho sem estampa: só o material texturizado */
+  somenteTexturizado?: boolean
   prontaEntrega?: boolean
   prazoProducaoDias?: number
   grupos?: GrupoPersonalizacao[]
+  /** Escala da foto principal; sem ela, não há régua (calibrar no admin clicando em dois pontos) */
+  pixelsPorCm?: number
   medidas?: MedidaElemento[]
   ia?: string[]
 }
 
 function produto(n: number, b: Base): Product {
-  const listaCores = cores(b.slug, b.cores)
+  const [corId, corNome, hex] = b.cor
+  const imagens = b.fotos.map((f, i) => ({ id: `p${n}-${i + 1}`, url: img(f.arquivo), alt: f.alt }))
+  const cor: CorProduto = { id: corId, nome: corNome, hex, imagem: imagens[0].url }
   return {
     id: `p${n}`,
     slug: b.slug,
     nome: b.nome,
     descricao: b.descricao,
     categoria: b.categoria,
-    imagens: [
-      { id: `p${n}-1`, url: listaCores[0].imagem!, alt: `${b.nome} — amostra` },
-      { id: `p${n}-2`, url: img(b.slug, "ambiente"), alt: `${b.nome} aplicado em um ambiente` },
-    ],
+    imagens,
     precoM2: b.precoM2 ?? 80,
+    materiais: materiaisPadrao(b.precoM2 ?? 80, b.somenteTexturizado),
     prontaEntrega: b.prontaEntrega ?? false,
     prazoProducaoDias: b.prazoProducaoDias ?? 7,
     ativo: true,
-    cores: listaCores,
+    cores: [cor],
     gruposPersonalizacao: b.grupos ?? [],
-    // As amostras têm 1200 px para 60 cm
-    regua: { pixelsPorCm: 20, medidas: b.medidas ?? [] },
+    regua: b.pixelsPorCm ? { pixelsPorCm: b.pixelsPorCm, medidas: b.medidas ?? [] } : null,
     iaHabilitada: Boolean(b.ia?.length),
     sugestoesIA: b.ia ?? [],
   }
@@ -127,142 +131,143 @@ const tamanhoEstampa = (id: string) => grupo(id, "Tamanho da estampa", [["P"], [
 
 export const produtosIniciais: Product[] = [
   produto(1, {
-    slug: "listrado-classico",
-    nome: "Listrado Clássico",
+    slug: "delicado",
+    nome: "Delicado",
     descricao:
-      "Listras verticais largas, em tom suave sobre fundo creme. Deixa o ambiente mais alto e organizado. Fica bonito em salas, quartos e corredores.",
-    categoria: "listrado",
-    cores: [
-      ["azul", "Azul", "#8EAAC4"],
-      ["rosa", "Rosa", "#E2B3B4"],
-    ],
-    grupos: [grupo("listra", "Largura da listra", [["3 cm", 5], ["5 cm"], ["8 cm"]])],
-    medidas: [medida("m1", "Cada listra", 5)],
-    ia: ["Trocar o azul por verde-sálvia", "Deixar as listras mais finas", "Usar listras em dois tons"],
+      "Raminhos de flores azuis e lacinhos entre listras pontilhadas, sobre fundo creme. Suave e romântico, para quartos de bebê, de criança e de adulto.",
+    categoria: "floral",
+    cor: ["azul", "Azul", "#8FA6D6"],
+    fotos: [{ arquivo: "delicado", alt: "Papel Delicado: raminhos de flores azuis e lacinhos sobre fundo creme" }],
+    grupos: [tamanhoEstampa("estampa")],
+    ia: ["Trocar as flores azuis por rosas", "Tirar os lacinhos e deixar só as flores", "Deixar as listras em rosa"],
   }),
   produto(2, {
-    slug: "listrado-riviera",
-    nome: "Listrado Riviera",
+    slug: "lacos-e-flores",
+    nome: "Laços e Flores",
     descricao:
-      "Uma listra larga acompanhada de duas listras finas. Visual de casa de praia, leve e elegante.",
-    categoria: "listrado",
-    cores: [
-      ["salvia", "Verde-sálvia", "#9DAE98"],
-      ["areia", "Areia", "#CDB894"],
-    ],
-    medidas: [medida("m1", "Listra larga", 6), medida("m2", "Listras finas", 1)],
+      "Laços cor-de-rosa formando uma treliça, com florzinhas em aquarela entre eles. Delicado e cheio de afeto, perfeito para quarto de menina.",
+    categoria: "infantil",
+    cor: ["rosa", "Rosa", "#E3A6BC"],
+    fotos: [{ arquivo: "lacos-e-flores", alt: "Parede com papel de laços rosa e flores atrás de um espelho oval" }],
+    grupos: [tamanhoEstampa("estampa")],
+    ia: ["Trocar o rosa dos laços por azul-claro", "Tirar as flores e deixar só os laços"],
   }),
   produto(3, {
-    slug: "xadrez-vichy",
-    nome: "Xadrez Vichy",
+    slug: "listra-e-flores",
+    nome: "Listra e Flores",
     descricao:
-      "O quadriculado clássico de toalha de piquenique, em versão delicada. Combina com cozinhas, quartos e lavabos.",
-    categoria: "quadriculado",
-    cores: [
-      ["azul", "Azul", "#5F84AA"],
-      ["verde", "Verde", "#6E8A6A"],
-      ["terracota", "Terracota", "#B86F52"],
+      "Listras lavanda intercaladas com florzinhas rosas. Clássico e aconchegante, combina com rodameio e boiserie.",
+    categoria: "listrado",
+    cor: ["lavanda", "Lavanda e rosa", "#B8BCD6"],
+    fotos: [
+      { arquivo: "listra-e-flores-1", alt: "Parede com papel de listras lavanda e flores rosas e dois quadros" },
+      { arquivo: "listra-e-flores-2", alt: "Quarto com papel de listras e flores atrás de uma cabeceira cinza" },
     ],
-    grupos: [grupo("quadrado", "Tamanho do quadrado", [["5 cm", 8], ["10 cm"], ["15 cm"]])],
-    medidas: [medida("m1", "Cada quadrado", 10, 10)],
-    ia: ["Trocar o azul por amarelo-mostarda", "Deixar os quadrados maiores"],
+    grupos: [tamanhoEstampa("estampa")],
+    ia: ["Trocar as listras por verde-sálvia", "Deixar as flores em azul"],
   }),
   produto(4, {
-    slug: "grade-fina",
-    nome: "Grade Fina",
-    descricao: "Linhas finas formando quadrados, sobre fundo claro. Discreto, moderno e fácil de combinar.",
-    categoria: "quadriculado",
-    cores: [
-      ["grafite", "Grafite", "#55524D"],
-      ["areia", "Areia", "#C2AE8C"],
-    ],
-    grupos: [grupo("quadrado", "Tamanho do quadrado", [["5 cm", 8], ["10 cm"], ["15 cm"]])],
-    medidas: [medida("m1", "Cada quadrado", 10, 10)],
+    slug: "ramos-e-lacos",
+    nome: "Ramos e Laços",
+    descricao:
+      "Ramos de flores azuis e laços entre listras onduladas em rosé. Leve e romântico, para quartos e lavabos.",
+    categoria: "floral",
+    cor: ["azul", "Azul e rosé", "#A9C1DC"],
+    fotos: [{ arquivo: "ramos-e-lacos", alt: "Papel Ramos e Laços: ramos de flores azuis e laços entre listras onduladas" }],
+    grupos: [tamanhoEstampa("estampa")],
+    ia: ["Trocar os laços azuis por rosa", "Deixar só os ramos, sem laços"],
   }),
   produto(5, {
-    slug: "borboletas",
-    nome: "Borboletas",
+    slug: "flores-linho",
+    nome: "Flores Linho",
     descricao:
-      "Borboletas desenhadas à mão, em dois tamanhos, sobre fundo creme. Alegre sem ser infantil: vai bem em quartos, salas e lavabos.",
-    categoria: "estampado",
-    cores: [
-      ["azul", "Azul", "#7E9CC0"],
-      ["lilas", "Lilás", "#A894C4"],
-    ],
+      "Flores grandes sobrepostas em azul acinzentado, com fundo que imita a trama do linho. Calmo e elegante para salas e quartos.",
+    categoria: "floral",
+    cor: ["azul", "Azul acinzentado", "#A9BCCB"],
+    fotos: [{ arquivo: "flores-linho", alt: "Papel Flores Linho: flores grandes em azul acinzentado" }],
     grupos: [tamanhoEstampa("estampa")],
-    medidas: [medida("m1", "Borboleta grande", 6, 6), medida("m2", "Borboleta pequena", 3, 3)],
-    ia: [
-      "Trocar a cor das borboletas para lilás",
-      "Substituir as borboletas por pássaros",
-      "Deixar o fundo verde-claro",
-    ],
+    ia: ["Trocar o azul por rosa-claro", "Trocar o azul por verde-sálvia"],
   }),
   produto(6, {
-    slug: "floral-jardim",
-    nome: "Floral Jardim",
-    descricao: "Flores e folhas espalhadas, como um jardim de interior. Romântico e acolhedor.",
-    categoria: "floral",
-    cores: [
-      ["rosa", "Rosa", "#D9A1A3"],
-      ["verde", "Verde", "#6F8768"],
+    slug: "toile-de-jouy",
+    nome: "Toile de Jouy",
+    descricao:
+      "Cenas campestres desenhadas em azul acinzentado, no estilo clássico francês. Sofisticado e cheio de detalhes, lindo em quartos e salas.",
+    categoria: "estampado",
+    prazoProducaoDias: 10,
+    cor: ["azul", "Azul acinzentado", "#8FA7AE"],
+    fotos: [
+      { arquivo: "toile-de-jouy-1", alt: "Quarto com papel Toile de Jouy azul acima da cabeceira" },
+      { arquivo: "toile-de-jouy-2", alt: "Detalhe do papel Toile de Jouy com cenas campestres em azul" },
     ],
     grupos: [tamanhoEstampa("estampa")],
-    medidas: [medida("m1", "Flor grande", 7, 7), medida("m2", "Flor pequena", 3, 3)],
-    ia: ["Trocar as flores rosas por amarelas", "Deixar só as folhas, sem flores"],
+    ia: ["Trocar o azul por rosa antigo", "Trocar o azul por verde-sálvia"],
   }),
   produto(7, {
-    slug: "arabesco-imperial",
-    nome: "Arabesco Imperial",
+    slug: "azulejos-cozinha",
+    nome: "Azulejos Cozinha",
     descricao:
-      "Arabesco clássico em linhas curvas, com acabamento sóbrio. Dá um ar sofisticado a salas de jantar, halls e escritórios.",
+      "Azulejos portugueses desenhados em azul, rosé e areia, com aspecto envelhecido. Dá charme a cozinhas, lavabos e áreas gourmet.",
     categoria: "estampado",
-    precoM2: 95,
-    prazoProducaoDias: 10,
-    cores: [
-      ["dourado", "Dourado", "#C3A774"],
-      ["cinza", "Cinza", "#A3A19C"],
-    ],
-    medidas: [medida("m1", "Cada arabesco", 16, 24)],
-    ia: ["Trocar o dourado por verde-escuro", "Deixar as linhas mais finas"],
+    cor: ["azul", "Azul e areia", "#8A9BB5"],
+    fotos: [{ arquivo: "azulejos-cozinha", alt: "Papel Azulejos Cozinha: azulejos desenhados em azul, rosé e areia" }],
+    grupos: [tamanhoEstampa("estampa")],
+    ia: ["Trocar o azul por verde-sálvia", "Deixar os azulejos só em tons de rosa"],
   }),
   produto(8, {
-    slug: "nuvens-e-estrelas",
-    nome: "Nuvens e Estrelas",
-    descricao: "Nuvens fofinhas e estrelinhas douradas. Perfeito para quarto de bebê e de criança.",
-    categoria: "infantil",
-    cores: [
-      ["azul", "Azul", "#CCDCEA"],
-      ["rosa", "Rosa", "#F1D7D7"],
-    ],
-    grupos: [tamanhoEstampa("estampa")],
-    medidas: [medida("m1", "Nuvem grande", 9, 5)],
-    ia: ["Trocar as estrelas por luas", "Colocar balões entre as nuvens", "Deixar o fundo amarelo-claro"],
+    slug: "xadrez-3cm",
+    nome: "Xadrez 3 cm",
+    descricao:
+      "Xadrez vichy em azul bem clarinho, com quadrados de 3 cm. Delicado e fácil de combinar, para quarto de bebê, cozinha e lavabo.",
+    categoria: "quadriculado",
+    cor: ["azul", "Azul-claro", "#DCE6F4"],
+    fotos: [{ arquivo: "xadrez-3cm", alt: "Papel xadrez vichy azul-claro com quadrados de 3 cm" }],
+    // ⚠️ Escala estimada pela própria foto (quadrado de 32 px = 3 cm): confirmar com a loja
+    pixelsPorCm: 10.667,
+    medidas: [medida("m1", "Cada quadrado", 3, 3)],
+    ia: ["Trocar o azul por rosa-claro", "Trocar o azul por verde-sálvia"],
   }),
   produto(9, {
-    slug: "arco-iris",
-    nome: "Arco-íris",
-    descricao: "Pequenos arco-íris em tons suaves. Alegre e delicado para quartos infantis e brinquedotecas.",
-    categoria: "infantil",
-    cores: [
-      ["terracota", "Terracota", "#C47F62"],
-      ["pastel", "Pastel", "#E3A9A9"],
-    ],
-    medidas: [medida("m1", "Cada arco-íris", 8, 4)],
-    ia: ["Usar só tons de azul", "Colocar nuvens embaixo dos arco-íris"],
-  }),
-  // Pronta entrega: só o linho com textura, sem estampa, em branco e off-white
-  produto(10, {
-    slug: "linho-texturizado-branco",
-    nome: "Linho texturizado Branco",
+    slug: "xadrez-aquarela",
+    nome: "Xadrez Aquarela",
     descricao:
-      "Linho com textura na cor branca, sem estampa. Liso de longe, com a trama do linho de perto. Já na loja, com envio imediato.",
+      "Xadrez pintado em aquarela, em azul e areia. Tem o charme do feito à mão, para quartos de criança e ambientes descontraídos.",
+    categoria: "quadriculado",
+    cor: ["azul", "Azul e areia", "#A8C0D6"],
+    fotos: [{ arquivo: "xadrez-aquarela", alt: "Papel xadrez em aquarela nas cores azul e areia" }],
+    grupos: [tamanhoEstampa("estampa")],
+    ia: ["Trocar o azul por rosa", "Deixar o xadrez só em areia"],
+  }),
+  produto(10, {
+    slug: "madeira-fria",
+    nome: "Madeira Fria",
+    descricao: "Imita madeira clara, com veios naturais em tom de carvalho. Traz aconchego sem pesar o ambiente.",
     categoria: "texturizado",
-    precoM2: 85,
-    prontaEntrega: true,
-    prazoProducaoDias: 0,
-    cores: [["branco", "Branco", "#F8F7F3"]],
+    cor: ["carvalho", "Carvalho claro", "#C9A47A"],
+    fotos: [{ arquivo: "madeira-fria", alt: "Papel que imita madeira clara com veios naturais" }],
+    ia: ["Deixar a madeira mais clara", "Deixar a madeira mais acinzentada"],
   }),
   produto(11, {
+    slug: "madeira-louro-freijo",
+    nome: "Madeira Louro Freijó",
+    descricao:
+      "Imita a madeira louro freijó, em tom de mel com veios marcados. Elegante em painéis de TV, cabeceiras e escritórios.",
+    categoria: "texturizado",
+    cor: ["freijo", "Louro freijó", "#A86F3E"],
+    fotos: [{ arquivo: "madeira-louro-freijo", alt: "Papel que imita madeira louro freijó em tom de mel" }],
+    ia: ["Deixar a madeira mais clara", "Deixar a madeira mais escura"],
+  }),
+  produto(12, {
+    slug: "cimento-queimado-areia",
+    nome: "Cimento Queimado Areia",
+    descricao: "O visual do cimento queimado em tom areia, com manchas suaves. Moderno e acolhedor ao mesmo tempo.",
+    categoria: "texturizado",
+    cor: ["areia", "Areia", "#D9CFC2"],
+    fotos: [{ arquivo: "cimento-queimado-areia", alt: "Papel com efeito de cimento queimado em tom areia" }],
+    ia: ["Deixar o cimento mais claro", "Trocar o tom areia por cinza-claro"],
+  }),
+  // Pronta entrega: só o linho com textura, sem estampa
+  produto(13, {
     slug: "linho-texturizado-off-white",
     nome: "Linho texturizado Off-white",
     descricao:
@@ -270,60 +275,21 @@ export const produtosIniciais: Product[] = [
     categoria: "texturizado",
     precoM2: 85,
     prontaEntrega: true,
+    somenteTexturizado: true,
     prazoProducaoDias: 0,
-    cores: [["off-white", "Off-white", "#EFE8DA"]],
-  }),
-  produto(12, {
-    slug: "liso-fosco",
-    nome: "Liso Fosco",
-    descricao: "Cor única, fosca, com leve textura. Renova a parede sem pintura e sem cheiro.",
-    categoria: "liso",
-    precoM2: 70,
-    prazoProducaoDias: 5,
-    cores: [
-      ["branco", "Branco", "#F9F8F5"],
-      ["off-white", "Off-white", "#F1EADF"],
-    ],
+    cor: ["off-white", "Off-white", "#EEE8E0"],
+    fotos: [{ arquivo: "linho-texturizado-off-white", alt: "Papel de linho texturizado off-white, sem estampa" }],
   }),
 ]
-
-const foto = (id: string, momento: "antes" | "depois") => `/img/trabalhos/${id}-${momento}.svg`
 
 export const trabalhosIniciais: WorkGallery[] = [
   {
     id: "t1",
-    titulo: "Sala de estar com listras azuis",
+    titulo: "Mural de flores e borboletas no quarto",
+    // ⚠️ Cidade a confirmar com a loja
     cidade: "Uberlândia",
-    fotoAntes: foto("sala-listrada", "antes"),
-    fotoDepois: foto("sala-listrada", "depois"),
-    produtoId: "p1",
+    fotoAntes: "",
+    fotoDepois: "/img/trabalhos/mural-floral.webp",
     destaque: true,
-  },
-  {
-    id: "t2",
-    titulo: "Quarto de bebê com nuvens",
-    cidade: "Araguari",
-    fotoAntes: foto("quarto-infantil", "antes"),
-    fotoDepois: foto("quarto-infantil", "depois"),
-    produtoId: "p8",
-    destaque: true,
-  },
-  {
-    id: "t3",
-    titulo: "Hall de entrada com arabesco",
-    cidade: "Uberaba",
-    fotoAntes: foto("hall-arabesco", "antes"),
-    fotoDepois: foto("hall-arabesco", "depois"),
-    produtoId: "p7",
-    destaque: true,
-  },
-  {
-    id: "t4",
-    titulo: "Quarto de casal floral",
-    cidade: "Uberlândia",
-    fotoAntes: foto("quarto-floral", "antes"),
-    fotoDepois: foto("quarto-floral", "depois"),
-    produtoId: "p6",
-    destaque: false,
   },
 ]

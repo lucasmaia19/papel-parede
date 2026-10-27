@@ -19,6 +19,7 @@ import {
 import { Input } from "@/components/ui/input"
 import { ROTULO_CATEGORIA } from "@/lib/data"
 import { filtrarProdutos, imagemPrincipal } from "@/lib/catalogo"
+import { materiaisAtivos, precoAPartirDe } from "@/lib/materiais"
 import { formatarMoeda } from "@/lib/pricing"
 import { useHidratado, useLoja } from "@/lib/store"
 import { cn } from "@/lib/utils"
@@ -80,7 +81,10 @@ export function ProdutosLista() {
                 <div className="flex min-w-0 flex-col gap-1.5">
                   <h2 className="font-sans text-lg leading-snug">{p.nome}</h2>
                   <p>
-                    <strong className="font-medium">{formatarMoeda(p.precoM2)}</strong>/m² · {ROTULO_CATEGORIA[p.categoria]}
+                    <strong className="font-medium">{formatarMoeda(precoAPartirDe(p))}</strong>/m² · {ROTULO_CATEGORIA[p.categoria]}
+                  </p>
+                  <p className="text-sm text-foreground-subtle">
+                    {materiaisAtivos(p).map((m) => m.nome).join(" · ") || "Nenhum material ativo"}
                   </p>
                   <div className="flex flex-wrap gap-1.5">
                     {p.prontaEntrega && <Badge variant="soft">Pronta entrega</Badge>}

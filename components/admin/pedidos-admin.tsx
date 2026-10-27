@@ -77,6 +77,7 @@ function CartaoPedido({ pedido }: { pedido: Order }) {
             {pedido.itens.map((item) => (
               <li key={item.id} className="flex flex-col gap-1 border-b border-border pb-3 last:border-b-0">
                 <p className="font-medium">{item.produtoNome}</p>
+                {item.material && <p>Material: {item.material.nome}</p>}
                 <p>
                   Cor: {item.cor.nome}
                   {item.personalizacoes.length > 0 && ` · ${textoPersonalizacoes(item.personalizacoes)}`}

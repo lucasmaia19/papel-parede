@@ -5,39 +5,22 @@ test.beforeEach(async ({ page }) => {
   await limparDados(page)
 })
 
-test("trabalhos: antes/depois arrastável e filtro por cidade", async ({ page }, testInfo) => {
+test("trabalhos: foto do trabalho, sem comparação quando não há foto de antes", async ({ page }, testInfo) => {
   await page.goto("/trabalhos")
   await esperarHidratacao(page)
   const trabalhos = page.locator("[data-slot=trabalho]").filter({ visible: true })
-  await expect(trabalhos).toHaveCount(4)
-
-  // Arrastar a comparação (pelo controle, como o teclado/leitor de tela faria)
-  const primeiro = trabalhos.first()
-  const controle = primeiro.getByLabel(/Arraste para comparar/)
-  await controle.fill("15")
-  await expect(controle).toHaveAttribute("aria-valuetext", "15% antes")
-  // Arrastar com o dedo/mouse
-  const caixa = (await primeiro.locator("[data-slot=comparacao] > div").first().boundingBox())!
-  await page.mouse.move(caixa.x + caixa.width * 0.5, caixa.y + caixa.height / 2)
-  await page.mouse.down()
-  await page.mouse.move(caixa.x + caixa.width * 0.8, caixa.y + caixa.height / 2, { steps: 5 })
-  await page.mouse.up()
-  expect(Number(await controle.inputValue())).toBeGreaterThan(60)
+  await expect(trabalhos).toHaveCount(1)
+  await expect(trabalhos.first()).toContainText("Mural de flores e borboletas no quarto")
+  await expect(trabalhos.first().getByRole("img", { name: "Mural de flores e borboletas no quarto" })).toBeVisible()
+  // Sem foto de antes: nada de slider
+  await expect(trabalhos.first().locator("[data-slot=comparacao]")).toHaveCount(0)
+  // Uma cidade só: sem filtro
+  await expect(page.getByText("Filtrar por cidade")).toHaveCount(0)
+  await expect(page.getByText("1 trabalho", { exact: true })).toBeVisible()
+  await expect(page.getByRole("link", { name: "Pedir orçamento no WhatsApp" })).toHaveAttribute("href", /wa\.me\/5534996804044\?text=/)
 
   await verificarLayout(page)
   await screenshot(page, testInfo, "fase6-trabalhos")
-
-  await page.getByRole("button", { name: "Araguari", exact: true }).click()
-  await expect(trabalhos).toHaveCount(1)
-  await expect(trabalhos.first()).toContainText("Quarto de bebê com nuvens")
-  await expect(page.getByText("1 trabalho em Araguari")).toBeVisible()
-  await page.getByRole("button", { name: "Uberlândia", exact: true }).click()
-  await expect(trabalhos).toHaveCount(2)
-  await page.getByRole("button", { name: "Todas", exact: true }).click()
-  await expect(trabalhos).toHaveCount(4)
-
-  await trabalhos.first().getByRole("link", { name: /Ver o papel Listrado Clássico/ }).click()
-  await expect(page).toHaveURL(/\/produtos\/listrado-classico/)
 })
 
 test("contato: WhatsApp, Instagram, endereço, hora marcada e mapa", async ({ page }, testInfo) => {
