@@ -38,11 +38,11 @@ import { useBarraInferior, useOcultarWhatsappDesktop } from "@/lib/use-barra-inf
 import { cn } from "@/lib/utils"
 import type { Product, SimulacaoIA as SimulacaoEscolhida } from "@/types"
 
-export function ProdutoDetalhe({ slug }: { slug: string }) {
+export function ProdutoDetalhe({ slug, previa = false }: { slug: string; previa?: boolean }) {
   const hidratado = useHidratado()
   const produto = useLoja((s) => s.produtos.find((p) => p.slug === slug))
 
-  if (!produto || !produto.ativo) {
+  if (!produto || (!produto.ativo && !previa)) {
     if (!hidratado) {
       return <div className="container-loja min-h-[60vh] py-10" aria-busy="true" />
     }
@@ -57,7 +57,16 @@ export function ProdutoDetalhe({ slug }: { slug: string }) {
     )
   }
 
-  return <Configurador key={produto.id} produto={produto} />
+  return (
+    <>
+      {!produto.ativo && (
+        <p role="note" className="border-b border-warning-border bg-warning-bg px-4 py-3 text-center font-semibold">
+          Pré-visualização: este papel está desativado e não aparece na loja.
+        </p>
+      )}
+      <Configurador key={produto.id} produto={produto} />
+    </>
+  )
 }
 
 function imagensDaCor(produto: Product, corId: string): ImagemGaleria[] {

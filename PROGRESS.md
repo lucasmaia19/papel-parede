@@ -81,8 +81,19 @@ Para ativar a IA real: criar `.env.local` com `OPENAI_API_KEY=...` (ver `.env.ex
 - [x] Testes Playwright (arrastar, filtros, links, atributos de nova aba) + screenshots revisados
 - [x] Commit
 
-## Fase 7 — Admin
-- [ ] Painel, produtos (régua por clique), trabalhos, configurações, pedidos
+## Fase 7 — Admin ✅
+- [x] Layout próprio do admin com o aviso fixo de protótipo em todas as páginas, menu (gaveta no celular), "Ver loja", alerta se o navegador ficar sem espaço
+- [x] Painel: números (à venda, cadastrados, pedidos novos, via WhatsApp), atalhos, "Restaurar dados de exemplo" com confirmação
+- [x] Produtos: cards com foto, preço/m², selos; busca; Editar, Duplicar, Ativar/Desativar, Excluir (com confirmação)
+- [x] Cadastro/edição: dados básicos (slug automático e único), fotos (upload múltiplo redimensionado em base64, subir/descer, principal, remover), cores (nome, seletor, foto da variação), personalizações (grupos e opções com acréscimo, reordenar), régua por 2 cliques + medidas + pré-visualização igual à do cliente, IA (liga/desliga + sugestões), rodapé fixo com "Ver como o cliente vê" e "Salvar", validação com mensagens claras
+- [x] `?previa=1` mostra produto desativado na loja (com aviso de pré-visualização)
+- [x] Trabalhos: CRUD em diálogo (título, cidade, antes/depois, papel usado, destaque) + reordenar
+- [x] Configurações: todos os campos de Settings (preços, serviços, %, cidades com faixas de CEP, frete por região, frete grátis, contatos)
+- [x] Pedidos: filtros por status e canal, status editável, detalhes (itens, m², cor, personalização, observação/imagem de IA, serviços, frete/deslocamento, desconto, pagamento, endereço), "Chamar no WhatsApp"
+- [x] `lib/admin-produto.ts` e `lib/admin-settings.ts` com 10 testes Vitest (ida e volta pelos formulários, validações, calibração)
+- [x] Testes Playwright de todas as telas + reflexo na loja (produto novo, desativado, trabalho novo, configurações mudando preços)
+- [x] Ajustes: mensagem "salvo" sumia ao criar produto (agora troca a URL sem remontar), `usePathname` em Suspense (Cache Components), botões de foto apertados em 360px
+- [x] Commit
 
 ## Fase 8 — Revisão final
 - [ ] Fluxos Playwright mobile, axe, revisão visual, Lighthouse mobile

@@ -16,15 +16,19 @@ export async function generateMetadata({ params }: PageProps<"/produtos/[slug]">
     : { title: "Papel de parede" }
 }
 
-async function Conteudo({ params }: { params: PageProps<"/produtos/[slug]">["params"] }) {
-  const { slug } = await params
-  return <ProdutoDetalhe slug={slug} />
+async function Conteudo({
+  params,
+  searchParams,
+}: Pick<PageProps<"/produtos/[slug]">, "params" | "searchParams">) {
+  const [{ slug }, busca] = await Promise.all([params, searchParams])
+  // ?previa=1: o admin vê como fica um produto desativado
+  return <ProdutoDetalhe slug={slug} previa={busca.previa === "1"} />
 }
 
-export default function ProdutoPage({ params }: PageProps<"/produtos/[slug]">) {
+export default function ProdutoPage({ params, searchParams }: PageProps<"/produtos/[slug]">) {
   return (
     <Suspense fallback={<div className="container-loja min-h-[60vh] py-10" aria-busy="true" />}>
-      <Conteudo params={params} />
+      <Conteudo params={params} searchParams={searchParams} />
     </Suspense>
   )
 }
