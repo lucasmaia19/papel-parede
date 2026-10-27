@@ -10,6 +10,7 @@ import { OpcaoBotao } from "@/components/opcao-botao"
 import { Passo } from "@/components/passo"
 import { Calculadora } from "@/components/produto/calculadora"
 import { Galeria, type ImagemGaleria } from "@/components/produto/galeria"
+import { SimulacaoIA } from "@/components/produto/simulacao-ia"
 import { Button, buttonVariants } from "@/components/ui/button"
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet"
@@ -21,6 +22,7 @@ import {
   opcoesPadrao,
   paredeFormParaParede,
   personalizacoesEscolhidas,
+  textoPersonalizacoes,
   type ParedeForm,
 } from "@/lib/configurador"
 import {
@@ -34,7 +36,7 @@ import {
 import { useHidratado, useLoja } from "@/lib/store"
 import { useBarraInferior, useOcultarWhatsappDesktop } from "@/lib/use-barra-inferior"
 import { cn } from "@/lib/utils"
-import type { Product } from "@/types"
+import type { Product, SimulacaoIA as SimulacaoEscolhida } from "@/types"
 
 export function ProdutoDetalhe({ slug }: { slug: string }) {
   const hidratado = useHidratado()
@@ -78,6 +80,7 @@ function Configurador({ produto }: { produto: Product }) {
   const [escolhas, setEscolhas] = useState(() => opcoesPadrao(produto))
   const [paredes, setParedes] = useState<ParedeForm[]>(() => [novaParede()])
   const [servicos, setServicos] = useState<EscolhaServicos>({ aplicacao: null, visita: null })
+  const [simulacao, setSimulacao] = useState<SimulacaoEscolhida | undefined>(undefined)
   const [erroMedidas, setErroMedidas] = useState(false)
   const [adicionado, setAdicionado] = useState(false)
   const [detalhesAbertos, setDetalhesAbertos] = useState(false)
@@ -110,7 +113,10 @@ function Configurador({ produto }: { produto: Product }) {
 
   const imagens = imagensDaCor(produto, cor?.id ?? "")
   const temPersonalizacao = produto.gruposPersonalizacao.length > 0
-  const nPasso = (n: number) => (temPersonalizacao ? n : n - 1)
+  const temIA = produto.iaHabilitada
+  // Numeração dos passos conforme o que o produto tem
+  const ordem = ["cor", temPersonalizacao && "personalizar", temIA && "ia", "medidas", "entrega"].filter(Boolean)
+  const nPasso = (nome: string) => ordem.indexOf(nome) + 1
 
   // Indicação de "você está aqui": o primeiro passo ainda não resolvido
   const medidasOk = metragem.m2 > 0
@@ -145,6 +151,7 @@ function Configurador({ produto }: { produto: Product }) {
       m2Parede: metragem.areaLiquida,
       precoM2: precoFinal,
       servicos: servicosItem,
+      simulacao,
       prontaEntrega: produto.prontaEntrega,
       prazoProducaoDias: produto.prazoProducaoDias,
     })
@@ -199,7 +206,7 @@ function Configurador({ produto }: { produto: Product }) {
               </div>
             </div>
 
-            <Passo numero={1} titulo="Escolha a cor" concluido={Boolean(cor)} descricao={cor && <>Cor escolhida: <strong className="text-foreground">{cor.nome}</strong></>}>
+            <Passo numero={nPasso("cor")} titulo="Escolha a cor" concluido={Boolean(cor)} descricao={cor && <>Cor escolhida: <strong className="text-foreground">{cor.nome}</strong></>}>
               <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
                 {produto.cores.map((c) => (
                   <OpcaoBotao key={c.id} ativo={c.id === cor?.id} onClick={() => setCorId(c.id)}>
@@ -211,7 +218,7 @@ function Configurador({ produto }: { produto: Product }) {
             </Passo>
 
             {temPersonalizacao && (
-              <Passo numero={2} titulo="Personalize" concluido>
+              <Passo numero={nPasso("personalizar")} titulo="Personalize" concluido>
                 <div className="flex flex-col gap-5">
                   {produto.gruposPersonalizacao.map((g) => (
                     <fieldset key={g.id} className="flex flex-col gap-2">
@@ -237,9 +244,29 @@ function Configurador({ produto }: { produto: Product }) {
               </Passo>
             )}
 
+            {temIA && (
+              <Passo
+                id="simulacao"
+                numero={nPasso("ia")}
+                titulo="Veja antes de comprar"
+                concluido={Boolean(simulacao)}
+                descricao="Opcional. Peça uma mudança na estampa ou veja o papel na foto da sua parede."
+              >
+                <SimulacaoIA
+                  produto={produto.nome}
+                  cor={cor?.nome ?? ""}
+                  personalizacoes={textoPersonalizacoes(personalizacoes)}
+                  amostra={imagens[0]?.url ?? ""}
+                  sugestoes={produto.sugestoesIA}
+                  valor={simulacao}
+                  onChange={setSimulacao}
+                />
+              </Passo>
+            )}
+
             <Passo
               id="medidas"
-              numero={nPasso(3)}
+              numero={nPasso("medidas")}
               titulo="Medidas da parede"
               concluido={medidasOk}
               atual={passoAtual === "medidas"}
@@ -261,7 +288,7 @@ function Configurador({ produto }: { produto: Product }) {
 
             <Passo
               id="entrega"
-              numero={nPasso(4)}
+              numero={nPasso("entrega")}
               titulo="Entrega ou aplicação"
               concluido={entregaOk}
               atual={passoAtual === "entrega"}

@@ -44,3 +44,4 @@ next-env.d.ts
 /tests/.resultados
 /tests/screenshots/*.png
 /playwright-report
+!.env.example

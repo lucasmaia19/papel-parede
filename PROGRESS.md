@@ -62,8 +62,18 @@ Obs.: o Next 16 mantém a página anterior escondida no DOM após navegar (Activ
 - [x] Ajustes após screenshots: botões de finalizar com mesma altura, erros que não sumiam ao corrigir, textos quebrando
 - [x] Commit
 
-## Fase 5 — IA
-- [ ] /api/simular com mock, duas abas, comparação, integração com carrinho
+## Fase 5 — IA ✅
+- [x] `app/api/simular/route.ts` com AI SDK 6 (`generateImage` + `@ai-sdk/openai`, modelo `gpt-image-1` configurável): edição da amostra ("estampa") ou da foto do cliente com a amostra ("parede")
+- [x] Sem `OPENAI_API_KEY` → modo demonstração (espera ~1 s; o navegador gera a prévia via canvas) e a UI funciona igual; aviso discreto "Modo demonstração"
+- [x] Validação do pedido (tipos, imagens data URL, tamanho) e limite de 6 simulações por sessão (cookie de sessão httpOnly → 429)
+- [x] Passo "Veja antes de comprar" com abas "Personalizar a estampa" (observação + sugestões clicáveis) e "Veja na sua parede" (câmera `capture="environment"` ou galeria)
+- [x] Aviso de simulação aproximada visível nas duas abas
+- [x] Original × Simulação: empilhado no celular, comparação arrastável (`components/comparacao-slider.tsx`, acessível por teclado) no desktop
+- [x] Observação + imagem simulada (comprimida para 480 px JPEG) vão para o carrinho e o pedido (e para a mensagem do WhatsApp)
+- [x] Testes Playwright: duas abas, foto, resultado, carrinho, produto sem IA, validação e limite da API
+- [x] Commit
+
+Para ativar a IA real: criar `.env.local` com `OPENAI_API_KEY=...` (ver `.env.example`).
 
 ## Fase 6 — Trabalhos e contato
 - [ ] /trabalhos com slider e filtro, /contato com mapa
