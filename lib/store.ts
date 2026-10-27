@@ -45,6 +45,8 @@ interface LojaState {
   /** Último CEP informado (compartilhado entre produto, carrinho e checkout) */
   cep: string
   simulacoesUsadas: number
+  /** Pedido recém-criado cujo carrinho ainda não foi esvaziado (a confirmação esvazia) */
+  pedidoAguardandoLimpeza: string | null
 
   salvarProduto: (produto: Product) => void
   duplicarProduto: (id: string) => Product | null
@@ -59,6 +61,8 @@ interface LojaState {
 
   adicionarPedido: (pedido: Omit<Order, "id" | "numero">) => Order
   alterarStatusPedido: (id: string, status: StatusPedido) => void
+  /** Esvazia o carrinho se ele pertence ao pedido recém-confirmado */
+  concluirPedido: (id: string) => void
 
   adicionarAoCarrinho: (item: Omit<CartItem, "id">) => void
   atualizarItemCarrinho: (id: string, item: Partial<CartItem>) => void
@@ -78,6 +82,7 @@ const dadosIniciais = () => ({
   carrinho: [] as CartItem[],
   cep: "",
   simulacoesUsadas: 0,
+  pedidoAguardandoLimpeza: null as string | null,
 })
 
 export const useLoja = create<LojaState>()(
@@ -137,9 +142,11 @@ export const useLoja = create<LojaState>()(
       adicionarPedido: (dados) => {
         const numero = get().pedidos.reduce((max, p) => Math.max(max, p.numero), 1000) + 1
         const pedido: Order = { ...dados, id: gerarId("o"), numero }
-        set((s) => ({ pedidos: [pedido, ...s.pedidos] }))
+        set((s) => ({ pedidos: [pedido, ...s.pedidos], pedidoAguardandoLimpeza: pedido.id }))
         return pedido
       },
+      concluirPedido: (id) =>
+        set((s) => (s.pedidoAguardandoLimpeza === id ? { carrinho: [], pedidoAguardandoLimpeza: null } : s)),
       alterarStatusPedido: (id, status) =>
         set((s) => ({ pedidos: s.pedidos.map((p) => (p.id === id ? { ...p, status } : p)) })),
 
@@ -173,6 +180,7 @@ export const useLoja = create<LojaState>()(
         carrinho: s.carrinho,
         cep: s.cep,
         simulacoesUsadas: s.simulacoesUsadas,
+        pedidoAguardandoLimpeza: s.pedidoAguardandoLimpeza,
       }),
     },
   ),

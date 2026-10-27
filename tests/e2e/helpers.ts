@@ -69,7 +69,9 @@ export async function botoesGrandes(page: Page, escopo = "body") {
     const problemas: string[] = []
     for (const el of Array.from(alvos)) {
       if (el.closest("[aria-hidden=true], .sr-only, [data-teste-ignorar-tamanho]")) continue
-      const r = el.getBoundingClientRect()
+      // Rádio/checkbox dentro de <label>: a área de toque é o label inteiro
+      const alvo = (el.matches("input") && el.closest("label")) || el
+      const r = alvo.getBoundingClientRect()
       if (r.width === 0 || r.height === 0) continue
       if (getComputedStyle(el).visibility === "hidden") continue
       if (r.height < 47.5) {

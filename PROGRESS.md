@@ -50,8 +50,17 @@ Obs.: o Next 16 mantém a página anterior escondida no DOM após navegar (Activ
 - [x] Ajustes após revisar screenshots: botões da régua quebrando, rótulo cortado na régua, personalização em lista no celular, WhatsApp flutuante escondido no desktop da página de produto (cobria o card lateral), galeria maior, barra "Informe as medidas"
 - [x] Commit
 
-## Fase 4 — Carrinho e checkout
-- [ ] Carrinho, checkout 3 passos, finalizar pelo WhatsApp, pedido confirmado
+## Fase 4 — Carrinho e checkout ✅
+- [x] `lib/pedido.ts` (subtotal por item, prazo estimado, mensagem do WhatsApp) + 4 testes Vitest
+- [x] Carrinho: itens com cor, personalização, m² + paredes, observação/imagem de IA, aplicação, subtotal; "Editar medidas" (calculadora em diálogo); "Remover" com confirmação; estado vazio
+- [x] CEP no carrinho recalcula frete/serviços; aplicação e visita para o pedido todo; resumo com Pix
+- [x] Duas formas de finalizar com o mesmo destaque (site / WhatsApp)
+- [x] Checkout em 3 passos (Seus dados → Endereço → Pagamento) com indicador "Passo X de 3", validação em linguagem simples (erro some ao corrigir), CEP preenche cidade/UF, Pix/cartão/boleto simulados
+- [x] Finalizar pelo WhatsApp: pede o nome, salva o pedido (canal `whatsapp`) e abre `wa.me` com o orçamento completo
+- [x] Pedido confirmado: número, prazo estimado, resumo, botão de WhatsApp. O carrinho é esvaziado só aqui (evita piscar "carrinho vazio" e funciona com a página escondida do Next 16)
+- [x] Testes Playwright: compra completa no site (edição, região, aplicação, validações, Pix), WhatsApp (texto completo da mensagem), remoção
+- [x] Ajustes após screenshots: botões de finalizar com mesma altura, erros que não sumiam ao corrigir, textos quebrando
+- [x] Commit
 
 ## Fase 5 — IA
 - [ ] /api/simular com mock, duas abas, comparação, integração com carrinho

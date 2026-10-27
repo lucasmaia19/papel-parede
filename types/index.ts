@@ -214,10 +214,14 @@ export interface Order {
   endereco: Endereco
   itens: ItemPedido[]
   modalidade: Modalidade
+  /** CEP em cidade atendida (aplicação/visita possíveis) */
+  naRegiao: boolean
   frete: number
   deslocamento: number
   visita: number
   prazoEntregaDias: number | null
+  /** Prazo estimado em texto, como mostrado ao cliente */
+  prazoTexto: string
   descontoPix: number
   total: number
   formaPagamento: FormaPagamento
