@@ -88,7 +88,21 @@ export async function verificarLayout(page: Page) {
   await botoesGrandes(page)
 }
 
+/** Rola a página até o fim para carregar imagens "lazy" e volta ao topo. */
+export async function carregarImagens(page: Page) {
+  await page.evaluate(async () => {
+    const passo = window.innerHeight * 0.8
+    for (let y = 0; y < document.documentElement.scrollHeight; y += passo) {
+      window.scrollTo(0, y)
+      await new Promise((r) => setTimeout(r, 60))
+    }
+    window.scrollTo(0, 0)
+  })
+  await page.waitForFunction(() => Array.from(document.images).every((i) => i.complete), null, { timeout: 5000 }).catch(() => {})
+}
+
 export async function screenshot(page: Page, testInfo: TestInfo, nome: string, fullPage = true) {
+  if (fullPage) await carregarImagens(page)
   await page.screenshot({
     path: `tests/screenshots/${nome}-${testInfo.project.name}.png`,
     fullPage,

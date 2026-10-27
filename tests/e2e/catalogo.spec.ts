@@ -1,0 +1,82 @@
+import { expect, test } from "@playwright/test"
+import { ehMobile, esperarHidratacao, limparDados, screenshot, verificarLayout } from "./helpers"
+
+test.beforeEach(async ({ page }) => {
+  await limparDados(page)
+})
+
+const cards = (page: import("@playwright/test").Page) =>
+  page.locator("main [data-slot=produto-card]").filter({ visible: true })
+
+test("home mostra chamadas, estilos, destaques e trabalhos", async ({ page }, testInfo) => {
+  await page.goto("/")
+  await esperarHidratacao(page)
+
+  await expect(page.getByRole("heading", { level: 1 })).toBeVisible()
+  await expect(page.getByText(/Enviamos para todo o Brasil/).first()).toBeVisible()
+  await expect(page.locator("[data-slot=faixa-entrega]")).toContainText("Aplicamos em Uberlândia, Araguari, Uberaba e região")
+  for (const titulo of ["Calcule seu papel de parede", "Veja na sua parede", "Pronta entrega", "Escolha pelo estilo", "Mais procurados", "Trabalhos realizados"]) {
+    await expect(page.getByRole("heading", { name: titulo, exact: true })).toBeVisible()
+  }
+  await expect(cards(page)).toHaveCount(4)
+  await expect(cards(page).first()).toContainText("/m²")
+
+  await verificarLayout(page)
+  await screenshot(page, testInfo, "fase2-home")
+
+  await page.getByRole("link", { name: "Infantis" }).click()
+  await expect(page).toHaveURL(/\/produtos\?categoria=infantil/)
+  await expect(cards(page)).toHaveCount(2)
+})
+
+test("catálogo filtra por estilo e cor", async ({ page }, testInfo) => {
+  await page.goto("/produtos")
+  await esperarHidratacao(page)
+  await expect(cards(page)).toHaveCount(12)
+  await expect(page.getByText("12 papéis de parede")).toBeVisible()
+  await verificarLayout(page)
+  await screenshot(page, testInfo, "fase2-produtos")
+
+  if (ehMobile(testInfo)) {
+    await page.getByRole("button", { name: "Filtrar" }).click()
+    const gaveta = page.getByRole("dialog", { name: "Filtrar" })
+    await expect(gaveta).toBeVisible()
+    await gaveta.getByRole("button", { name: "Florais" }).click()
+    await expect(page).toHaveURL(/categoria=floral/)
+    await verificarLayout(page)
+    await screenshot(page, testInfo, "fase2-filtros", false)
+    await gaveta.getByRole("button", { name: "Ver 1 papel de parede" }).click()
+    await expect(gaveta).toBeHidden()
+  } else {
+    await page.getByRole("complementary", { name: "Filtros" }).getByRole("button", { name: "Florais" }).click()
+    await expect(page).toHaveURL(/categoria=floral/)
+  }
+
+  await expect(cards(page)).toHaveCount(1)
+  await expect(cards(page).first()).toContainText("Floral Jardim")
+  await expect(page.getByRole("button", { name: "Filtrar (1)" }).or(page.getByRole("complementary"))).toBeVisible()
+
+  // Filtro de cor junto com estilo → nenhum resultado e opção de ver todos
+  await page.goto("/produtos?categoria=floral&cor=lilas")
+  await expect(page.getByText("Nenhum papel de parede com esses filtros.")).toBeVisible()
+  await page.getByRole("button", { name: "Ver todos" }).click()
+  await expect(cards(page)).toHaveCount(12)
+
+  await page.goto("/produtos?cor=off-white")
+  await expect(cards(page)).toHaveCount(3)
+  await page.getByRole("button", { name: "Limpar filtros" }).click()
+  await expect(cards(page)).toHaveCount(12)
+})
+
+test("pronta entrega mostra só produtos de envio imediato", async ({ page }, testInfo) => {
+  await page.goto("/pronta-entrega")
+  await esperarHidratacao(page)
+  await expect(page.getByRole("heading", { level: 1, name: "Pronta entrega" })).toBeVisible()
+  await expect(cards(page)).toHaveCount(3)
+  for (const card of await cards(page).all()) {
+    await expect(card.getByText("Pronta entrega")).toBeVisible()
+  }
+  await expect(page.getByText(/texturizados e lisos em Branco e Off-white/)).toBeVisible()
+  await verificarLayout(page)
+  await screenshot(page, testInfo, "fase2-pronta-entrega")
+})

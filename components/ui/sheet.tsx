@@ -62,7 +62,14 @@ function SheetContent({
         {showCloseButton && (
           <SheetPrimitive.Close
             data-slot="sheet-close"
-            render={<Button variant="outline" size="sm" className="absolute top-2.5 right-3 px-3" />}
+            render={
+              <Button
+                variant="outline"
+                size="sm"
+                // fica preso no topo mesmo quando o conteúdo da gaveta rola
+                className="sticky top-2.5 z-20 order-first mt-2.5 mr-3 -mb-[3.625rem] self-end px-3"
+              />
+            }
           >
             <XIcon aria-hidden />
             Fechar
@@ -77,7 +84,7 @@ function SheetHeader({ className, ...props }: React.ComponentProps<"div">) {
   return (
     <div
       data-slot="sheet-header"
-      className={cn("flex min-h-17 flex-col justify-center gap-1 border-b border-border p-4 pr-28", className)}
+      className={cn("sticky top-0 z-10 flex min-h-17 flex-col justify-center gap-1 border-b border-border bg-popover p-4 pr-28", className)}
       {...props}
     />
   )

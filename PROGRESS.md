@@ -23,8 +23,16 @@ Regras de preço adotadas (confirmar com a loja):
 - Visita e deslocamento: uma vez por pedido. Na cidade atendida, o deslocamento é cobrado também como entrega.
 - Frete grátis compara com o valor do papel. Desconto Pix sobre o total.
 
-## Fase 2 — Catálogo
-- [ ] Home, /produtos (filtros em gaveta no celular), /pronta-entrega, cards
+## Fase 2 — Catálogo ✅
+- [x] Card de produto minimalista (foto 4:5, nome, "R$ 80,00/m²", amostras de cor, selo "Pronta entrega"; o card inteiro é link)
+- [x] Home: foto grande, título + 1 botão, faixa "Enviamos para todo o Brasil • Aplicamos em…", 3 chamadas editoriais (Calcule / Veja na sua parede / Pronta entrega), estilos, mais procurados, trechos da galeria
+- [x] /produtos: filtros por estilo e cor com botões grandes (gaveta inferior no celular com "Ver N papéis"; coluna lateral no desktop), filtros na URL, chips para remover, "Limpar filtros", estado vazio
+- [x] Cores do filtro limitadas ao estilo escolhido (evita filtro sem resultado)
+- [x] /pronta-entrega com destaque para texturizados e lisos Branco/Off-white
+- [x] Testes Playwright (home, filtros, pronta entrega) nas 4 larguras + screenshots revisados (ajustes: cabeçalho e "Fechar" fixos na gaveta; "•" da faixa no celular)
+- [x] Commit
+
+Obs.: o Next 16 mantém a página anterior escondida no DOM após navegar (Activity) — nos testes, contar só elementos visíveis.
 
 ## Fase 3 — Produto
 - [ ] Galeria + régua, cores, personalizações, calculadora + guia, CEP/entrega/serviços, resumo de preço
