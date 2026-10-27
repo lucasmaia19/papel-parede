@@ -211,3 +211,69 @@
     padding-inline: 2rem;
   }
 }
+
+/* ---------- Carrossel da home (components/home/hero-carrossel.tsx) ---------- */
+@keyframes hero-entra {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+}
+@keyframes hero-ken-burns {
+  from {
+    transform: scale(1);
+  }
+  to {
+    transform: scale(1.06);
+  }
+}
+@keyframes hero-progresso {
+  from {
+    width: 0;
+  }
+  to {
+    width: 100%;
+  }
+}
+/* O texto só "entra" a partir da primeira troca: no carregamento ele já aparece (LCP) */
+[data-slot="hero"][data-animar] [data-ativo] .hero-entra {
+  animation: hero-entra 700ms cubic-bezier(0.22, 0.61, 0.36, 1) both;
+}
+/* Ken Burns no slide ativo e no que está saindo (para não "pular" durante o crossfade) */
+[data-slot="hero"] :is([data-ativo], [data-saindo]) .hero-ken-burns {
+  transform-origin: 60% 55%;
+  will-change: transform;
+  animation: hero-ken-burns 7.5s cubic-bezier(0.33, 0, 0.4, 1) forwards;
+}
+[data-slot="hero"][data-pausado] .hero-ken-burns {
+  animation-play-state: paused;
+}
+.hero-progresso {
+  animation: hero-progresso 6s linear forwards;
+}
+
+/* ---------- Seção "Papel adesivo lavável" ---------- */
+@keyframes revelar {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+}
+[data-revelar] [data-revelar-item] {
+  opacity: 0;
+}
+[data-revelar] [data-revelar-item][data-visivel] {
+  opacity: 1;
+  animation: revelar 600ms cubic-bezier(0.22, 0.61, 0.36, 1) both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  [data-slot="hero"] .hero-ken-burns {
+    animation: none !important;
+    will-change: auto;
+  }
+  [data-revelar] [data-revelar-item] {
+    opacity: 1;
+    animation: none !important;
+  }
+}
