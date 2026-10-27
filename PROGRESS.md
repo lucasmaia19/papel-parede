@@ -75,8 +75,11 @@ Obs.: o Next 16 mantém a página anterior escondida no DOM após navegar (Activ
 
 Para ativar a IA real: criar `.env.local` com `OPENAI_API_KEY=...` (ver `.env.example`).
 
-## Fase 6 — Trabalhos e contato
-- [ ] /trabalhos com slider e filtro, /contato com mapa
+## Fase 6 — Trabalhos e contato ✅
+- [x] /trabalhos: antes/depois com comparação arrastável (dedo, mouse e teclado), destaques primeiro, filtro por cidade em botões grandes, link para o papel usado, chamada para orçamento no WhatsApp
+- [x] /contato: WhatsApp (número formatado), Instagram, endereço, "Atendimento presencial somente com hora marcada" + "Agendar pelo WhatsApp", regiões e taxas, mapa (iframe lazy) + "Abrir no Google Maps"
+- [x] Testes Playwright (arrastar, filtros, links, atributos de nova aba) + screenshots revisados
+- [x] Commit
 
 ## Fase 7 — Admin
 - [ ] Painel, produtos (régua por clique), trabalhos, configurações, pedidos
