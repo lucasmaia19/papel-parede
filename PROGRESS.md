@@ -95,8 +95,32 @@ Para ativar a IA real: criar `.env.local` com `OPENAI_API_KEY=...` (ver `.env.ex
 - [x] Ajustes: mensagem "salvo" sumia ao criar produto (agora troca a URL sem remontar), `usePathname` em Suspense (Cache Components), botões de foto apertados em 360px
 - [x] Commit
 
-## Fase 8 — Revisão final
-- [ ] Fluxos Playwright mobile, axe, revisão visual, Lighthouse mobile
+## Fase 8 — Revisão final ✅
+- [x] Suíte completa: 41 testes Vitest + 115 testes Playwright (360/390/430/1280) passando
+- [x] Acessibilidade com axe (WCAG 2.2 AA) em 13 páginas da loja e do admin, celular e desktop: 0 violações
+  - corrigido: galeria de fotos (área com rolagem) agora focável pelo teclado; hierarquia de títulos no catálogo
+- [x] Lighthouse mobile (build de produção):
+
+  | Página | Performance | Acessibilidade | Boas práticas | SEO |
+  |---|---|---|---|---|
+  | / | 92 | 100 | 100 | 100 |
+  | /produtos | 92 | 100 | 100 | 100 |
+  | /pronta-entrega | 93 | 100 | 100 | 100 |
+  | /produtos/xadrez-vichy | 92 | 100 | 100 | 100 |
+  | /carrinho | 90 | 100 | 100 | 100 |
+  | /trabalhos | 92 | 100 | 100 | 100 |
+  | /contato | 94 | 100 | 100 | 100 |
+
+  - corrigido: página de produto saía do HTML estático (id aleatório na pré-renderização e `searchParams`) → CLS 0,24 → 0,01 e performance 79 → 92
+  - corrigido: catálogo agora vem completo no HTML (fallback do Suspense é o próprio catálogo sem filtros)
+- [x] Revisão visual por screenshots de todas as telas
+- [x] README com como rodar, testar e ativar a IA
+- [x] Commit
 
 ## Pendências / observações
-- Valores marcados como fictícios na especificação (aplicação, visita, Pix, deslocamento, frete) precisam ser confirmados com a loja.
+- Valores marcados como fictícios na especificação (aplicação, visita, Pix, deslocamento, frete) precisam ser confirmados com a loja — todos editáveis em /admin/configuracoes.
+- Regras de cálculo adotadas (ver Fase 1) devem ser validadas com a loja.
+- Fotos de exemplo são ilustrações SVG; trocar por fotos reais pelo admin.
+- Sem backend/login nesta etapa: dados ficam no navegador de quem usa. O admin precisa de login e banco no sistema final.
+- Pagamento é simulado. A IA real precisa de `OPENAI_API_KEY` (há custo por imagem gerada).
+- localStorage tem ~5 MB: muitas fotos grandes enviadas pelo admin podem encher (o admin avisa).

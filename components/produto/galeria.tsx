@@ -86,7 +86,10 @@ export function Galeria({ imagens, regua, className }: GaleriaProps) {
         <div
           ref={trilho}
           onScroll={aoRolar}
-          className="flex snap-x snap-mandatory overflow-x-auto overscroll-x-contain rounded-md border border-border bg-muted [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+          // Focável: no teclado, as setas passam as fotos
+          tabIndex={0}
+          role="region"
+          className="flex snap-x snap-mandatory overflow-x-auto overscroll-x-contain rounded-md border border-border bg-muted outline-none [scrollbar-width:none] focus-visible:ring-3 focus-visible:ring-ring/60 [&::-webkit-scrollbar]:hidden"
           aria-roledescription="carrossel"
           aria-label="Fotos do produto. Deslize para o lado para ver mais."
         >

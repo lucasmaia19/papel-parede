@@ -10,10 +10,13 @@ interface ProdutoCardProps {
   produto: Product
   className?: string
   prioridade?: boolean
+  /** Nível do título, para manter a hierarquia da página (h2 no catálogo, h3 dentro de seções) */
+  nivelTitulo?: 2 | 3
 }
 
 /** Card minimalista: foto grande, nome e preço por m². O card inteiro é o link. */
-export function ProdutoCard({ produto, className, prioridade }: ProdutoCardProps) {
+export function ProdutoCard({ produto, className, prioridade, nivelTitulo = 3 }: ProdutoCardProps) {
+  const Titulo = nivelTitulo === 2 ? "h2" : "h3"
   return (
     <article data-slot="produto-card" className={cn("group relative flex flex-col gap-3", className)}>
       <div className="relative aspect-[4/5] overflow-hidden rounded-md border border-border bg-muted">
@@ -32,14 +35,14 @@ export function ProdutoCard({ produto, className, prioridade }: ProdutoCardProps
         )}
       </div>
       <div className="flex flex-col gap-1">
-        <h3 className="font-sans text-base leading-snug font-semibold">
+        <Titulo className="font-sans text-base leading-snug font-semibold">
           <Link
             href={`/produtos/${produto.slug}`}
             className="outline-none after:absolute after:inset-0 after:rounded-md focus-visible:after:ring-3 focus-visible:after:ring-ring/60"
           >
             {produto.nome}
           </Link>
-        </h3>
+        </Titulo>
         <p className="text-foreground-subtle">
           <span className="font-semibold text-foreground">{formatarMoeda(produto.precoM2)}</span>/m²
         </p>
@@ -58,7 +61,15 @@ export function ProdutoCard({ produto, className, prioridade }: ProdutoCardProps
   )
 }
 
-export function GradeProdutos({ produtos, className }: { produtos: Product[]; className?: string }) {
+export function GradeProdutos({
+  produtos,
+  className,
+  nivelTitulo,
+}: {
+  produtos: Product[]
+  className?: string
+  nivelTitulo?: 2 | 3
+}) {
   return (
     <ul
       data-slot="grade-produtos"
@@ -66,7 +77,7 @@ export function GradeProdutos({ produtos, className }: { produtos: Product[]; cl
     >
       {produtos.map((p, i) => (
         <li key={p.id}>
-          <ProdutoCard produto={p} prioridade={i < 2} />
+          <ProdutoCard produto={p} prioridade={i < 2} nivelTitulo={nivelTitulo} />
         </li>
       ))}
     </ul>

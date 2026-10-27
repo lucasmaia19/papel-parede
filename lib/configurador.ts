@@ -26,6 +26,14 @@ export function novaParede(): ParedeForm {
   return { id: gerarIdSimples("w"), largura: "", altura: "", aberturas: [] }
 }
 
+/**
+ * Primeira parede com id fixo: roda na pré-renderização, onde Date.now()/Math.random()
+ * tirariam a página do HTML estático (Cache Components).
+ */
+export function paredeInicial(): ParedeForm {
+  return { id: "parede-1", largura: "", altura: "", aberturas: [] }
+}
+
 export function novaAbertura(tipo: TipoAbertura): AberturaForm {
   return { id: gerarIdSimples("a"), tipo, ...MEDIDAS_PADRAO_ABERTURA[tipo] }
 }

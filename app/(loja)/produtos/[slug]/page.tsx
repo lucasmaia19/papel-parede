@@ -1,5 +1,4 @@
 import type { Metadata } from "next"
-import { Suspense } from "react"
 import { ProdutoDetalhe } from "@/components/produto/produto-detalhe"
 import { produtosIniciais } from "@/lib/data"
 
@@ -16,19 +15,9 @@ export async function generateMetadata({ params }: PageProps<"/produtos/[slug]">
     : { title: "Papel de parede" }
 }
 
-async function Conteudo({
-  params,
-  searchParams,
-}: Pick<PageProps<"/produtos/[slug]">, "params" | "searchParams">) {
-  const [{ slug }, busca] = await Promise.all([params, searchParams])
-  // ?previa=1: o admin vê como fica um produto desativado
-  return <ProdutoDetalhe slug={slug} previa={busca.previa === "1"} />
-}
-
-export default function ProdutoPage({ params, searchParams }: PageProps<"/produtos/[slug]">) {
-  return (
-    <Suspense fallback={<div className="container-loja min-h-[60vh] py-10" aria-busy="true" />}>
-      <Conteudo params={params} searchParams={searchParams} />
-    </Suspense>
-  )
+// Com generateStaticParams, ler params direto deixa o conteúdo no HTML estático
+// (sem <Suspense>, que o mandaria depois do rodapé e faria a página "pular")
+export default async function ProdutoPage({ params }: PageProps<"/produtos/[slug]">) {
+  const { slug } = await params
+  return <ProdutoDetalhe slug={slug} />
 }

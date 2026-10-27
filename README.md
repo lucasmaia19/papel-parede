@@ -1,36 +1,44 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Rodovalho Papéis de Parede — protótipo de e-commerce
 
-## Getting Started
+Loja (celular primeiro) e área administrativa para a Rodovalho Papéis de Parede, de Uberlândia-MG.
+A especificação completa está em `CLAUDE.md` e o andamento em `PROGRESS.md`.
 
-First, run the development server:
+## Rodar
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+npm install
+npm run dev            # http://localhost:3000  (admin em /admin)
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Sem backend: os dados de exemplo estão em `lib/data.ts`, e tudo o que o admin altera fica salvo
+no navegador (localStorage) e aparece na loja na hora. "Restaurar dados de exemplo" fica no painel do admin.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### Simulação com IA
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Funciona sem configuração, em **modo demonstração**. Para usar a IA de verdade (OpenAI `gpt-image-1`
+via AI SDK), crie `.env.local`:
 
-## Learn More
+```
+OPENAI_API_KEY=sk-...
+```
 
-To learn more about Next.js, take a look at the following resources:
+## Testes
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+```bash
+npm test               # Vitest: preços, CEP, pedido, formulários do admin
+npm run build          # obrigatório antes dos testes de interface
+npm run test:e2e       # Playwright em 360, 390, 430 e 1280 px + acessibilidade (axe)
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+Os screenshots ficam em `tests/screenshots/`. Para revisar um screenshot longo:
+`node scripts/fatiar-screenshot.mjs <arquivo.png> <pasta>`.
 
-## Deploy on Vercel
+As imagens de exemplo (SVG) são geradas por `npm run gerar:imagens`.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Estrutura
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- `app/(loja)` — páginas da loja; `app/admin` — área administrativa; `app/api/simular` — simulação com IA
+- `lib/pricing.ts` — todas as regras de preço (funções puras, testadas)
+- `lib/cep.ts` — CEP → UF → região, cidades atendidas por faixa de CEP
+- `lib/store.ts` — store Zustand persistido (a fonte de verdade)
+- `components/ui` — componentes shadcn (Base UI) customizados para o tema

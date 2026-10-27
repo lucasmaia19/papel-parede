@@ -1,7 +1,7 @@
 "use client"
 
 import Link from "next/link"
-import { useState } from "react"
+import { useState, useSyncExternalStore } from "react"
 import { ArrowLeftIcon, ChevronUpIcon, ClockIcon, PackageCheckIcon, ShoppingBagIcon } from "lucide-react"
 import { CampoCep, useResultadoCep } from "@/components/entrega/campo-cep"
 import { InfoFrete, ServicosRegiao, type EscolhaServicos } from "@/components/entrega/info-entrega"
@@ -18,7 +18,7 @@ import { WhatsappLink } from "@/components/whatsapp-link"
 import { textoPrazo } from "@/lib/catalogo"
 import {
   mensagemDuvidaProduto,
-  novaParede,
+  paredeInicial,
   opcoesPadrao,
   paredeFormParaParede,
   personalizacoesEscolhidas,
@@ -38,8 +38,20 @@ import { useBarraInferior, useOcultarWhatsappDesktop } from "@/lib/use-barra-inf
 import { cn } from "@/lib/utils"
 import type { Product, SimulacaoIA as SimulacaoEscolhida } from "@/types"
 
-export function ProdutoDetalhe({ slug, previa = false }: { slug: string; previa?: boolean }) {
+const semAssinatura = () => () => {}
+
+/** ?previa=1: o admin vê como fica um produto desativado. Lido no cliente para a página continuar estática. */
+function usePrevia(): boolean {
+  return useSyncExternalStore(
+    semAssinatura,
+    () => new URLSearchParams(window.location.search).get("previa") === "1",
+    () => false,
+  )
+}
+
+export function ProdutoDetalhe({ slug }: { slug: string }) {
   const hidratado = useHidratado()
+  const previa = usePrevia()
   const produto = useLoja((s) => s.produtos.find((p) => p.slug === slug))
 
   if (!produto || (!produto.ativo && !previa)) {
@@ -87,7 +99,7 @@ function Configurador({ produto }: { produto: Product }) {
 
   const [corId, setCorId] = useState(produto.cores[0]?.id ?? "")
   const [escolhas, setEscolhas] = useState(() => opcoesPadrao(produto))
-  const [paredes, setParedes] = useState<ParedeForm[]>(() => [novaParede()])
+  const [paredes, setParedes] = useState<ParedeForm[]>(() => [paredeInicial()])
   const [servicos, setServicos] = useState<EscolhaServicos>({ aplicacao: null, visita: null })
   const [simulacao, setSimulacao] = useState<SimulacaoEscolhida | undefined>(undefined)
   const [erroMedidas, setErroMedidas] = useState(false)

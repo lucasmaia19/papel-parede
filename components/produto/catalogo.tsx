@@ -75,23 +75,17 @@ interface CatalogoProps {
   somenteProntaEntrega?: boolean
 }
 
-export function Catalogo({ titulo, descricao, somenteProntaEntrega }: CatalogoProps) {
+/** Catálogo com os filtros lidos da URL (?categoria=…&cor=…). Precisa de <Suspense> na página. */
+export function Catalogo(props: CatalogoProps) {
   const router = useRouter()
   const pathname = usePathname()
   const params = useSearchParams()
-  const [gavetaAberta, setGavetaAberta] = useState(false)
-
-  const ativos = useProdutosAtivos()
-  const produtos = somenteProntaEntrega ? ativos.filter((p) => p.prontaEntrega) : ativos
 
   const categoriaParam = params.get("categoria")
   const filtros: Filtros = {
     categoria: ehCategoria(categoriaParam) ? categoriaParam : null,
     cor: params.get("cor"),
   }
-  const resultado = filtrarProdutos(produtos, filtros)
-  const corAtiva = filtros.cor ? coresDisponiveis(produtos).find((c) => c.chave === filtros.cor) : undefined
-  const qtdFiltros = (filtros.categoria ? 1 : 0) + (filtros.cor ? 1 : 0)
 
   function alterar(novo: Partial<Filtros>) {
     const proximo = { ...filtros, ...novo }
@@ -101,6 +95,34 @@ export function Catalogo({ titulo, descricao, somenteProntaEntrega }: CatalogoPr
     const qs = busca.toString()
     router.replace(qs ? `${pathname}?${qs}` : pathname, { scroll: false })
   }
+
+  return <CatalogoConteudo {...props} filtros={filtros} alterar={alterar} />
+}
+
+const SEM_FILTROS: Filtros = { categoria: null, cor: null }
+
+/**
+ * Fallback do <Suspense>: o catálogo completo, sem filtros. Assim o HTML estático já traz
+ * os produtos e a página não "pula" quando os filtros da URL são lidos.
+ */
+export function CatalogoSemFiltros(props: CatalogoProps) {
+  return <CatalogoConteudo {...props} filtros={SEM_FILTROS} alterar={() => {}} />
+}
+
+function CatalogoConteudo({
+  titulo,
+  descricao,
+  somenteProntaEntrega,
+  filtros,
+  alterar,
+}: CatalogoProps & { filtros: Filtros; alterar: (f: Partial<Filtros>) => void }) {
+  const [gavetaAberta, setGavetaAberta] = useState(false)
+
+  const ativos = useProdutosAtivos()
+  const produtos = somenteProntaEntrega ? ativos.filter((p) => p.prontaEntrega) : ativos
+  const resultado = filtrarProdutos(produtos, filtros)
+  const corAtiva = filtros.cor ? coresDisponiveis(produtos).find((c) => c.chave === filtros.cor) : undefined
+  const qtdFiltros = (filtros.categoria ? 1 : 0) + (filtros.cor ? 1 : 0)
 
   const contagem = `${resultado.length} ${resultado.length === 1 ? "papel de parede" : "papéis de parede"}`
 
@@ -165,7 +187,7 @@ export function Catalogo({ titulo, descricao, somenteProntaEntrega }: CatalogoPr
           )}
 
           {resultado.length > 0 ? (
-            <GradeProdutos produtos={resultado} className="lg:grid-cols-3" />
+            <GradeProdutos produtos={resultado} className="lg:grid-cols-3" nivelTitulo={2} />
           ) : (
             <div className="flex flex-col items-start gap-4 rounded-md border border-border bg-surface p-6">
               <p className="text-lg">Nenhum papel de parede com esses filtros.</p>
