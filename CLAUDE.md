@@ -45,18 +45,25 @@ A loja vende para todo o Brasil (com frete) e oferece aplicação e visita técn
 - Gradientes roxo/azul, glassmorphism, brilhos, blobs, fundos escuros "tech", neon.
 - Hero genérico ("Transforme seu espaço" + dois botões + mockup flutuante).
 - Grade de "3 cards de benefícios com ícone", emojis decorativos, ícones em círculos coloridos.
-- Visual padrão do shadcn sem customização (cantos muito arredondados, sombras em tudo, cinza-azulado).
+- Visual padrão do shadcn sem customização (sombras em tudo, cinza-azulado), preto/branco puro, verde escuro, fontes pesadas.
 - Animações chamativas (só transições curtas e sutis).
 
-**Fazer:** estética de showroom / catálogo editorial de decoração.
-- A foto é a protagonista: imagens grandes, de ponta a ponta, com pouco texto sobre elas.
-- Paleta quente de "papel": fundo `#FAF8F5`, texto `#2B2B2B`, bordas finas bege-acinzentadas e **uma** cor de destaque sóbria (verde-sálvia escuro ou terracota), usada só em botões principais e no preço total. Tudo em variáveis CSS.
-- Tipografia: serifada para títulos (Fraunces ou Cormorant Garamond) + sans legível para texto e botões (Figtree ou Source Sans 3), via `next/font`.
-- Cantos de 4–6px, linhas de 1px separando seções, muito espaço em branco, grid simples.
-- Botões sólidos, retangulares, grandes. Nada de botão fantasma de baixo contraste.
-- Cards de produto minimalistas: foto grande, nome, "R$ 80,00/m²".
-- Amostras de cor como quadrados de papel com borda fina.
-- Deve parecer uma loja de decoração de confiança, artesanal — não uma startup de tecnologia.
+**Fazer:** estética delicada e afetiva, de loja de decoração (referência: lojas de decoração infantil/afetiva, visual leve e aconchegante).
+- A foto é a protagonista: imagens grandes, com bastante respiro, pouco texto sobre elas, sombras quase invisíveis ou nenhuma.
+- **Nada de preto ou branco puro** em lugar nenhum (textos, ícones, régua, bordas, botões, overlays). Tudo em variáveis CSS (`app/globals.css`):
+  - Fundo creme `#FBF7F3`; superfícies secundárias bege-rosado `#F4ECE6`; cards/campos `#FFFCF9`.
+  - Texto taupe: títulos `#7A6359`, corpo `#6B5A52`, secundário `#7A6359`. Contraste mínimo 4,5:1 (público de 70 anos) — conferir ao mudar qualquer tom.
+  - Destaque rosé/terracota suave: botão principal `#8B6A5E` com texto creme (é o tom mais claro que mantém 4,5:1), decorativo `#C9A396`; apoio em sálvia clara `#E1E8DC` e azul acinzentado `#DFE6EC`. Texto sobre rosé claro usa `#7A5B50`.
+  - Bordas finas bege `#E8DCD3`; borda de campos `#9C877C` (≥ 3:1); overlay de diálogos em taupe translúcido.
+- Tipografia fina e delicada, tamanho base 18px (fino não é pequeno):
+  - Títulos: Cormorant Garamond 300/400, generosos, algarismos alinhados.
+  - Texto e botões: Jost 300/400; no máximo 500 para preço e botões. Nunca bold pesado.
+  - Logo "Rodovalho" em serifada fina + "PAPÉIS DE PAREDE" em caixa alta espaçada, taupe.
+- Ícones de traço fino (stroke 1,25–1,5) no tom taupe.
+- Botão principal: fundo rosé-taupe, texto creme, cantos levemente arredondados (8px). Secundário: borda fina taupe, texto taupe, fundo creme. Botões de WhatsApp: estilo secundário com ícone verde suave (sem verde forte).
+- Linhas divisórias finas em bege, muito espaço em branco, grid simples.
+- Cards de produto minimalistas: foto grande, nome, "R$ 80,00/m²". Amostras de cor como quadrados de papel com borda fina.
+- Deve parecer uma loja de decoração de confiança, artesanal e acolhedora — não uma startup de tecnologia.
 
 ---
 

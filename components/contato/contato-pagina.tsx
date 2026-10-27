@@ -17,7 +17,7 @@ export function ContatoPagina() {
     <div className="grid gap-12 lg:grid-cols-2 lg:gap-16">
       <div className="flex flex-col gap-10">
         <section aria-labelledby="titulo-fale" className="flex flex-col gap-4">
-          <h2 id="titulo-fale" className="text-2xl font-semibold">
+          <h2 id="titulo-fale" className="text-2xl">
             Fale com a gente
           </h2>
           <p>O jeito mais rápido é pelo WhatsApp. Respondemos em horário comercial.</p>
@@ -36,14 +36,14 @@ export function ContatoPagina() {
         </section>
 
         <section aria-labelledby="titulo-loja" className="flex flex-col gap-4">
-          <h2 id="titulo-loja" className="text-2xl font-semibold">
+          <h2 id="titulo-loja" className="text-2xl">
             Nossa loja
           </h2>
           <p className="flex gap-2">
             <MapPinIcon className="mt-1 size-5 shrink-0" aria-hidden />
             <span>{settings.endereco}</span>
           </p>
-          <p className="flex gap-2 rounded-md border border-border bg-surface-raised p-4 font-semibold">
+          <p className="flex gap-2 rounded-md border border-border bg-surface-raised p-4 font-medium">
             <ClockIcon className="mt-0.5 size-5 shrink-0" aria-hidden />
             <span>{settings.textoAtendimento}</span>
           </p>
@@ -53,7 +53,7 @@ export function ContatoPagina() {
         </section>
 
         <section aria-labelledby="titulo-regiao" className="flex flex-col gap-4">
-          <h2 id="titulo-regiao" className="text-2xl font-semibold">
+          <h2 id="titulo-regiao" className="text-2xl">
             Entrega e aplicação
           </h2>
           <p>
@@ -66,7 +66,7 @@ export function ContatoPagina() {
       </div>
 
       <section aria-labelledby="titulo-mapa" className="flex flex-col gap-4">
-        <h2 id="titulo-mapa" className="text-2xl font-semibold">
+        <h2 id="titulo-mapa" className="text-2xl">
           Como chegar
         </h2>
         <MapaLoja />

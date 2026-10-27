@@ -44,7 +44,7 @@ export async function comprimirImagem(
   const escala = Math.min(1, maxLado / Math.max(largura, altura))
   const { canvas, ctx } = canvasDoTamanho(largura * escala, altura * escala)
   if (tipo === "image/jpeg") {
-    ctx.fillStyle = "#ffffff"
+    ctx.fillStyle = "#fbf7f3"
     ctx.fillRect(0, 0, canvas.width, canvas.height)
   }
   ctx.drawImage(img, 0, 0, canvas.width, canvas.height)

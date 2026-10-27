@@ -23,7 +23,7 @@ export function ProdutoEditar({ id }: { id: string | null }) {
   if (!produto) {
     return (
       <div className="container-loja flex flex-col items-start gap-4 py-8">
-        <h1 className="text-3xl font-semibold">Papel de parede não encontrado</h1>
+        <h1 className="text-3xl">Papel de parede não encontrado</h1>
         <Link href="/admin/produtos" className={buttonVariants()}>
           Voltar para a lista
         </Link>

@@ -35,7 +35,7 @@ export function ProdutoCard({ produto, className, prioridade, nivelTitulo = 3 }:
         )}
       </div>
       <div className="flex flex-col gap-1">
-        <Titulo className="font-sans text-base leading-snug font-semibold">
+        <Titulo className="font-sans text-base leading-snug font-medium">
           <Link
             href={`/produtos/${produto.slug}`}
             className="outline-none after:absolute after:inset-0 after:rounded-md focus-visible:after:ring-3 focus-visible:after:ring-ring/60"
@@ -44,7 +44,7 @@ export function ProdutoCard({ produto, className, prioridade, nivelTitulo = 3 }:
           </Link>
         </Titulo>
         <p className="text-foreground-subtle">
-          <span className="font-semibold text-foreground">{formatarMoeda(produto.precoM2)}</span>/m²
+          <span className="font-medium text-foreground">{formatarMoeda(produto.precoM2)}</span>/m²
         </p>
         <div className="flex gap-1.5" aria-label={`Cores: ${produto.cores.map((c) => c.nome).join(", ")}`}>
           {produto.cores.map((c) => (

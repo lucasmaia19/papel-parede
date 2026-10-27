@@ -1,19 +1,22 @@
 import type { Metadata, Viewport } from "next"
-import { Figtree, Fraunces } from "next/font/google"
+import { Cormorant_Garamond, Jost } from "next/font/google"
 import { StoreHydration } from "@/components/store-hydration"
 import "./globals.css"
 
-const figtree = Figtree({
-  variable: "--font-figtree",
+// Texto e botões: sans fina e legível (nunca bold pesado: no máximo 500)
+const jost = Jost({
+  variable: "--font-jost",
   subsets: ["latin"],
+  weight: ["300", "400", "500"],
   display: "swap",
 })
 
-const fraunces = Fraunces({
-  variable: "--font-fraunces",
+// Títulos: serifada leve
+const cormorant = Cormorant_Garamond({
+  variable: "--font-cormorant",
   subsets: ["latin"],
+  weight: ["300", "400", "500"],
   display: "swap",
-  axes: ["opsz", "SOFT"],
 })
 
 export const metadata: Metadata = {
@@ -26,12 +29,12 @@ export const metadata: Metadata = {
 }
 
 export const viewport: Viewport = {
-  themeColor: "#faf8f5",
+  themeColor: "#fbf7f3",
 }
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
-    <html lang="pt-BR" className={`${figtree.variable} ${fraunces.variable}`}>
+    <html lang="pt-BR" className={`${jost.variable} ${cormorant.variable}`}>
       <body className="flex min-h-dvh flex-col">
         <StoreHydration />
         {children}

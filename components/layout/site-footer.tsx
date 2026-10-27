@@ -24,7 +24,7 @@ export function TaxasDeslocamento({ className }: { className?: string }) {
       {cidades.map((c) => (
         <li key={c.id} className="flex items-baseline justify-between gap-4 py-2.5">
           <span>{c.nome}</span>
-          <span className="font-semibold">
+          <span className="font-medium">
             {c.taxaDeslocamento > 0 ? `${formatarMoeda(c.taxaDeslocamento)} de deslocamento` : "Sem taxa de deslocamento"}
           </span>
         </li>
@@ -91,7 +91,7 @@ export function SiteFooter() {
         </section>
 
         <section aria-labelledby="rodape-entrega" className="flex flex-col gap-4">
-          <h2 id="rodape-entrega" className="text-xl font-semibold">
+          <h2 id="rodape-entrega" className="text-xl">
             Entrega e aplicação
           </h2>
           <p>
@@ -113,14 +113,14 @@ export function SiteFooter() {
         </section>
 
         <section aria-labelledby="rodape-loja" className="flex flex-col gap-4 md:col-span-2 lg:col-span-1">
-          <h2 id="rodape-loja" className="text-xl font-semibold">
+          <h2 id="rodape-loja" className="text-xl">
             Nossa loja
           </h2>
           <p className="flex gap-2">
             <MapPinIcon className="mt-1 size-5 shrink-0" aria-hidden />
             <span>{settings.endereco}</span>
           </p>
-          <p className="flex gap-2 font-semibold">
+          <p className="flex gap-2 font-medium">
             <ClockIcon className="mt-1 size-5 shrink-0" aria-hidden />
             <span>{settings.textoAtendimento}</span>
           </p>

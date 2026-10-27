@@ -31,8 +31,8 @@ export function Logo({ className }: { className?: string }) {
       data-slot="logo"
       className={cn("flex min-h-12 flex-col justify-center leading-none outline-none focus-visible:ring-3 focus-visible:ring-ring/50", className)}
     >
-      <span className="font-heading text-[1.6rem] font-semibold tracking-tight md:text-3xl">Rodovalho</span>
-      <span className="mt-1 text-[0.8rem] font-medium tracking-[0.18em] text-foreground-subtle uppercase">
+      <span className="font-heading text-[1.85rem] font-light tracking-wide text-foreground-heading md:text-[2.1rem]">Rodovalho</span>
+      <span className="mt-0.5 text-[0.72rem] font-normal tracking-[0.28em] text-foreground-subtle uppercase">
         Papéis de Parede
       </span>
     </Link>
@@ -78,13 +78,13 @@ export function SiteHeader() {
             aria-label={`Carrinho, ${quantidade} ${quantidade === 1 ? "item" : "itens"}`}
             className={cn(
               buttonVariants({ variant: "ghost", size: "sm" }),
-              "relative flex-col gap-0.5 px-2.5 text-xs font-semibold lg:flex-row lg:gap-2 lg:text-base",
+              "relative flex-col gap-0.5 px-2.5 text-xs font-medium lg:flex-row lg:gap-2 lg:text-base",
             )}
           >
             <span className="relative">
               <ShoppingBagIcon className="size-6" aria-hidden />
               {quantidade > 0 && (
-                <span className="absolute -top-1.5 -right-2.5 flex min-w-5 items-center justify-center rounded-full bg-primary px-1 text-[0.75rem] leading-5 font-bold text-primary-foreground">
+                <span className="absolute -top-1.5 -right-2.5 flex min-w-5 items-center justify-center rounded-full bg-primary px-1 text-[0.75rem] leading-5 font-medium text-primary-foreground">
                   {quantidade}
                 </span>
               )}
@@ -96,7 +96,7 @@ export function SiteHeader() {
             <SheetTrigger
               className={cn(
                 buttonVariants({ variant: "ghost", size: "sm" }),
-                "flex-col gap-0.5 px-2.5 text-xs font-semibold lg:hidden",
+                "flex-col gap-0.5 px-2.5 text-xs font-medium lg:hidden",
               )}
             >
               <MenuIcon className="size-6" aria-hidden />
@@ -114,7 +114,7 @@ export function SiteHeader() {
                         href={link.href}
                         onClick={() => setMenuAberto(false)}
                         aria-current={linkAtivo(pathname, link.href) ? "page" : undefined}
-                        className="flex min-h-14 items-center px-3 text-lg font-medium text-foreground aria-[current=page]:font-bold aria-[current=page]:text-primary"
+                        className="flex min-h-14 items-center px-3 text-lg font-medium text-foreground aria-[current=page]:font-medium aria-[current=page]:text-primary"
                       >
                         {link.rotulo}
                       </Link>

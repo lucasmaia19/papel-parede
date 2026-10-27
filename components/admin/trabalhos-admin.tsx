@@ -34,7 +34,7 @@ function validar(t: WorkGallery): Erros {
 function FotoCampo({ rotulo, valor, onChange, erro }: { rotulo: string; valor: string; onChange: (url: string) => void; erro?: string }) {
   return (
     <div className="flex flex-col gap-2">
-      <p className="font-semibold">{rotulo}</p>
+      <p className="font-medium">{rotulo}</p>
       <div className="flex items-center gap-3">
         {valor ? (
           // eslint-disable-next-line @next/next/no-img-element -- base64 ou /public
@@ -107,7 +107,7 @@ export function TrabalhosAdmin() {
               ))}
             </div>
             <div className="flex flex-wrap items-center gap-2">
-              <h2 className="font-sans text-lg font-bold">{t.titulo}</h2>
+              <h2 className="font-sans text-lg">{t.titulo}</h2>
               {t.destaque && <Badge variant="soft">Destaque</Badge>}
             </div>
             <p className="text-foreground-subtle">

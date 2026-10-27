@@ -31,7 +31,7 @@ function CampoMedida({ rotulo, valor, onChange, max, placeholder = "Ex.: 2,60" }
   const erro = validarMedida(valor, max)
   return (
     <div className="flex min-w-0 flex-col gap-1.5">
-      <label htmlFor={id} className="font-semibold">
+      <label htmlFor={id} className="font-medium">
         {rotulo}
       </label>
       <div className="relative">
@@ -47,7 +47,7 @@ function CampoMedida({ rotulo, valor, onChange, max, placeholder = "Ex.: 2,60" }
           aria-describedby={erro ? `${id}-erro` : undefined}
           className="pr-12"
         />
-        <span aria-hidden className="pointer-events-none absolute top-1/2 right-4 -translate-y-1/2 font-semibold text-foreground-subtle">
+        <span aria-hidden className="pointer-events-none absolute top-1/2 right-4 -translate-y-1/2 font-medium text-foreground-subtle">
           m
         </span>
       </div>
@@ -95,7 +95,7 @@ export function Calculadora({ paredes, onChange, metragem, margemPerda, precoM2 
               className="flex flex-col gap-4 rounded-md border border-border bg-surface-raised p-4"
             >
               <div className="flex items-center justify-between gap-3">
-                <h3 className="font-sans text-lg font-bold">{rotulo}</h3>
+                <h3 className="font-sans text-lg font-medium">{rotulo}</h3>
                 {paredes.length > 1 && (
                   <Button
                     variant="ghost"
@@ -131,7 +131,7 @@ export function Calculadora({ paredes, onChange, metragem, margemPerda, precoM2 
                   {parede.aberturas.map((a, j) => (
                     <li key={a.id} className="flex flex-col gap-3 rounded-md border border-border bg-muted/60 p-3">
                       <div className="flex items-center justify-between gap-2">
-                        <span className="font-semibold">
+                        <span className="font-medium">
                           {NOME_ABERTURA[a.tipo]} {j + 1}
                         </span>
                         <Button
@@ -190,27 +190,27 @@ export function Calculadora({ paredes, onChange, metragem, margemPerda, precoM2 
             <dl className="flex flex-col gap-1.5">
               <div className="flex justify-between gap-4">
                 <dt>Área das paredes</dt>
-                <dd className="font-semibold tabular-nums">{formatarM2(metragem.areaBruta)}</dd>
+                <dd className="font-medium tabular-nums">{formatarM2(metragem.areaBruta)}</dd>
               </div>
               {metragem.areaAberturas > 0 && (
                 <div className="flex justify-between gap-4">
                   <dt>Portas e janelas</dt>
-                  <dd className="font-semibold tabular-nums">− {formatarM2(metragem.areaAberturas)}</dd>
+                  <dd className="font-medium tabular-nums">− {formatarM2(metragem.areaAberturas)}</dd>
                 </div>
               )}
               <div className="flex justify-between gap-4">
                 <dt>Sobra para recortes ({formatarNumero(margemPerda)}%)</dt>
-                <dd className="font-semibold tabular-nums">+ {formatarM2(metragem.areaPerda)}</dd>
+                <dd className="font-medium tabular-nums">+ {formatarM2(metragem.areaPerda)}</dd>
               </div>
               <div className="mt-1 flex justify-between gap-4 border-t border-border pt-2 text-lg">
-                <dt className="font-bold">Total de papel</dt>
-                <dd className="font-bold tabular-nums">{formatarM2(metragem.m2)}</dd>
+                <dt className="font-medium">Total de papel</dt>
+                <dd className="font-medium tabular-nums">{formatarM2(metragem.m2)}</dd>
               </div>
               <div className="flex justify-between gap-4">
                 <dt>
                   {formatarM2(metragem.m2)} × {formatarMoeda(precoM2)}
                 </dt>
-                <dd className="font-bold tabular-nums">{formatarMoeda(calcularValorPapel(metragem.m2, precoM2))}</dd>
+                <dd className="font-medium tabular-nums">{formatarMoeda(calcularValorPapel(metragem.m2, precoM2))}</dd>
               </div>
             </dl>
             <p className="text-sm text-foreground-subtle">

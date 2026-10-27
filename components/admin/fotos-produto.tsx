@@ -26,7 +26,7 @@ export function FotosProduto({ nomeProduto, imagens, onChange, erro }: FotosProd
               <div className="flex items-center gap-3">
                 {/* eslint-disable-next-line @next/next/no-img-element -- base64 ou /public */}
                 <img src={img.url} alt={img.alt} className="size-20 shrink-0 rounded-sm border border-border object-cover" />
-                <span className="font-semibold">Foto {i + 1}</span>
+                <span className="font-medium">Foto {i + 1}</span>
                 {i === 0 && <Badge variant="soft">Principal</Badge>}
               </div>
               <div className="flex flex-col gap-2">

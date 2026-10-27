@@ -43,16 +43,16 @@ export function ComparacaoSlider({
           <img src={antes} alt={altAntes} className="size-full object-cover" draggable={false} />
         </div>
 
-        <span className="pointer-events-none absolute top-2 left-2 rounded-sm bg-foreground/85 px-2 py-0.5 text-sm font-bold text-white">
+        <span className="pointer-events-none absolute top-2 left-2 rounded-sm bg-surface-raised/90 px-2 py-0.5 text-sm font-medium text-foreground-heading">
           {rotuloAntes}
         </span>
-        <span className="pointer-events-none absolute top-2 right-2 rounded-sm bg-foreground/85 px-2 py-0.5 text-sm font-bold text-white">
+        <span className="pointer-events-none absolute top-2 right-2 rounded-sm bg-surface-raised/90 px-2 py-0.5 text-sm font-medium text-foreground-heading">
           {rotuloDepois}
         </span>
 
         {/* linha e alça */}
-        <div aria-hidden className="pointer-events-none absolute inset-y-0 w-0.5 -translate-x-1/2 bg-white shadow-[0_0_0_1px_rgb(0_0_0/0.25)]" style={{ left: `${posicao}%` }}>
-          <span className="absolute top-1/2 left-1/2 flex size-12 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full border-2 border-white bg-foreground/85 text-white shadow-md">
+        <div aria-hidden className="pointer-events-none absolute inset-y-0 w-0.5 -translate-x-1/2 bg-surface-raised shadow-[0_0_0_1px_rgb(122_99_89/0.3)]" style={{ left: `${posicao}%` }}>
+          <span className="absolute top-1/2 left-1/2 flex size-12 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full border border-rose bg-surface-raised text-foreground-heading shadow-sm">
             <ChevronsLeftRightIcon className="size-6" />
           </span>
         </div>

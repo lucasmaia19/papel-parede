@@ -15,8 +15,8 @@ interface ResumoPrecoListaProps {
 function Linha({ rotulo, valor, destaque, sutil }: { rotulo: React.ReactNode; valor: React.ReactNode; destaque?: boolean; sutil?: boolean }) {
   return (
     <div className={cn("flex items-baseline justify-between gap-4", sutil && "text-foreground-subtle")}>
-      <dt className={cn(destaque && "font-semibold")}>{rotulo}</dt>
-      <dd className={cn("text-right tabular-nums", destaque ? "font-bold" : "font-semibold")}>{valor}</dd>
+      <dt className={cn(destaque && "font-medium")}>{rotulo}</dt>
+      <dd className={cn("text-right tabular-nums", destaque ? "font-medium" : "font-medium")}>{valor}</dd>
     </div>
   )
 }
@@ -66,14 +66,14 @@ export function ResumoPrecoLista({
 
       <div className="flex flex-col gap-1 border-t border-border pt-3">
         <div className="flex items-baseline justify-between gap-4">
-          <span className="text-lg font-bold">TOTAL</span>
-          <span data-slot="total" className="text-2xl font-bold text-primary tabular-nums">
+          <span className="text-lg font-medium">TOTAL</span>
+          <span data-slot="total" className="text-2xl font-medium text-primary tabular-nums">
             {formatarMoeda(resumo.total)}
           </span>
         </div>
         {descontoPixPct > 0 && resumo.total > 0 && (
           <p className="text-right">
-            No Pix: <strong className="font-bold tabular-nums">{formatarMoeda(resumo.totalPix)}</strong>{" "}
+            No Pix: <strong className="font-medium tabular-nums">{formatarMoeda(resumo.totalPix)}</strong>{" "}
             <span className="text-foreground-subtle">({formatarNumero(descontoPixPct)}% de desconto)</span>
           </p>
         )}
@@ -83,11 +83,11 @@ export function ResumoPrecoLista({
         <div className="grid grid-cols-2 gap-2" data-slot="comparativo-aplicacao">
           <div className="rounded-md border border-border bg-surface-raised p-3">
             <p className="text-sm text-foreground-subtle">Total sem aplicação</p>
-            <p className="text-lg font-bold tabular-nums">{formatarMoeda(resumo.totalSemAplicacao)}</p>
+            <p className="text-lg font-medium tabular-nums">{formatarMoeda(resumo.totalSemAplicacao)}</p>
           </div>
           <div className="rounded-md border border-border bg-surface-raised p-3">
             <p className="text-sm text-foreground-subtle">Total com aplicação</p>
-            <p className="text-lg font-bold tabular-nums">{formatarMoeda(resumo.totalComAplicacao)}</p>
+            <p className="text-lg font-medium tabular-nums">{formatarMoeda(resumo.totalComAplicacao)}</p>
           </div>
         </div>
       )}

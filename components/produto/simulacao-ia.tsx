@@ -51,7 +51,7 @@ function MostrarResultado({ resultado }: { resultado: Resultado }) {
           { rotulo: "Simulação", src: resultado.simulada },
         ].map((f) => (
           <figure key={f.rotulo} className="flex flex-col gap-1.5">
-            <figcaption className="font-semibold">{f.rotulo}</figcaption>
+            <figcaption className="font-medium">{f.rotulo}</figcaption>
             {/* eslint-disable-next-line @next/next/no-img-element -- base64 */}
             <img src={f.src} alt={f.rotulo} className="w-full rounded-md border border-border object-cover" />
           </figure>
@@ -171,7 +171,7 @@ export function SimulacaoIA({ produto, cor, personalizacoes, amostra, sugestoes,
 
         <TabsContent value="estampa" className="flex flex-col gap-4">
           <div className="flex flex-col gap-2">
-            <label htmlFor={idObservacao} className="font-semibold">
+            <label htmlFor={idObservacao} className="font-medium">
               O que você gostaria de mudar? <span className="font-normal text-foreground-subtle">(opcional)</span>
             </label>
             <Textarea
@@ -256,13 +256,13 @@ export function SimulacaoIA({ produto, cor, personalizacoes, amostra, sugestoes,
 
       <div aria-live="polite" className="flex flex-col gap-3">
         {carregando && (
-          <p className="flex items-center gap-2 font-semibold">
+          <p className="flex items-center gap-2 font-medium">
             <LoaderCircleIcon className="size-5 animate-spin" aria-hidden />
             Gerando a simulação… isso pode levar alguns segundos.
           </p>
         )}
         {erro && (
-          <p role="alert" className="rounded-md border border-destructive/40 bg-destructive/10 p-3 font-semibold text-destructive">
+          <p role="alert" className="rounded-md border border-destructive/40 bg-destructive/10 p-3 font-medium text-destructive">
             {erro}
           </p>
         )}
@@ -279,7 +279,7 @@ export function SimulacaoIA({ produto, cor, personalizacoes, amostra, sugestoes,
 
       {valor && (
         <div className="flex flex-wrap items-center justify-between gap-3 rounded-md border border-primary/40 bg-primary-soft/50 p-3">
-          <p className="font-semibold">
+          <p className="font-medium">
             {valor.imagem ? "A simulação e a observação vão junto com o pedido." : "Sua observação vai junto com o pedido."}
           </p>
           <Button

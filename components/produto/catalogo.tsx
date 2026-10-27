@@ -34,7 +34,7 @@ function PainelFiltros({
   return (
     <div className="flex flex-col gap-8">
       <fieldset className="flex flex-col gap-3">
-        <legend className="mb-3 font-heading text-xl font-semibold">Estilo</legend>
+        <legend className="mb-3 font-heading text-xl font-medium">Estilo</legend>
         <div className="grid grid-cols-2 gap-2 lg:grid-cols-1">
           <OpcaoBotao ativo={!filtros.categoria} onClick={() => alterar({ categoria: null })}>
             Todos
@@ -47,7 +47,7 @@ function PainelFiltros({
         </div>
       </fieldset>
       <fieldset className="flex flex-col gap-3">
-        <legend className="mb-3 font-heading text-xl font-semibold">Cor</legend>
+        <legend className="mb-3 font-heading text-xl font-medium">Cor</legend>
         <div className="grid grid-cols-2 gap-2 lg:grid-cols-1">
           <OpcaoBotao ativo={!filtros.cor} onClick={() => alterar({ cor: null })}>
             Todas
@@ -129,7 +129,7 @@ function CatalogoConteudo({
   return (
     <div className="container-loja flex flex-col gap-6 py-8 md:py-12">
       <header className="flex flex-col gap-3 border-b border-border pb-6">
-        <h1 className="text-3xl font-semibold md:text-4xl">{titulo}</h1>
+        <h1 className="text-3xl md:text-4xl">{titulo}</h1>
         {descricao && <div className="max-w-prose text-foreground-subtle">{descricao}</div>}
       </header>
 

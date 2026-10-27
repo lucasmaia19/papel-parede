@@ -26,7 +26,7 @@ export function Passo({ numero, titulo, concluido, atual, descricao, className, 
         <span
           aria-hidden
           className={cn(
-            "mt-0.5 flex size-9 shrink-0 items-center justify-center rounded-full border-2 font-heading text-lg font-semibold",
+            "mt-0.5 flex size-9 shrink-0 items-center justify-center rounded-full border-2 font-heading text-lg font-medium",
             concluido
               ? "border-primary bg-primary text-primary-foreground"
               : atual
@@ -37,7 +37,7 @@ export function Passo({ numero, titulo, concluido, atual, descricao, className, 
           {concluido ? <CheckIcon className="size-5" /> : numero}
         </span>
         <div className="flex flex-col gap-1">
-          <h2 id={idTitulo} className="text-xl leading-tight font-semibold md:text-2xl">
+          <h2 id={idTitulo} className="text-xl leading-tight md:text-2xl">
             <span className="sr-only">
               Passo {numero}
               {concluido ? " (concluído)" : ""}:{" "}
@@ -45,7 +45,7 @@ export function Passo({ numero, titulo, concluido, atual, descricao, className, 
             {titulo}
           </h2>
           {atual && (
-            <p className="w-fit rounded-sm bg-primary-soft px-2 py-0.5 text-sm font-semibold text-primary">Você está aqui</p>
+            <p className="w-fit rounded-sm bg-primary-soft px-2 py-0.5 text-sm font-medium text-primary-hover">Você está aqui</p>
           )}
           {descricao && <div className="text-foreground-subtle">{descricao}</div>}
         </div>

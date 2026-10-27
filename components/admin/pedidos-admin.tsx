@@ -22,7 +22,7 @@ function Linha({ rotulo, valor }: { rotulo: string; valor: React.ReactNode }) {
   return (
     <div className="flex justify-between gap-4">
       <dt className="text-foreground-subtle">{rotulo}</dt>
-      <dd className="text-right font-semibold tabular-nums">{valor}</dd>
+      <dd className="text-right font-medium tabular-nums">{valor}</dd>
     </div>
   )
 }
@@ -37,7 +37,7 @@ function CartaoPedido({ pedido }: { pedido: Order }) {
     <article data-slot="pedido-admin" className="flex flex-col gap-4 rounded-md border border-border bg-surface-raised p-4">
       <div className="flex flex-wrap items-start justify-between gap-2">
         <div className="flex flex-col gap-0.5">
-          <h2 className="font-sans text-lg font-bold">
+          <h2 className="font-sans text-lg">
             Pedido nº {pedido.numero} — {pedido.cliente.nome}
           </h2>
           <p className="text-foreground-subtle">
@@ -49,9 +49,9 @@ function CartaoPedido({ pedido }: { pedido: Order }) {
       </div>
 
       <div className="flex flex-wrap items-end justify-between gap-3">
-        <p className="text-xl font-bold tabular-nums">{formatarMoeda(pedido.total)}</p>
+        <p className="text-xl font-medium tabular-nums">{formatarMoeda(pedido.total)}</p>
         <div className="flex min-w-56 flex-col gap-1.5">
-          <label htmlFor={idStatus} className="font-semibold">
+          <label htmlFor={idStatus} className="font-medium">
             Status
           </label>
           <select
@@ -68,7 +68,7 @@ function CartaoPedido({ pedido }: { pedido: Order }) {
       </div>
 
       <details className="group rounded-md border border-border">
-        <summary className="flex min-h-12 cursor-pointer list-none items-center justify-between px-3 font-semibold [&::-webkit-details-marker]:hidden">
+        <summary className="flex min-h-12 cursor-pointer list-none items-center justify-between px-3 font-medium [&::-webkit-details-marker]:hidden">
           Ver detalhes ({pedido.itens.length} {pedido.itens.length === 1 ? "item" : "itens"})
           <ChevronDownIcon className="size-5 transition-transform group-open:rotate-180" aria-hidden />
         </summary>
@@ -76,7 +76,7 @@ function CartaoPedido({ pedido }: { pedido: Order }) {
           <ul className="flex flex-col gap-3">
             {pedido.itens.map((item) => (
               <li key={item.id} className="flex flex-col gap-1 border-b border-border pb-3 last:border-b-0">
-                <p className="font-bold">{item.produtoNome}</p>
+                <p className="font-medium">{item.produtoNome}</p>
                 <p>
                   Cor: {item.cor.nome}
                   {item.personalizacoes.length > 0 && ` · ${textoPersonalizacoes(item.personalizacoes)}`}
@@ -95,7 +95,7 @@ function CartaoPedido({ pedido }: { pedido: Order }) {
                       <img src={item.simulacao.imagem} alt="Simulação com IA" className="size-20 rounded-sm object-cover" />
                     )}
                     <p className="flex flex-col">
-                      <span className="flex items-center gap-1 font-semibold">
+                      <span className="flex items-center gap-1 font-medium">
                         <SparklesIcon className="size-4" aria-hidden />
                         Observação (IA)
                       </span>
@@ -103,7 +103,7 @@ function CartaoPedido({ pedido }: { pedido: Order }) {
                     </p>
                   </div>
                 )}
-                <p className="font-semibold">Subtotal: {formatarMoeda(item.subtotal)}</p>
+                <p className="font-medium">Subtotal: {formatarMoeda(item.subtotal)}</p>
               </li>
             ))}
           </ul>
@@ -163,7 +163,7 @@ export function PedidosAdmin() {
       <CabecalhoAdmin titulo="Pedidos" descricao="Pedidos feitos no site e enviados pelo WhatsApp." />
 
       <fieldset className="flex flex-col gap-2">
-        <legend className="mb-2 font-semibold">Status</legend>
+        <legend className="mb-2 font-medium">Status</legend>
         <div className="grid grid-cols-2 gap-2 sm:flex sm:flex-wrap">
           <OpcaoBotao ativo={status === null} onClick={() => setStatus(null)}>
             Todos
@@ -176,7 +176,7 @@ export function PedidosAdmin() {
         </div>
       </fieldset>
       <fieldset className="flex flex-col gap-2">
-        <legend className="mb-2 font-semibold">Canal</legend>
+        <legend className="mb-2 font-medium">Canal</legend>
         <div className="grid grid-cols-3 gap-2 sm:flex">
           <OpcaoBotao ativo={canal === null} onClick={() => setCanal(null)}>
             Todos

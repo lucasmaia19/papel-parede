@@ -69,7 +69,7 @@ export function FinalizarWhatsapp({ className }: { className?: string }) {
           </DialogHeader>
           <form onSubmit={enviar} className="flex flex-col gap-4" noValidate>
             <div className="flex flex-col gap-1.5">
-              <label htmlFor={id} className="font-semibold">
+              <label htmlFor={id} className="font-medium">
                 Seu nome
               </label>
               <Input

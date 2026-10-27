@@ -7,20 +7,20 @@ import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } f
 import { WhatsappLink } from "@/components/whatsapp-link"
 import { useLoja } from "@/lib/store"
 
-const TRACO = "#43584a"
+const TRACO = "var(--desenho-cota)"
 
 function Ilustracao({ passo }: { passo: 1 | 2 | 3 }) {
   return (
     <svg viewBox="0 0 280 160" className="w-full rounded-md border border-border bg-surface" aria-hidden>
       {/* parede, teto e chão */}
-      <rect x={30} y={18} width={220} height={118} fill="#ede6db" stroke="#2b2b2b" strokeWidth={1.5} />
-      <rect x={0} y={136} width={280} height={24} fill="#d9c4a5" />
+      <rect x={30} y={18} width={220} height={118} fill="var(--desenho-parede)" stroke="var(--desenho-traco)" strokeWidth={1.5} />
+      <rect x={0} y={136} width={280} height={24} fill="var(--desenho-porta)" />
       {passo === 1 && (
         <>
           <line x1={30} y1={78} x2={250} y2={78} stroke={TRACO} strokeWidth={3} />
           <path d="M30 78 l12 -7 v14 Z M250 78 l-12 -7 v14 Z" fill={TRACO} />
-          <rect x={92} y={60} width={96} height={30} rx={4} fill="#fff" stroke={TRACO} />
-          <text x={140} y={81} textAnchor="middle" fontSize={15} fontWeight={700} fill="#2b2b2b">
+          <rect x={92} y={60} width={96} height={30} rx={4} fill="var(--background)" stroke={TRACO} />
+          <text x={140} y={81} textAnchor="middle" fontSize={15} fontWeight={500} fill="var(--desenho-traco)">
             Largura
           </text>
         </>
@@ -29,22 +29,22 @@ function Ilustracao({ passo }: { passo: 1 | 2 | 3 }) {
         <>
           <line x1={140} y1={18} x2={140} y2={136} stroke={TRACO} strokeWidth={3} />
           <path d="M140 18 l-7 12 h14 Z M140 136 l-7 -12 h14 Z" fill={TRACO} />
-          <rect x={150} y={62} width={72} height={30} rx={4} fill="#fff" stroke={TRACO} />
-          <text x={186} y={83} textAnchor="middle" fontSize={15} fontWeight={700} fill="#2b2b2b">
+          <rect x={150} y={62} width={72} height={30} rx={4} fill="var(--background)" stroke={TRACO} />
+          <text x={186} y={83} textAnchor="middle" fontSize={15} fontWeight={500} fill="var(--desenho-traco)">
             Altura
           </text>
         </>
       )}
       {passo === 3 && (
         <>
-          <rect x={56} y={58} width={44} height={78} fill="#c9b291" stroke="#2b2b2b" />
-          <circle cx={92} cy={100} r={2.5} fill="#2b2b2b" />
-          <rect x={150} y={44} width={70} height={46} fill="#dfe8ee" stroke="#2b2b2b" />
-          <line x1={185} y1={44} x2={185} y2={90} stroke="#2b2b2b" />
-          <text x={78} y={50} textAnchor="middle" fontSize={13} fontWeight={700} fill="#2b2b2b">
+          <rect x={56} y={58} width={44} height={78} fill="var(--desenho-porta)" stroke="var(--desenho-traco)" />
+          <circle cx={92} cy={100} r={2.5} fill="var(--desenho-traco)" />
+          <rect x={150} y={44} width={70} height={46} fill="var(--desenho-janela)" stroke="var(--desenho-traco)" />
+          <line x1={185} y1={44} x2={185} y2={90} stroke="var(--desenho-traco)" />
+          <text x={78} y={50} textAnchor="middle" fontSize={13} fontWeight={500} fill="var(--desenho-traco)">
             Porta
           </text>
-          <text x={185} y={106} textAnchor="middle" fontSize={13} fontWeight={700} fill="#2b2b2b">
+          <text x={185} y={106} textAnchor="middle" fontSize={13} fontWeight={500} fill="var(--desenho-traco)">
             Janela
           </text>
           <line x1={56} y1={146} x2={100} y2={146} stroke={TRACO} strokeWidth={2.5} />
@@ -91,7 +91,7 @@ export function GuiaMedir() {
             {PASSOS.map((p, i) => (
               <li key={p.titulo} className="flex flex-col gap-2">
                 <Ilustracao passo={(i + 1) as 1 | 2 | 3} />
-                <h3 className="font-sans text-lg font-bold">
+                <h3 className="font-sans text-lg font-medium">
                   {i + 1}. {p.titulo}
                 </h3>
                 <p>{p.texto}</p>
@@ -99,7 +99,7 @@ export function GuiaMedir() {
             ))}
           </ol>
           <div className="flex flex-col gap-3 rounded-md border border-border bg-muted p-4">
-            <p className="font-semibold">
+            <p className="font-medium">
               Ficou com dúvida? Em {regiao} e região fazemos a visita técnica para medir para você.
             </p>
             <WhatsappLink mensagem="Olá! Gostaria de agendar uma visita técnica para medir minha parede.">

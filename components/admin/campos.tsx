@@ -31,7 +31,7 @@ export function CampoTexto({ rotulo, valor, onChange, erro, ajuda, sufixo, class
   const id = useId()
   return (
     <div className={cn("flex min-w-0 flex-col gap-1.5", className)}>
-      <label htmlFor={id} className="font-semibold">
+      <label htmlFor={id} className="font-medium">
         {rotulo}
       </label>
       {ajuda && <p className="text-sm text-foreground-subtle">{ajuda}</p>}
@@ -46,7 +46,7 @@ export function CampoTexto({ rotulo, valor, onChange, erro, ajuda, sufixo, class
           {...props}
         />
         {sufixo && (
-          <span aria-hidden className="pointer-events-none absolute top-1/2 right-4 -translate-y-1/2 font-semibold text-foreground-subtle">
+          <span aria-hidden className="pointer-events-none absolute top-1/2 right-4 -translate-y-1/2 font-medium text-foreground-subtle">
             {sufixo}
           </span>
         )}
@@ -67,7 +67,7 @@ export function CampoArea({ rotulo, valor, onChange, erro, className, ...props }
   const id = useId()
   return (
     <div className={cn("flex flex-col gap-1.5", className)}>
-      <label htmlFor={id} className="font-semibold">
+      <label htmlFor={id} className="font-medium">
         {rotulo}
       </label>
       <Textarea
@@ -98,7 +98,7 @@ export function Interruptor({
   return (
     <div className="flex min-h-12 items-center justify-between gap-4 rounded-md border border-border bg-surface-raised p-3 pl-4">
       <div className="flex flex-col">
-        <label htmlFor={id} className="font-semibold">
+        <label htmlFor={id} className="font-medium">
           {rotulo}
         </label>
         {descricao && <span className="text-sm text-foreground-subtle">{descricao}</span>}
@@ -127,7 +127,7 @@ export function CampoSelect({
   const id = useId()
   return (
     <div className={cn("flex flex-col gap-1.5", className)}>
-      <label htmlFor={id} className="font-semibold">
+      <label htmlFor={id} className="font-medium">
         {rotulo}
       </label>
       <select id={id} value={valor} onChange={(e) => onChange(e.target.value)} className={classeSelect}>
@@ -154,7 +154,7 @@ export function SecaoAdmin({
   return (
     <section id={id} aria-label={titulo} className={cn("flex scroll-mt-28 flex-col gap-4 border-t border-border pt-6", className)}>
       <div className="flex flex-col gap-1">
-        <h2 className="text-xl font-semibold md:text-2xl">{titulo}</h2>
+        <h2 className="text-xl md:text-2xl">{titulo}</h2>
         {descricao && <p className="text-foreground-subtle">{descricao}</p>}
       </div>
       {children}

@@ -9,8 +9,8 @@
 <rect y="820" width="1600" height="280" fill="#BFA07C"/>
 <line x1="-40" y1="840" x2="20" y2="1100" stroke="#9B7F5F" stroke-width="2" opacity=".5"/><line x1="150" y1="840" x2="210" y2="1100" stroke="#9B7F5F" stroke-width="2" opacity=".5"/><line x1="340" y1="840" x2="400" y2="1100" stroke="#9B7F5F" stroke-width="2" opacity=".5"/><line x1="530" y1="840" x2="590" y2="1100" stroke="#9B7F5F" stroke-width="2" opacity=".5"/><line x1="720" y1="840" x2="780" y2="1100" stroke="#9B7F5F" stroke-width="2" opacity=".5"/><line x1="910" y1="840" x2="970" y2="1100" stroke="#9B7F5F" stroke-width="2" opacity=".5"/><line x1="1100" y1="840" x2="1160" y2="1100" stroke="#9B7F5F" stroke-width="2" opacity=".5"/><line x1="1290" y1="840" x2="1350" y2="1100" stroke="#9B7F5F" stroke-width="2" opacity=".5"/><line x1="1480" y1="840" x2="1540" y2="1100" stroke="#9B7F5F" stroke-width="2" opacity=".5"/>
 <rect y="816" width="1600" height="24" fill="#F3EFE7"/>
-<rect y="840" width="1600" height="4" fill="#000" opacity=".06"/>
-<ellipse cx="800" cy="850" rx="560" ry="22" fill="#000" opacity=".08"/>
+<rect y="840" width="1600" height="4" fill="#5a463d" opacity=".06"/>
+<ellipse cx="800" cy="850" rx="560" ry="22" fill="#5a463d" opacity=".08"/>
 <rect x="430" y="470" width="740" height="300" rx="6" fill="#D8CBB6"/>
 <rect x="430" y="470" width="740" height="18" fill="#C9B9A1"/>
 <rect x="400" y="690" width="800" height="150" rx="6" fill="#F2EEE6"/>

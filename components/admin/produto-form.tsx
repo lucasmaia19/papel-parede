@@ -109,11 +109,11 @@ export function ProdutoForm({ inicial, novo }: ProdutoFormProps) {
           <ArrowLeftIcon className="size-5" aria-hidden />
           Voltar para a lista
         </Link>
-        <h1 className="text-3xl font-semibold">{ehNovo ? "Novo papel de parede" : `Editar: ${f.nome || inicial.nome}`}</h1>
+        <h1 className="text-3xl">{ehNovo ? "Novo papel de parede" : `Editar: ${f.nome || inicial.nome}`}</h1>
 
         {qtdErros > 0 && (
           <div data-slot="resumo-erros" role="alert" className="rounded-md border border-destructive/40 bg-destructive/10 p-4">
-            <p className="font-bold text-destructive">
+            <p className="font-medium text-destructive">
               {qtdErros === 1 ? "Falta corrigir 1 campo." : `Falta corrigir ${qtdErros} campos.`} As mensagens estão em vermelho
               abaixo.
             </p>
@@ -197,7 +197,7 @@ export function ProdutoForm({ inicial, novo }: ProdutoFormProps) {
                   <div className="grid gap-3 sm:grid-cols-[1fr_auto]">
                     <CampoTexto rotulo={`Nome da cor ${i + 1}`} valor={c.nome} onChange={(nome) => atualizar({ nome })} erro={erros[`cores.${i}.nome`]} />
                     <div className="flex flex-col gap-1.5">
-                      <label htmlFor={`cor-${c.id}`} className="font-semibold">
+                      <label htmlFor={`cor-${c.id}`} className="font-medium">
                         Tom
                       </label>
                       <input
@@ -360,7 +360,7 @@ export function ProdutoForm({ inicial, novo }: ProdutoFormProps) {
             className="sm:max-w-xs"
           />
 
-          <h3 className="font-sans text-lg font-bold">Medidas do elemento</h3>
+          <h3 className="font-sans text-lg font-medium">Medidas do elemento</h3>
           <ul className="flex flex-col gap-3">
             {f.regua.medidas.map((m, i) => {
               const atualizar = (dados: Partial<(typeof f.regua.medidas)[number]>) =>
@@ -399,7 +399,7 @@ export function ProdutoForm({ inicial, novo }: ProdutoFormProps) {
 
           {principal && regua && (
             <div className="flex flex-col gap-2">
-              <h3 className="font-sans text-lg font-bold">Como o cliente vê</h3>
+              <h3 className="font-sans text-lg font-medium">Como o cliente vê</h3>
               <Galeria imagens={[{ url: principal, alt: f.nome }]} regua={regua} className="sm:max-w-md" />
             </div>
           )}
@@ -410,7 +410,7 @@ export function ProdutoForm({ inicial, novo }: ProdutoFormProps) {
           <Interruptor rotulo="Simulação com IA ligada" marcado={f.iaHabilitada} onChange={(iaHabilitada) => alterar({ iaHabilitada })} />
           {f.iaHabilitada && (
             <>
-              <p className="font-semibold">Sugestões de observação (o cliente toca para usar)</p>
+              <p className="font-medium">Sugestões de observação (o cliente toca para usar)</p>
               <ul className="flex flex-col gap-3">
                 {f.sugestoesIA.map((s, i) => (
                   <li key={i} className="flex items-end gap-2">
@@ -436,7 +436,7 @@ export function ProdutoForm({ inicial, novo }: ProdutoFormProps) {
       {/* g) Rodapé fixo com as ações */}
       <div data-slot="acoes-produto" className="sticky bottom-0 z-30 border-t border-border bg-surface-raised/97 shadow-[0_-4px_16px_rgb(0_0_0/0.06)]">
         <div className="container-loja flex flex-col gap-2 py-3 sm:flex-row sm:items-center sm:justify-between">
-          <p aria-live="polite" className={cn("text-sm font-semibold", mensagem ? "text-success" : "text-foreground-subtle")}>
+          <p aria-live="polite" className={cn("text-sm font-medium", mensagem ? "text-success" : "text-foreground-subtle")}>
             {mensagem ?? (alterado ? "Há alterações não salvas." : ehNovo ? "Preencha e toque em Salvar." : "Nada alterado.")}
           </p>
           <div className="grid grid-cols-2 gap-2 sm:flex">

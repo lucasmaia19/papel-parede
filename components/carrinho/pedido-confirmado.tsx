@@ -16,7 +16,7 @@ function Linha({ rotulo, valor }: { rotulo: string; valor: React.ReactNode }) {
   return (
     <div className="flex justify-between gap-4">
       <dt>{rotulo}</dt>
-      <dd className="text-right font-semibold tabular-nums">{valor}</dd>
+      <dd className="text-right font-medium tabular-nums">{valor}</dd>
     </div>
   )
 }
@@ -37,7 +37,7 @@ export function PedidoConfirmado() {
   if (!pedido) {
     return (
       <div className="container-loja flex flex-col items-start gap-5 py-12">
-        <h1 className="text-3xl font-semibold">Pedido não encontrado</h1>
+        <h1 className="text-3xl">Pedido não encontrado</h1>
         <p>Se você acabou de fazer um pedido, fale com a gente pelo WhatsApp.</p>
         <WhatsappLink>Falar no WhatsApp</WhatsappLink>
       </div>
@@ -50,11 +50,11 @@ export function PedidoConfirmado() {
     <div className="container-loja flex max-w-3xl flex-col gap-8 py-10 md:py-14">
       <div className="flex flex-col gap-3">
         <CircleCheckBigIcon className="size-12 text-primary" aria-hidden />
-        <h1 className="text-3xl font-semibold md:text-4xl">
+        <h1 className="text-3xl md:text-4xl">
           {whatsapp ? "Orçamento enviado para o WhatsApp" : "Pedido confirmado!"}
         </h1>
         <p className="text-lg">
-          Pedido nº <strong className="font-bold">{pedido.numero}</strong> — obrigado, {pedido.cliente.nome.split(" ")[0]}.
+          Pedido nº <strong className="font-medium">{pedido.numero}</strong> — obrigado, {pedido.cliente.nome.split(" ")[0]}.
         </p>
         <p className="text-foreground-subtle">
           {whatsapp
@@ -66,7 +66,7 @@ export function PedidoConfirmado() {
       <div className="flex gap-3 rounded-md border border-border bg-surface-raised p-4">
         <CalendarClockIcon className="mt-0.5 size-6 shrink-0" aria-hidden />
         <div>
-          <p className="font-semibold">Prazo estimado</p>
+          <p className="font-medium">Prazo estimado</p>
           <p>{pedido.prazoTexto}</p>
         </div>
       </div>
@@ -76,7 +76,7 @@ export function PedidoConfirmado() {
       </WhatsappLink>
 
       <section aria-labelledby="titulo-itens-pedido" className="flex flex-col gap-4">
-        <h2 id="titulo-itens-pedido" className="text-xl font-semibold">
+        <h2 id="titulo-itens-pedido" className="text-xl">
           Resumo
         </h2>
         <ul className="flex flex-col gap-3">
@@ -93,8 +93,8 @@ export function PedidoConfirmado() {
           {pedido.descontoPix > 0 && <Linha rotulo="Desconto Pix" valor={`− ${formatarMoeda(pedido.descontoPix)}`} />}
           <Linha rotulo="Pagamento" valor={ROTULO_PAGAMENTO[pedido.formaPagamento]} />
           <div className="mt-1 flex justify-between gap-4 border-t border-border pt-3 text-lg">
-            <dt className="font-bold">Total</dt>
-            <dd className="font-bold text-primary tabular-nums">{formatarMoeda(pedido.total)}</dd>
+            <dt className="font-medium">Total</dt>
+            <dd className="font-medium text-primary tabular-nums">{formatarMoeda(pedido.total)}</dd>
           </div>
         </dl>
         {pedido.endereco.rua && (

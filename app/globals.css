@@ -6,49 +6,69 @@
 @custom-variant dark (&:is(.dark *));
 
 /*
- * Tema "papel": fundo creme, texto grafite, bordas bege-acinzentadas
- * e UMA cor de destaque (verde-sálvia escuro) para ações principais e total.
+ * Tema delicado e pastel: fundo creme, textos em taupe (marrom-acinzentado),
+ * destaque rosé/terracota suave, apoio em sálvia clara e azul acinzentado.
+ * Sem preto nem branco puro em lugar nenhum. Contrastes conferidos (WCAG AA):
+ * texto ≥ 4,5:1 no fundo e no bege; bordas de campo e ícones ≥ 3:1.
  */
 :root {
-  --background: #faf8f5;
-  --surface: #fffdf9;
-  --surface-raised: #ffffff;
-  --foreground: #2b2b2b;
-  --foreground-subtle: #57524a;
+  --background: #fbf7f3; /* creme */
+  --surface: #fdfaf7;
+  --surface-raised: #fffcf9; /* cards e campos: creme mais claro, nunca branco puro */
+  --foreground: #6b5a52; /* corpo: 6,1:1 */
+  --foreground-heading: #7a6359; /* títulos: 5,2:1 */
+  --foreground-subtle: #7a6359; /* texto secundário: 4,8:1 até sobre o bege */
 
   --card: var(--surface);
   --card-foreground: var(--foreground);
-  --popover: var(--surface);
+  --popover: var(--background);
   --popover-foreground: var(--foreground);
 
-  --primary: #43584a;
-  --primary-hover: #34463a;
-  --primary-foreground: #ffffff;
-  --primary-soft: #e6ebe4;
+  /* Destaque: o tom rosé mais claro que mantém 4,5:1 com texto creme */
+  --primary: #8b6a5e;
+  --primary-hover: #7a5b50;
+  --primary-foreground: #fbf7f3;
+  --primary-soft: #f3e7e1; /* rosé bem claro: seleções, faixas de status */
 
-  --secondary: #ffffff;
-  --secondary-foreground: #2b2b2b;
-  --muted: #f1ece4;
-  --muted-foreground: #57524a;
-  --accent: #ede6db;
-  --accent-foreground: #2b2b2b;
+  --rose: #c9a396; /* decorativo: linhas e detalhes */
+  --sage: #e1e8dc; /* apoio: sálvia clara */
+  --sage-foreground: #556b57;
+  --blue-grey: #dfe6ec; /* apoio: azul acinzentado claro */
 
-  --destructive: #a3392b;
-  --destructive-foreground: #ffffff;
-  --success: #2f6b45;
-  --warning-bg: #fbf1dc;
-  --warning-border: #d9b76a;
+  --secondary: #fffcf9;
+  --secondary-foreground: #6b5a52;
+  --muted: #f4ece6; /* superfícies secundárias: bege-rosado claro */
+  --muted-foreground: #7a6359;
+  --accent: #efe4dd;
+  --accent-foreground: #6b5a52;
 
-  /* linhas finas de separação */
-  --border: #ddd5c9;
+  --destructive: #9a4b44;
+  --destructive-foreground: #fbf7f3;
+  --success: #556b57;
+  --warning-bg: #f8efe2;
+  --warning-border: #e2cba6;
+
+  /* linhas finas de separação (bege) */
+  --border: #e8dcd3;
   /* borda de campos/controles: contraste ≥ 3:1 com o fundo */
-  --input: #8c8376;
-  --ring: #43584a;
+  --input: #9c877c;
+  --ring: #8b6a5e;
+  /* fundo escurecido atrás de diálogos e gavetas */
+  --overlay: rgb(107 90 82 / 0.42);
 
-  --whatsapp: #1b6e4a;
-  --whatsapp-hover: #145a3c;
+  /* WhatsApp suavizado: ícone creme com 3:1 (mínimo para ícones) */
+  --whatsapp: #5e9c7c;
+  --whatsapp-hover: #528b6d;
+  --whatsapp-icon: #4f8a6b; /* ícone verde sobre creme (3,8:1) */
 
-  --radius: 5px;
+  /* desenhos técnicos (régua, parede, guia) */
+  --desenho-traco: #7a6359;
+  --desenho-cota: #8b6a5e;
+  --desenho-parede: #f1e6dd;
+  --desenho-porta: #dcc6b3;
+  --desenho-janela: #dfe6ec;
+
+  --radius: 8px;
 
   /* altura ocupada embaixo por barras fixas (ex.: barra de preço) — o WhatsApp flutuante sobe junto */
   --barra-inferior: 0px;
@@ -58,6 +78,13 @@
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-foreground-subtle: var(--foreground-subtle);
+  --color-foreground-heading: var(--foreground-heading);
+  --color-rose: var(--rose);
+  --color-sage: var(--sage);
+  --color-sage-foreground: var(--sage-foreground);
+  --color-blue-grey: var(--blue-grey);
+  --color-overlay: var(--overlay);
+  --color-whatsapp-icon: var(--whatsapp-icon);
   --color-surface: var(--surface);
   --color-surface-raised: var(--surface-raised);
   --color-card: var(--card);
@@ -85,8 +112,8 @@
   --color-whatsapp: var(--whatsapp);
   --color-whatsapp-hover: var(--whatsapp-hover);
 
-  --font-sans: var(--font-figtree), ui-sans-serif, system-ui, sans-serif;
-  --font-heading: var(--font-fraunces), ui-serif, Georgia, serif;
+  --font-sans: var(--font-jost), ui-sans-serif, system-ui, sans-serif;
+  --font-heading: var(--font-cormorant), ui-serif, Georgia, serif;
 
   /* Escala de texto maior: a base é 18px (público inclui pessoas idosas) */
   --text-xs: 0.875rem;
@@ -108,14 +135,21 @@
   --text-5xl: 3.25rem;
   --text-5xl--line-height: 1.08;
 
-  /* Cantos discretos: 3–6px */
-  --radius-sm: 3px;
-  --radius-md: 4px;
-  --radius-lg: var(--radius);
-  --radius-xl: 6px;
-  --radius-2xl: 6px;
-  --radius-3xl: 6px;
-  --radius-4xl: 6px;
+  /* Cantos levemente arredondados */
+  --radius-sm: 4px;
+  --radius-md: var(--radius);
+  --radius-lg: 10px;
+  --radius-xl: 12px;
+  --radius-2xl: 12px;
+  --radius-3xl: 12px;
+  --radius-4xl: 12px;
+
+  /* Sombras quase invisíveis, em taupe (nunca preto) */
+  --shadow-xs: 0 1px 1px rgb(122 99 89 / 0.04);
+  --shadow-sm: 0 1px 2px rgb(122 99 89 / 0.06);
+  --shadow-md: 0 2px 6px rgb(122 99 89 / 0.07);
+  --shadow-lg: 0 4px 12px rgb(122 99 89 / 0.08);
+  --shadow-xl: 0 8px 24px rgb(122 99 89 / 0.09);
 }
 
 @layer base {
@@ -135,8 +169,21 @@
   h1,
   h2,
   h3 {
-    @apply font-heading text-balance;
-    font-optical-sizing: auto;
+    @apply font-heading font-normal text-balance text-foreground-heading;
+    /* Cormorant tem olho pequeno: compensa para manter a leitura confortável */
+    font-size-adjust: 0.47;
+    letter-spacing: 0.005em;
+  }
+  /* Números sempre alinhados (a Cormorant usa algarismos "antigos" por padrão: "I 2") */
+  .font-heading,
+  h1,
+  h2,
+  h3 {
+    font-variant-numeric: lining-nums;
+  }
+  /* Ícones de traço fino */
+  svg.lucide {
+    stroke-width: 1.4;
   }
   button:not(:disabled),
   [role="button"]:not(:disabled) {

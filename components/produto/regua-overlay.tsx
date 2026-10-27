@@ -62,13 +62,13 @@ export function ReguaOverlay({ largura, altura, pxPorCm, medidas }: ReguaOverlay
       aria-label={`Régua em centímetros. ${medidas.map(textoMedida).join(". ")}`}
     >
       {/* eixo horizontal */}
-      <rect x={0} y={0} width={largura} height={FAIXA} fill="#fffdf9" opacity={0.92} />
-      <line x1={0} y1={FAIXA} x2={largura} y2={FAIXA} stroke="#2b2b2b" strokeWidth={1} />
+      <rect x={0} y={0} width={largura} height={FAIXA} fill="var(--background)" opacity={0.92} />
+      <line x1={0} y1={FAIXA} x2={largura} y2={FAIXA} stroke="var(--desenho-traco)" strokeWidth={1} />
       {marcas(largura).map((m) => (
         <g key={`h${m.cm}`}>
-          <line x1={m.pos} y1={0} x2={m.pos} y2={m.tam} stroke="#2b2b2b" strokeWidth={1} />
+          <line x1={m.pos} y1={0} x2={m.pos} y2={m.tam} stroke="var(--desenho-traco)" strokeWidth={1} />
           {m.rotulo && (
-            <text x={m.pos} y={FAIXA - 5} textAnchor="middle" fontSize={12} fontWeight={700} fill="#2b2b2b">
+            <text x={m.pos} y={FAIXA - 5} textAnchor="middle" fontSize={12} fontWeight={500} fill="var(--desenho-traco)">
               {m.cm}
             </text>
           )}
@@ -76,19 +76,19 @@ export function ReguaOverlay({ largura, altura, pxPorCm, medidas }: ReguaOverlay
       ))}
 
       {/* eixo vertical */}
-      <rect x={0} y={0} width={FAIXA} height={altura} fill="#fffdf9" opacity={0.92} />
-      <line x1={FAIXA} y1={FAIXA} x2={FAIXA} y2={altura} stroke="#2b2b2b" strokeWidth={1} />
+      <rect x={0} y={0} width={FAIXA} height={altura} fill="var(--background)" opacity={0.92} />
+      <line x1={FAIXA} y1={FAIXA} x2={FAIXA} y2={altura} stroke="var(--desenho-traco)" strokeWidth={1} />
       {marcas(altura).map((m) => (
         <g key={`v${m.cm}`}>
-          <line x1={0} y1={m.pos} x2={m.tam} y2={m.pos} stroke="#2b2b2b" strokeWidth={1} />
+          <line x1={0} y1={m.pos} x2={m.tam} y2={m.pos} stroke="var(--desenho-traco)" strokeWidth={1} />
           {m.rotulo && (
             <text
               x={FAIXA - 5}
               y={m.pos}
               textAnchor="middle"
               fontSize={12}
-              fontWeight={700}
-              fill="#2b2b2b"
+              fontWeight={500}
+              fill="var(--desenho-traco)"
               transform={`rotate(-90 ${FAIXA - 5} ${m.pos})`}
               dy={-1}
             >
@@ -97,8 +97,8 @@ export function ReguaOverlay({ largura, altura, pxPorCm, medidas }: ReguaOverlay
           )}
         </g>
       ))}
-      <rect x={0} y={0} width={FAIXA} height={FAIXA} fill="#fffdf9" />
-      <text x={FAIXA / 2} y={FAIXA / 2 + 4} textAnchor="middle" fontSize={11} fontWeight={700} fill="#2b2b2b">
+      <rect x={0} y={0} width={FAIXA} height={FAIXA} fill="var(--background)" />
+      <text x={FAIXA / 2} y={FAIXA / 2 + 4} textAnchor="middle" fontSize={11} fontWeight={500} fill="var(--desenho-traco)">
         cm
       </text>
 
@@ -111,19 +111,19 @@ export function ReguaOverlay({ largura, altura, pxPorCm, medidas }: ReguaOverlay
           <g key={m.id}>
             {h > 0 ? (
               <>
-                <rect x={dx} y={topo} width={w} height={h} fill="none" stroke="#fff" strokeWidth={5} />
-                <rect x={dx} y={topo} width={w} height={h} fill="none" stroke="#2b2b2b" strokeWidth={2} strokeDasharray="5 3" />
+                <rect x={dx} y={topo} width={w} height={h} fill="none" stroke="var(--background)" strokeWidth={5} />
+                <rect x={dx} y={topo} width={w} height={h} fill="none" stroke="var(--desenho-traco)" strokeWidth={2} strokeDasharray="5 3" />
               </>
             ) : (
               <>
-                <line x1={dx} y1={base} x2={dx + w} y2={base} stroke="#fff" strokeWidth={7} />
-                <line x1={dx} y1={base} x2={dx + w} y2={base} stroke="#2b2b2b" strokeWidth={3} />
-                <line x1={dx} y1={base - 8} x2={dx} y2={base + 8} stroke="#2b2b2b" strokeWidth={2} />
-                <line x1={dx + w} y1={base - 8} x2={dx + w} y2={base + 8} stroke="#2b2b2b" strokeWidth={2} />
+                <line x1={dx} y1={base} x2={dx + w} y2={base} stroke="var(--background)" strokeWidth={7} />
+                <line x1={dx} y1={base} x2={dx + w} y2={base} stroke="var(--desenho-traco)" strokeWidth={3} />
+                <line x1={dx} y1={base - 8} x2={dx} y2={base + 8} stroke="var(--desenho-traco)" strokeWidth={2} />
+                <line x1={dx + w} y1={base - 8} x2={dx + w} y2={base + 8} stroke="var(--desenho-traco)" strokeWidth={2} />
               </>
             )}
-            <rect x={dx - 2} y={topo - 30} width={Math.max(rotulo.length * 7.6 + 12, 40)} height={24} rx={3} fill="#2b2b2b" />
-            <text x={dx + 4} y={topo - 13} fontSize={13} fontWeight={700} fill="#fff">
+            <rect x={dx - 2} y={topo - 30} width={Math.max(rotulo.length * 7.6 + 12, 40)} height={24} rx={3} fill="var(--desenho-traco)" />
+            <text x={dx + 4} y={topo - 13} fontSize={13} fontWeight={500} fill="var(--background)">
               {rotulo}
             </text>
           </g>

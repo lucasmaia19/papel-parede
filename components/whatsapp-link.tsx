@@ -13,7 +13,7 @@ interface WhatsappLinkProps extends Omit<ComponentProps<"a">, "href">, VariantPr
   mensagem?: string
 }
 
-/** Botão-link para o WhatsApp da loja (abre em nova aba). Variante padrão: verde do WhatsApp. */
+/** Botão-link para o WhatsApp da loja (abre em nova aba). Estilo secundário com ícone verde suave. */
 export function WhatsappLink({
   mensagem,
   variant = "whatsapp",
@@ -32,7 +32,7 @@ export function WhatsappLink({
       className={cn(buttonVariants({ variant, size }), className)}
       {...props}
     >
-      <WhatsappIcon className={cn("size-6", variant !== "whatsapp" && "text-whatsapp")} />
+      <WhatsappIcon className="size-6 text-whatsapp-icon" />
       {children}
     </a>
   )

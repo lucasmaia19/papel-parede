@@ -23,8 +23,8 @@ function Numero({ rotulo, valor, href }: { rotulo: string; valor: number | strin
       data-slot="numero-painel"
       className="flex flex-col gap-1 rounded-md border border-border bg-surface-raised p-4 outline-none hover:bg-accent focus-visible:ring-3 focus-visible:ring-ring/50"
     >
-      <span className="text-sm font-semibold text-foreground-subtle">{rotulo}</span>
-      <span className="font-heading text-4xl font-semibold tabular-nums">{valor}</span>
+      <span className="text-sm font-medium text-foreground-subtle">{rotulo}</span>
+      <span className="text-4xl font-light text-foreground-heading tabular-nums">{valor}</span>
     </Link>
   )
 }
@@ -68,7 +68,7 @@ export function Painel() {
             className="group flex items-center justify-between gap-4 rounded-md border border-border bg-surface-raised p-5 outline-none hover:bg-accent focus-visible:ring-3 focus-visible:ring-ring/50"
           >
             <span className="flex flex-col gap-1">
-              <span className="text-xl font-semibold">{a.titulo}</span>
+              <span className="text-xl font-medium">{a.titulo}</span>
               <span className="text-foreground-subtle">{a.texto}</span>
             </span>
             <ArrowRightIcon className="size-6 shrink-0 transition-transform group-hover:translate-x-1" aria-hidden />
@@ -77,7 +77,7 @@ export function Painel() {
       </section>
 
       <section aria-label="Dados de exemplo" className="flex flex-col items-start gap-3 border-t border-border pt-6">
-        <h2 className="text-xl font-semibold">Dados de exemplo</h2>
+        <h2 className="text-xl">Dados de exemplo</h2>
         <p className="max-w-prose text-foreground-subtle">
           Volta os papéis, trabalhos e configurações para os dados de exemplo e apaga os pedidos. Útil para testar o
           protótipo do zero.
@@ -87,7 +87,7 @@ export function Painel() {
           Restaurar dados de exemplo
         </Button>
         {restaurado && (
-          <p role="status" className="font-semibold text-success">
+          <p role="status" className="font-medium text-success">
             Dados de exemplo restaurados.
           </p>
         )}

@@ -78,9 +78,9 @@ export function ProdutosLista() {
                 {/* eslint-disable-next-line @next/next/no-img-element -- pode ser base64 */}
                 <img src={imagemPrincipal(p)} alt="" className={cn("size-24 shrink-0 rounded-md border border-border object-cover", !p.ativo && "opacity-60")} />
                 <div className="flex min-w-0 flex-col gap-1.5">
-                  <h2 className="font-sans text-lg leading-snug font-bold">{p.nome}</h2>
+                  <h2 className="font-sans text-lg leading-snug">{p.nome}</h2>
                   <p>
-                    <strong className="font-semibold">{formatarMoeda(p.precoM2)}</strong>/m² · {ROTULO_CATEGORIA[p.categoria]}
+                    <strong className="font-medium">{formatarMoeda(p.precoM2)}</strong>/m² · {ROTULO_CATEGORIA[p.categoria]}
                   </p>
                   <div className="flex flex-wrap gap-1.5">
                     {p.prontaEntrega && <Badge variant="soft">Pronta entrega</Badge>}

@@ -46,7 +46,7 @@ export function CategoriasHome() {
                   className="object-cover transition-transform duration-300 group-hover:scale-105"
                 />
               </span>
-              <span className="flex min-h-12 items-center justify-between gap-2 px-3 py-2 font-semibold">
+              <span className="flex min-h-12 items-center justify-between gap-2 px-3 py-2 font-medium">
                 {ROTULO_CATEGORIA[c]}
                 <ArrowRightIcon className="size-4 shrink-0 text-foreground-subtle" aria-hidden />
               </span>
@@ -76,7 +76,7 @@ export function TrabalhosHome() {
               <Image src={t.fotoDepois} alt={`Depois: ${t.titulo}`} fill sizes="(min-width: 768px) 50vw, 100vw" className="object-cover" />
             </div>
             <figcaption>
-              <span className="font-semibold">{t.titulo}</span>
+              <span className="font-medium">{t.titulo}</span>
               <span className="text-foreground-subtle"> — {t.cidade}</span>
             </figcaption>
           </figure>
@@ -106,7 +106,7 @@ export function Chamada({ titulo, texto, href, rotuloLink, imagem, alt, invertid
         <Image src={imagem} alt={alt} fill sizes="(min-width: 768px) 50vw, 100vw" className="object-cover" />
       </div>
       <div className="flex flex-col gap-4">
-        <h2 className="text-2xl font-semibold md:text-4xl">{titulo}</h2>
+        <h2 className="text-2xl md:text-4xl">{titulo}</h2>
         <p className="max-w-prose text-foreground-subtle md:text-lg">{texto}</p>
         <Link href={href} className={cn(buttonVariants({ variant: "outline" }), "w-full sm:w-auto sm:self-start")}>
           {rotuloLink}

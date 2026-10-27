@@ -51,7 +51,7 @@ export function CampoCep({ cep, onConfirmar, rotulo = "Digite seu CEP" }: CampoC
         <p className="flex items-center gap-2">
           <MapPinIcon className="size-5 shrink-0" aria-hidden />
           <span>
-            CEP <strong className="font-semibold tabular-nums">{cep}</strong>
+            CEP <strong className="font-medium tabular-nums">{cep}</strong>
           </span>
         </p>
         <Button variant="outline" size="sm" onClick={() => setEditando(true)}>
@@ -63,7 +63,7 @@ export function CampoCep({ cep, onConfirmar, rotulo = "Digite seu CEP" }: CampoC
 
   return (
     <form onSubmit={confirmar} className="flex flex-col gap-2" noValidate>
-      <label htmlFor={id} className="font-semibold">
+      <label htmlFor={id} className="font-medium">
         {rotulo}
       </label>
       <div className="flex gap-2">

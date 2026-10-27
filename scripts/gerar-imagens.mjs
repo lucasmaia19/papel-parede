@@ -309,7 +309,7 @@ const H = 1100
 const PISO = 820
 
 function moveis(tipo) {
-  const sombra = `<ellipse cx="800" cy="${PISO + 30}" rx="560" ry="22" fill="#000" opacity=".08"/>`
+  const sombra = `<ellipse cx="800" cy="${PISO + 30}" rx="560" ry="22" fill="#5a463d" opacity=".08"/>`
   if (tipo === "cama") {
     return `${sombra}
       <rect x="430" y="470" width="740" height="300" rx="6" fill="#D8CBB6"/>
@@ -371,7 +371,7 @@ function ambiente({ padrao, moveisTipo = "aparador", paredeLisa }) {
     <rect y="${PISO}" width="${W}" height="${H - PISO}" fill="#BFA07C"/>
     ${tabuas}
     <rect y="${PISO - 4}" width="${W}" height="24" fill="#F3EFE7"/>
-    <rect y="${PISO + 20}" width="${W}" height="4" fill="#000" opacity=".06"/>
+    <rect y="${PISO + 20}" width="${W}" height="4" fill="#5a463d" opacity=".06"/>
     ${moveis(moveisTipo)}
   </svg>`
 }

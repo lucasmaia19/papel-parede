@@ -117,7 +117,7 @@ export function Galeria({ imagens, regua, className }: GaleriaProps) {
           ))}
         </div>
         {imagens.length > 1 && (
-          <p className="pointer-events-none absolute right-2 bottom-2 rounded-sm bg-foreground/80 px-2 py-0.5 text-sm font-semibold text-white">
+          <p className="pointer-events-none absolute right-2 bottom-2 rounded-sm bg-surface-raised/90 px-2 py-0.5 text-sm font-medium text-foreground">
             {indice + 1} / {imagens.length}
           </p>
         )}
@@ -166,7 +166,7 @@ export function Galeria({ imagens, regua, className }: GaleriaProps) {
 
       {mostrarRegua && regua && (
         <div className="rounded-md border border-border bg-surface p-3" aria-live="polite">
-          <p className="font-semibold">Régua em centímetros ligada.</p>
+          <p className="font-medium">Régua em centímetros ligada.</p>
           {regua.medidas.length > 0 ? (
             <ul className="mt-1 flex flex-col gap-0.5">
               {regua.medidas.map((m) => (

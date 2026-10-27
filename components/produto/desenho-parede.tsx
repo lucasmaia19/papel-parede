@@ -17,8 +17,8 @@ export function DesenhoParede({ parede, rotulo }: { parede: Parede; rotulo: stri
   if (largura <= 0 || altura <= 0) {
     return (
       <svg viewBox={`0 0 ${VW} ${VH}`} className="w-full" role="img" aria-label={`${rotulo}: digite a largura e a altura para ver o desenho`}>
-        <rect x={MARGEM.esq} y={MARGEM.topo} width={areaW} height={areaH} fill="none" stroke="#8c8376" strokeDasharray="6 5" strokeWidth={1.5} rx={2} />
-        <text x={MARGEM.esq + areaW / 2} y={MARGEM.topo + areaH / 2 + 6} textAnchor="middle" fontSize={16} fill="#57524a">
+        <rect x={MARGEM.esq} y={MARGEM.topo} width={areaW} height={areaH} fill="none" stroke="var(--input)" strokeDasharray="6 5" strokeWidth={1.5} rx={2} />
+        <text x={MARGEM.esq + areaW / 2} y={MARGEM.topo + areaH / 2 + 6} textAnchor="middle" fontSize={16} fill="var(--foreground-subtle)">
           Digite as medidas
         </text>
       </svg>
@@ -48,7 +48,7 @@ export function DesenhoParede({ parede, rotulo }: { parede: Parede; rotulo: stri
 
   return (
     <svg viewBox={`0 0 ${VW} ${VH}`} className="w-full" role="img" aria-label={descricao}>
-      <rect x={x0} y={y0} width={w} height={h} fill="#ede6db" stroke="#2b2b2b" strokeWidth={1.5} />
+      <rect x={x0} y={y0} width={w} height={h} fill="var(--desenho-parede)" stroke="var(--desenho-traco)" strokeWidth={1.5} />
       {aberturas.map((a) => (
         <g key={a.id}>
           <rect
@@ -56,34 +56,34 @@ export function DesenhoParede({ parede, rotulo }: { parede: Parede; rotulo: stri
             y={a.ay}
             width={a.aw}
             height={a.ah}
-            fill={a.tipo === "porta" ? "#c9b291" : "#dfe8ee"}
-            stroke="#2b2b2b"
+            fill={a.tipo === "porta" ? "var(--desenho-porta)" : "var(--desenho-janela)"}
+            stroke="var(--desenho-traco)"
             strokeWidth={1}
           />
           {a.tipo === "janela" && a.aw > 8 && (
-            <line x1={a.ax + a.aw / 2} y1={a.ay} x2={a.ax + a.aw / 2} y2={a.ay + a.ah} stroke="#2b2b2b" strokeWidth={0.8} />
+            <line x1={a.ax + a.aw / 2} y1={a.ay} x2={a.ax + a.aw / 2} y2={a.ay + a.ah} stroke="var(--desenho-traco)" strokeWidth={0.8} />
           )}
-          {a.tipo === "porta" && a.aw > 8 && <circle cx={a.ax + a.aw * 0.8} cy={a.ay + a.ah * 0.55} r={1.8} fill="#2b2b2b" />}
+          {a.tipo === "porta" && a.aw > 8 && <circle cx={a.ax + a.aw * 0.8} cy={a.ay + a.ah * 0.55} r={1.8} fill="var(--desenho-traco)" />}
         </g>
       ))}
       {/* cota da largura */}
-      <line x1={x0} y1={y0 + h + 14} x2={x0 + w} y2={y0 + h + 14} stroke="#43584a" strokeWidth={1.5} />
-      <line x1={x0} y1={y0 + h + 8} x2={x0} y2={y0 + h + 20} stroke="#43584a" strokeWidth={1.5} />
-      <line x1={x0 + w} y1={y0 + h + 8} x2={x0 + w} y2={y0 + h + 20} stroke="#43584a" strokeWidth={1.5} />
-      <text x={x0 + w / 2} y={y0 + h + 31} textAnchor="middle" fontSize={15} fontWeight={700} fill="#2b2b2b">
+      <line x1={x0} y1={y0 + h + 14} x2={x0 + w} y2={y0 + h + 14} stroke="var(--desenho-cota)" strokeWidth={1.5} />
+      <line x1={x0} y1={y0 + h + 8} x2={x0} y2={y0 + h + 20} stroke="var(--desenho-cota)" strokeWidth={1.5} />
+      <line x1={x0 + w} y1={y0 + h + 8} x2={x0 + w} y2={y0 + h + 20} stroke="var(--desenho-cota)" strokeWidth={1.5} />
+      <text x={x0 + w / 2} y={y0 + h + 31} textAnchor="middle" fontSize={15} fontWeight={500} fill="var(--desenho-traco)">
         {formatarNumero(largura)} m
       </text>
       {/* cota da altura */}
-      <line x1={x0 - 14} y1={y0} x2={x0 - 14} y2={y0 + h} stroke="#43584a" strokeWidth={1.5} />
-      <line x1={x0 - 20} y1={y0} x2={x0 - 8} y2={y0} stroke="#43584a" strokeWidth={1.5} />
-      <line x1={x0 - 20} y1={y0 + h} x2={x0 - 8} y2={y0 + h} stroke="#43584a" strokeWidth={1.5} />
+      <line x1={x0 - 14} y1={y0} x2={x0 - 14} y2={y0 + h} stroke="var(--desenho-cota)" strokeWidth={1.5} />
+      <line x1={x0 - 20} y1={y0} x2={x0 - 8} y2={y0} stroke="var(--desenho-cota)" strokeWidth={1.5} />
+      <line x1={x0 - 20} y1={y0 + h} x2={x0 - 8} y2={y0 + h} stroke="var(--desenho-cota)" strokeWidth={1.5} />
       <text
         x={x0 - 22}
         y={y0 + h / 2}
         textAnchor="middle"
         fontSize={15}
-        fontWeight={700}
-        fill="#2b2b2b"
+        fontWeight={500}
+        fill="var(--desenho-traco)"
         transform={`rotate(-90 ${x0 - 22} ${y0 + h / 2})`}
       >
         {formatarNumero(altura)} m

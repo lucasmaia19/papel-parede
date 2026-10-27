@@ -26,7 +26,7 @@ export function InfoFrete({ resultado, resumo }: { resultado: Extract<ResultadoC
       <div className="flex gap-3 rounded-md border border-border bg-surface-raised p-4">
         <TruckIcon className="mt-0.5 size-6 shrink-0" aria-hidden />
         <div>
-          <p className="font-semibold">
+          <p className="font-medium">
             Entrega para {resultado.uf}:{" "}
             {resumo.freteGratis ? <span className="text-success">Frete grátis</span> : formatarMoeda(resumo.frete)}
           </p>
@@ -69,7 +69,7 @@ export function ServicosRegiao({
 }: ServicosRegiaoProps) {
   return (
     <div data-slot="servicos-regiao" className="flex flex-col gap-6">
-      <p className="rounded-md border border-primary/40 bg-primary-soft/60 p-4 font-semibold">
+      <p className="rounded-md border border-primary/40 bg-primary-soft/60 p-4 font-medium">
         Atendemos {cidade}!{" "}
         <span className="font-normal">
           {deslocamento > 0 ? `Taxa de deslocamento: ${formatarMoeda(deslocamento)}.` : "Sem taxa de deslocamento."}
@@ -77,7 +77,7 @@ export function ServicosRegiao({
       </p>
 
       <fieldset className="flex flex-col gap-3">
-        <legend className="mb-1 text-lg font-semibold">Quer que a gente aplique o papel?</legend>
+        <legend className="mb-1 text-lg font-medium">Quer que a gente aplique o papel?</legend>
         <p className="text-foreground-subtle">
           {formatarMoeda(valorAplicacaoM2)} por m²
           {valorAplicacao > 0 && <> — {formatarMoeda(valorAplicacao)} nesta parede</>}
@@ -93,7 +93,7 @@ export function ServicosRegiao({
       </fieldset>
 
       <fieldset className="flex flex-col gap-3">
-        <legend className="mb-1 text-lg font-semibold">Quer visita técnica para conferir as medidas?</legend>
+        <legend className="mb-1 text-lg font-medium">Quer visita técnica para conferir as medidas?</legend>
         <p className="text-foreground-subtle">
           {formatarMoeda(valorVisita)} — vamos até você e medimos tudo antes de produzir.
         </p>

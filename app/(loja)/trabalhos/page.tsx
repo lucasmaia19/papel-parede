@@ -10,7 +10,7 @@ export default function TrabalhosPage() {
   return (
     <div className="container-loja flex flex-col gap-8 py-8 md:py-12">
       <header className="flex flex-col gap-3 border-b border-border pb-6">
-        <h1 className="text-3xl font-semibold md:text-4xl">Trabalhos realizados</h1>
+        <h1 className="text-3xl md:text-4xl">Trabalhos realizados</h1>
         <p className="max-w-prose text-foreground-subtle">
           Paredes que transformamos em Uberlândia e região. Arraste a alça sobre cada foto para ver o antes e o depois.
         </p>

@@ -19,7 +19,7 @@ const PASSOS = ["Seus dados", "Endereço", "Pagamento"] as const
 function Etapas({ atual }: { atual: number }) {
   return (
     <nav aria-label="Etapas da compra">
-      <p className="mb-3 font-semibold md:hidden">
+      <p className="mb-3 font-medium md:hidden">
         Passo {atual + 1} de {PASSOS.length}: {PASSOS[atual]}
       </p>
       <ol className="grid grid-cols-3 gap-2">
@@ -32,13 +32,13 @@ function Etapas({ atual }: { atual: number }) {
               <span
                 className={cn(
                   "hidden items-center gap-2 md:flex",
-                  agora ? "font-bold text-foreground" : feito ? "text-foreground" : "text-foreground-subtle",
+                  agora ? "font-medium text-foreground" : feito ? "text-foreground" : "text-foreground-subtle",
                 )}
               >
                 <span
                   aria-hidden
                   className={cn(
-                    "flex size-7 items-center justify-center rounded-full border-2 text-sm font-bold",
+                    "flex size-7 items-center justify-center rounded-full border-2 text-sm font-medium",
                     feito ? "border-primary bg-primary text-primary-foreground" : agora ? "border-primary text-primary" : "border-border",
                   )}
                 >
@@ -75,7 +75,7 @@ function Campo({ rotulo, valor, onChange, erro, opcional, className, ...props }:
   const erroVisivel = erro && valor === valorDoErro ? erro : null
   return (
     <div className={cn("flex min-w-0 flex-col gap-1.5", className)}>
-      <label htmlFor={id} className="font-semibold">
+      <label htmlFor={id} className="font-medium">
         {rotulo} {opcional && <span className="font-normal text-foreground-subtle">(opcional)</span>}
       </label>
       <Input
@@ -140,7 +140,7 @@ export function CheckoutPagina() {
   if (itens.length === 0) {
     return (
       <div className="container-loja flex flex-col items-start gap-5 py-12">
-        <h1 className="text-3xl font-semibold">Seu carrinho está vazio</h1>
+        <h1 className="text-3xl">Seu carrinho está vazio</h1>
         <Link href="/produtos" className={cn(buttonVariants({ size: "lg" }), "w-full sm:w-auto")}>
           Ver papéis de parede
         </Link>
@@ -219,13 +219,13 @@ export function CheckoutPagina() {
         <ArrowLeftIcon className="size-5" aria-hidden />
         Voltar ao carrinho
       </Link>
-      <h1 ref={topo} tabIndex={-1} className="scroll-mt-24 text-3xl font-semibold outline-none md:text-4xl">
+      <h1 ref={topo} tabIndex={-1} className="scroll-mt-24 text-3xl outline-none md:text-4xl">
         Finalizar compra
       </h1>
       <Etapas atual={passo} />
 
       <details className="group rounded-md border border-border bg-surface-raised lg:hidden">
-        <summary className="flex min-h-14 cursor-pointer list-none items-center justify-between gap-3 px-4 font-semibold [&::-webkit-details-marker]:hidden">
+        <summary className="flex min-h-14 cursor-pointer list-none items-center justify-between gap-3 px-4 font-medium [&::-webkit-details-marker]:hidden">
           <span>Resumo do pedido</span>
           <span className="flex items-center gap-2 tabular-nums">
             {formatarMoeda(resumo.total)}
@@ -239,7 +239,7 @@ export function CheckoutPagina() {
         <div className="flex flex-col gap-6">
           {passo === 0 && (
             <section aria-label="Seus dados" className="flex flex-col gap-5">
-              <h2 className="text-2xl font-semibold">Seus dados</h2>
+              <h2 className="text-2xl">Seus dados</h2>
               <Campo
                 rotulo="Nome completo"
                 autoComplete="name"
@@ -274,7 +274,7 @@ export function CheckoutPagina() {
 
           {passo === 1 && (
             <section aria-label="Endereço" className="flex flex-col gap-5">
-              <h2 className="text-2xl font-semibold">Endereço</h2>
+              <h2 className="text-2xl">Endereço</h2>
               <EntregaCarrinho itens={itens} resultadoCep={resultadoCep} resumo={resumo} />
               {erros.cep && !resultadoCep && (
                 <p role="alert" className="font-medium text-destructive">
@@ -314,7 +314,7 @@ export function CheckoutPagina() {
 
           {passo === 2 && (
             <section aria-label="Pagamento" className="flex flex-col gap-5">
-              <h2 className="text-2xl font-semibold">Pagamento</h2>
+              <h2 className="text-2xl">Pagamento</h2>
               <fieldset className="flex flex-col gap-3">
                 <legend className="sr-only">Forma de pagamento</legend>
                 {opcoesPagamento.map((o) => (
@@ -334,7 +334,7 @@ export function CheckoutPagina() {
                       className="size-6 shrink-0 accent-primary"
                     />
                     <span className="flex flex-col">
-                      <span className="text-lg font-bold">{o.titulo}</span>
+                      <span className="text-lg font-medium">{o.titulo}</span>
                       <span className="text-foreground-subtle">{o.detalhe}</span>
                     </span>
                   </label>
@@ -358,7 +358,7 @@ export function CheckoutPagina() {
 
         <aside aria-label="Resumo do pedido" className="hidden lg:sticky lg:top-24 lg:block">
           <div className="flex flex-col gap-4 rounded-md border border-border bg-surface-raised p-5">
-            <h2 className="text-xl font-semibold">Resumo do pedido</h2>
+            <h2 className="text-xl">Resumo do pedido</h2>
             {resumoLateral}
           </div>
         </aside>

@@ -7,8 +7,8 @@ import { cn } from "@/lib/utils"
 function CabecalhoSecao({ titulo, href, rotuloLink }: { titulo: string; href: string; rotuloLink: string }) {
   return (
     <div className="flex flex-wrap items-end justify-between gap-x-6 gap-y-2 border-b border-border pb-4">
-      <h2 className="text-2xl font-semibold md:text-3xl">{titulo}</h2>
-      <Link href={href} className="inline-flex min-h-12 items-center font-semibold underline underline-offset-4 hover:text-primary">
+      <h2 className="text-2xl md:text-3xl">{titulo}</h2>
+      <Link href={href} className="inline-flex min-h-12 items-center font-medium underline underline-offset-4 hover:text-primary">
         {rotuloLink}
       </Link>
     </div>
@@ -31,8 +31,8 @@ export default function HomePage() {
         </div>
         <div className="container-loja flex flex-col gap-4 py-8 md:flex-row md:items-end md:justify-between md:gap-12 md:py-12">
           <div className="flex flex-col gap-3">
-            <p className="text-sm font-semibold tracking-[0.16em] text-foreground-subtle uppercase">Uberlândia — MG</p>
-            <h1 id="titulo-home" className="text-[2.1rem] leading-[1.1] font-semibold md:text-5xl">
+            <p className="text-sm font-medium tracking-[0.16em] text-foreground-subtle uppercase">Uberlândia — MG</p>
+            <h1 id="titulo-home" className="text-[2.1rem] leading-[1.1] md:text-5xl">
               Papel de parede escolhido com calma, feito sob medida
             </h1>
             <p className="max-w-prose text-foreground-subtle md:text-lg">
@@ -77,7 +77,7 @@ export default function HomePage() {
         </div>
 
         <section aria-labelledby="titulo-estilos" className="flex flex-col gap-6">
-          <h2 id="titulo-estilos" className="border-b border-border pb-4 text-2xl font-semibold md:text-3xl">
+          <h2 id="titulo-estilos" className="border-b border-border pb-4 text-2xl md:text-3xl">
             Escolha pelo estilo
           </h2>
           <CategoriasHome />

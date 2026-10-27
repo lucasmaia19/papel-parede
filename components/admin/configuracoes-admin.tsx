@@ -55,7 +55,7 @@ function Formulario({ inicial }: { inicial: Settings }) {
         <CabecalhoAdmin titulo="Configurações" descricao="Valores usados nos cálculos da loja. Tudo muda na hora, ao salvar." />
 
         {qtdErros > 0 && (
-          <p data-slot="resumo-erros" role="alert" className="rounded-md border border-destructive/40 bg-destructive/10 p-4 font-bold text-destructive">
+          <p data-slot="resumo-erros" role="alert" className="rounded-md border border-destructive/40 bg-destructive/10 p-4 font-medium text-destructive">
             {qtdErros === 1 ? "Falta corrigir 1 campo." : `Falta corrigir ${qtdErros} campos.`} As mensagens estão em vermelho abaixo.
           </p>
         )}
@@ -141,7 +141,7 @@ function Formulario({ inicial }: { inicial: Settings }) {
           <ul className="grid gap-3 md:grid-cols-2">
             {f.tabelaFrete.map((t, i) => (
               <li key={t.regiao} className="flex flex-col gap-2 rounded-md border border-border bg-surface-raised p-3">
-                <p className="font-bold">{t.regiao === "MG" ? "Minas Gerais (outras cidades)" : t.regiao}</p>
+                <p className="font-medium">{t.regiao === "MG" ? "Minas Gerais (outras cidades)" : t.regiao}</p>
                 <div className="grid grid-cols-2 gap-3">
                   <CampoTexto
                     rotulo="Valor"
@@ -198,7 +198,7 @@ function Formulario({ inicial }: { inicial: Settings }) {
 
       <div className="sticky bottom-0 z-30 border-t border-border bg-surface-raised/97 shadow-[0_-4px_16px_rgb(0_0_0/0.06)]">
         <div className="container-loja flex flex-col gap-2 py-3 sm:flex-row sm:items-center sm:justify-between">
-          <p aria-live="polite" className={cn("text-sm font-semibold", mensagem ? "text-success" : "text-foreground-subtle")}>
+          <p aria-live="polite" className={cn("text-sm font-medium", mensagem ? "text-success" : "text-foreground-subtle")}>
             {mensagem ?? (alterado ? "Há alterações não salvas." : "Nada alterado.")}
           </p>
           <Button onClick={salvar}>

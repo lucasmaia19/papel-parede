@@ -37,7 +37,7 @@ function ListaLinks({ pathname, movel, onNavegar }: LinksProps & { pathname: str
             aria-current={pathname && ativo(pathname, l.href) ? "page" : undefined}
             className={
               movel
-                ? "flex min-h-14 items-center px-3 text-lg aria-[current=page]:font-bold aria-[current=page]:text-primary"
+                ? "flex min-h-14 items-center px-3 text-lg aria-[current=page]:font-medium aria-[current=page]:text-primary"
                 : "inline-flex min-h-12 items-center rounded-md px-3 font-medium text-foreground-subtle hover:text-foreground aria-[current=page]:bg-muted aria-[current=page]:text-foreground"
             }
           >
@@ -81,7 +81,7 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
       >
         <TriangleAlertIcon className="mt-0.5 size-5 shrink-0 sm:mt-0" aria-hidden />
         <span>
-          <strong className="font-bold">Área administrativa</strong> — no sistema final esta tela será acessível apenas pelo
+          <strong className="font-medium">Área administrativa</strong> — no sistema final esta tela será acessível apenas pelo
           administrador, com login. Nesta versão de protótipo ela está aberta.
         </span>
       </p>
@@ -89,8 +89,8 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
       <header className="sticky top-0 z-40 border-b border-border bg-background">
         <div className="container-loja flex h-16 items-center justify-between gap-3">
           <Link href="/admin" className="flex min-h-12 flex-col justify-center leading-none">
-            <span className="font-heading text-xl font-semibold">Rodovalho</span>
-            <span className="mt-0.5 text-xs font-semibold tracking-[0.16em] text-foreground-subtle uppercase">Administração</span>
+            <span className="font-heading text-xl font-medium">Rodovalho</span>
+            <span className="mt-0.5 text-xs font-medium tracking-[0.16em] text-foreground-subtle uppercase">Administração</span>
           </Link>
           <nav aria-label="Administração" className="hidden lg:block">
             <ul className="flex gap-1">
@@ -129,7 +129,7 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
       </header>
 
       {semEspaco && (
-        <p role="alert" className="border-b border-destructive/40 bg-destructive/10 px-4 py-3 font-semibold text-destructive">
+        <p role="alert" className="border-b border-destructive/40 bg-destructive/10 px-4 py-3 font-medium text-destructive">
           O navegador ficou sem espaço para guardar as alterações. Use fotos menores ou remova fotos antigas.
         </p>
       )}
@@ -145,7 +145,7 @@ export function CabecalhoAdmin({ titulo, descricao, acoes }: { titulo: string; d
   return (
     <div className="flex flex-col gap-4 border-b border-border pb-5 md:flex-row md:items-end md:justify-between">
       <div className="flex flex-col gap-1">
-        <h1 className="text-3xl font-semibold">{titulo}</h1>
+        <h1 className="text-3xl">{titulo}</h1>
         {descricao && <p className="text-foreground-subtle">{descricao}</p>}
       </div>
       {acoes && <div className="flex flex-col gap-2 sm:flex-row">{acoes}</div>}

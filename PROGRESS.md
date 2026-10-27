@@ -117,6 +117,22 @@ Para ativar a IA real: criar `.env.local` com `OPENAI_API_KEY=...` (ver `.env.ex
 - [x] README com como rodar, testar e ativar a IA
 - [x] Commit
 
+## Ajustes de feedback do cliente (rodada 1)
+
+- [x] 1. Nova direção visual delicada e pastel — loja e admin
+  - Tokens novos em `app/globals.css` (creme, taupe, rosé, sálvia, azul acinzentado; sombras taupe quase invisíveis; overlay taupe; cantos 8px); fontes Cormorant Garamond + Jost (300–500); ícones lucide com traço 1,4; logo em serifada fina
+  - Pesos: títulos 400, nada acima de 500 no site todo
+  - Desenhos técnicos (parede, guia de medição, régua, calibração) e imagens de exemplo sem preto/branco; busca por `#000/#111/#fff/black/white` no código: 0 ocorrências
+  - Contraste: o rosé do exemplo `#A88679` dava só 3,1:1 com texto creme → botão principal `#8B6A5E` (4,56:1); WhatsApp `#7FB89A` daria 2,1:1 com ícone creme → `#5E9C7C` (3:1, mínimo para ícone); textos sobre rosé claro em `#7A5B50` (5:1)
+  - Botões de WhatsApp com texto já passaram ao estilo secundário (exigência de contraste; previsto no item 5)
+  - Números do painel do admin em Jost fina (o "1" da Cormorant parece "I")
+  - Verificação: lint, tsc, build, 41 Vitest, 115 Playwright (inclui axe sem violações) + screenshots revisados
+- [ ] 2. Texto da pronta entrega: "Linho com textura nas cores branco e off-white (sem estampa)…" + seeds "Linho texturizado Branco/Off-white"
+- [ ] 3. Régua fora da imagem: réguas nas margens, cotas técnicas fora da foto, legenda embaixo; preview do admin igual
+- [ ] 4. Material (Texturizado linho / Adesivo liso) por produto: modelo, seletor obrigatório, preço por material, todo o fluxo até o admin, pricing + testes
+- [ ] 5. WhatsApp flutuante só ícone (52px, verde suave), sem sobrepor clicáveis (teste de interseção); demais botões de WhatsApp no estilo secundário
+- [ ] CLAUDE.md atualizado (direção visual, modelo de dados, página do produto)
+
 ## Pendências / observações
 - Valores marcados como fictícios na especificação (aplicação, visita, Pix, deslocamento, frete) precisam ser confirmados com a loja — todos editáveis em /admin/configuracoes.
 - Regras de cálculo adotadas (ver Fase 1) devem ser validadas com a loja.

@@ -25,7 +25,7 @@ export function GaleriaTrabalhos() {
     <div className="flex flex-col gap-8">
       {cidades.length > 1 && (
         <fieldset className="flex flex-col gap-3">
-          <legend className="mb-2 font-semibold">Filtrar por cidade</legend>
+          <legend className="mb-2 font-medium">Filtrar por cidade</legend>
           <div className="grid grid-cols-2 gap-2 sm:flex sm:flex-wrap">
             <OpcaoBotao ativo={cidade === null} onClick={() => setCidade(null)}>
               Todas
@@ -57,13 +57,13 @@ export function GaleriaTrabalhos() {
                 proporcao="aspect-[16/11]"
               />
               <div className="flex flex-col gap-1">
-                <h2 className="font-sans text-lg font-bold">{t.titulo}</h2>
+                <h2 className="font-sans text-lg">{t.titulo}</h2>
                 <p className="text-foreground-subtle">{t.cidade}</p>
               </div>
               {produto && (
                 <Link
                   href={`/produtos/${produto.slug}`}
-                  className="inline-flex min-h-12 items-center gap-2 self-start font-semibold underline underline-offset-4 hover:text-primary"
+                  className="inline-flex min-h-12 items-center gap-2 self-start font-medium underline underline-offset-4 hover:text-primary"
                 >
                   Ver o papel {produto.nome}
                   <ArrowRightIcon className="size-4" aria-hidden />

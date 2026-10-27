@@ -88,21 +88,21 @@ export function ReguaCalibracao({ imagem, pixelsPorCm, onCalibrar }: ReguaCalibr
           <svg className="pointer-events-none absolute inset-0 size-full" viewBox={`0 0 ${natural.w} ${natural.h}`} aria-hidden>
             {pontos.length === 2 && (
               <>
-                <line x1={pontos[0].x} y1={pontos[0].y} x2={pontos[1].x} y2={pontos[1].y} stroke="#fff" strokeWidth={raio} />
-                <line x1={pontos[0].x} y1={pontos[0].y} x2={pontos[1].x} y2={pontos[1].y} stroke="#a3392b" strokeWidth={raio / 2.5} />
+                <line x1={pontos[0].x} y1={pontos[0].y} x2={pontos[1].x} y2={pontos[1].y} stroke="var(--background)" strokeWidth={raio} />
+                <line x1={pontos[0].x} y1={pontos[0].y} x2={pontos[1].x} y2={pontos[1].y} stroke="var(--primary)" strokeWidth={raio / 2.5} />
               </>
             )}
             {pontos.map((p, i) => (
               <g key={i}>
-                <circle cx={p.x} cy={p.y} r={raio * 1.6} fill="#fff" />
-                <circle cx={p.x} cy={p.y} r={raio} fill="#a3392b" />
+                <circle cx={p.x} cy={p.y} r={raio * 1.6} fill="var(--background)" />
+                <circle cx={p.x} cy={p.y} r={raio} fill="var(--primary)" />
               </g>
             ))}
           </svg>
         )}
       </button>
 
-      <p aria-live="polite" className="font-semibold">
+      <p aria-live="polite" className="font-medium">
         {pontos.length === 0 && "Nenhum ponto marcado."}
         {pontos.length === 1 && "1 ponto marcado. Toque no segundo ponto."}
         {pontos.length === 2 &&
@@ -134,7 +134,7 @@ export function ReguaCalibracao({ imagem, pixelsPorCm, onCalibrar }: ReguaCalibr
         </p>
       )}
       {pxAtual && pxAtual > 0 ? (
-        <p role="status" className="rounded-md border border-primary/40 bg-primary-soft/60 p-3 font-semibold">
+        <p role="status" className="rounded-md border border-primary/40 bg-primary-soft/60 p-3 font-medium">
           Régua calibrada: {pixelsPorCm} pixels por cm.
         </p>
       ) : (

@@ -69,7 +69,7 @@ export function ItemCarrinho({ item, naRegiao, somenteLeitura }: ItemCarrinhoPro
         {/* eslint-disable-next-line @next/next/no-img-element -- pode ser base64 */}
         <img src={item.imagem} alt="" className="size-20 shrink-0 rounded-md border border-border object-cover sm:size-28" />
         <div className="flex min-w-0 flex-1 flex-col gap-1">
-          <h3 className="font-sans text-lg leading-snug font-bold">
+          <h3 className="font-sans text-lg leading-snug font-medium">
             <Link href={`/produtos/${item.produtoSlug}`} className="underline-offset-4 hover:underline">
               {item.produtoNome}
             </Link>
@@ -97,7 +97,7 @@ export function ItemCarrinho({ item, naRegiao, somenteLeitura }: ItemCarrinhoPro
             <img src={item.simulacao.imagem} alt="Simulação feita com IA" className="size-20 shrink-0 rounded-sm object-cover" />
           )}
           <div className="flex flex-col gap-0.5">
-            <p className="flex items-center gap-1.5 font-semibold">
+            <p className="flex items-center gap-1.5 font-medium">
               <SparklesIcon className="size-4" aria-hidden />
               Simulação com IA
             </p>
@@ -108,7 +108,7 @@ export function ItemCarrinho({ item, naRegiao, somenteLeitura }: ItemCarrinhoPro
 
       <div className="flex flex-wrap items-center justify-between gap-3 border-t border-border pt-3">
         <p>
-          Subtotal: <strong className="text-lg font-bold tabular-nums">{formatarMoeda(item.subtotal)}</strong>
+          Subtotal: <strong className="text-lg font-medium tabular-nums">{formatarMoeda(item.subtotal)}</strong>
         </p>
         {!somenteLeitura && (
           <div className="flex gap-2">

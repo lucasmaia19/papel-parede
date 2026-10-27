@@ -60,7 +60,7 @@ export function ProdutoDetalhe({ slug }: { slug: string }) {
     }
     return (
       <div className="container-loja flex flex-col items-start gap-4 py-16">
-        <h1 className="text-3xl font-semibold">Papel de parede não encontrado</h1>
+        <h1 className="text-3xl">Papel de parede não encontrado</h1>
         <p>Ele pode ter saído do catálogo. Veja os outros modelos.</p>
         <Link href="/produtos" className={buttonVariants()}>
           Ver papéis de parede
@@ -72,7 +72,7 @@ export function ProdutoDetalhe({ slug }: { slug: string }) {
   return (
     <>
       {!produto.ativo && (
-        <p role="note" className="border-b border-warning-border bg-warning-bg px-4 py-3 text-center font-semibold">
+        <p role="note" className="border-b border-warning-border bg-warning-bg px-4 py-3 text-center font-medium">
           Pré-visualização: este papel está desativado e não aparece na loja.
         </p>
       )}
@@ -204,16 +204,16 @@ function Configurador({ produto }: { produto: Product }) {
               <Galeria imagens={imagens} regua={produto.regua} />
 
               <div className="flex flex-col gap-4">
-                <h1 className="text-3xl font-semibold md:text-4xl">{produto.nome}</h1>
+                <h1 className="text-3xl md:text-4xl">{produto.nome}</h1>
                 <p className="text-2xl">
-                  <strong className="font-bold">{formatarMoeda(precoFinal)}</strong>
+                  <strong className="font-medium">{formatarMoeda(precoFinal)}</strong>
                   <span className="text-foreground-subtle">/m²</span>
                 </p>
                 <p
                   data-slot="prazo"
                   className={cn(
-                    "flex items-start gap-2 rounded-md border p-3 font-semibold",
-                    produto.prontaEntrega ? "border-primary/40 bg-primary-soft/60 text-primary" : "border-border bg-surface-raised",
+                    "flex items-start gap-2 rounded-md border p-3 font-medium",
+                    produto.prontaEntrega ? "border-primary/40 bg-primary-soft/60 text-primary-hover" : "border-border bg-surface-raised",
                   )}
                 >
                   {produto.prontaEntrega ? (
@@ -243,7 +243,7 @@ function Configurador({ produto }: { produto: Product }) {
                 <div className="flex flex-col gap-5">
                   {produto.gruposPersonalizacao.map((g) => (
                     <fieldset key={g.id} className="flex flex-col gap-2">
-                      <legend className="mb-2 font-semibold">{g.nome}</legend>
+                      <legend className="mb-2 font-medium">{g.nome}</legend>
                       <div className="grid gap-2 sm:grid-cols-3">
                         {g.opcoes.map((o) => (
                           <OpcaoBotao
@@ -252,7 +252,7 @@ function Configurador({ produto }: { produto: Product }) {
                             onClick={() => setEscolhas({ ...escolhas, [g.id]: o.id })}
                             className="justify-between sm:flex-col sm:items-start sm:justify-center sm:gap-0"
                           >
-                            <span className="text-lg font-semibold">{o.rotulo}</span>
+                            <span className="text-lg font-medium">{o.rotulo}</span>
                             {o.acrescimoM2 ? (
                               <span className="text-sm whitespace-nowrap">+ {formatarMoeda(o.acrescimoM2)} por m²</span>
                             ) : null}
@@ -294,7 +294,7 @@ function Configurador({ produto }: { produto: Product }) {
               descricao="Informe em metros. Pode usar vírgula ou ponto: 2,60 ou 2.60."
             >
               {erroMedidas && !medidasOk && (
-                <p role="alert" className="rounded-md border border-destructive/40 bg-destructive/10 p-3 font-semibold text-destructive">
+                <p role="alert" className="rounded-md border border-destructive/40 bg-destructive/10 p-3 font-medium text-destructive">
                   Para adicionar ao carrinho, digite a largura e a altura da parede.
                 </p>
               )}
@@ -332,7 +332,7 @@ function Configurador({ produto }: { produto: Product }) {
 
             {/* Resumo e ações no fim do fluxo (no celular; no computador ficam no card lateral) */}
             <section aria-labelledby="titulo-resumo-final" className="flex flex-col gap-4 border-t border-border pt-6 lg:hidden">
-              <h2 id="titulo-resumo-final" className="text-xl font-semibold">
+              <h2 id="titulo-resumo-final" className="text-xl">
                 Resumo do pedido
               </h2>
               <ResumoPrecoLista
@@ -351,7 +351,7 @@ function Configurador({ produto }: { produto: Product }) {
 
           <aside aria-label="Resumo do preço" className="hidden lg:sticky lg:top-24 lg:block">
             <div className="flex flex-col gap-5 rounded-md border border-border bg-surface-raised p-5">
-              <h2 className="text-xl font-semibold">Resumo</h2>
+              <h2 className="text-xl">Resumo</h2>
               <ResumoPrecoLista
                 resumo={resumo}
                 local={local}
@@ -377,15 +377,15 @@ function Configurador({ produto }: { produto: Product }) {
         <div className="mx-auto flex max-w-xl flex-col gap-2">
           <div className="flex items-center justify-between gap-3">
             <div className="min-w-0">
-              <p className="text-sm font-semibold text-foreground-subtle uppercase">Total</p>
+              <p className="text-sm font-medium text-foreground-subtle uppercase">Total</p>
               {medidasOk ? (
-                <p className="text-2xl leading-tight font-bold text-primary tabular-nums">{formatarMoeda(resumo.total)}</p>
+                <p className="text-2xl leading-tight font-medium text-primary tabular-nums">{formatarMoeda(resumo.total)}</p>
               ) : (
-                <p className="text-lg leading-tight font-semibold">Informe as medidas</p>
+                <p className="text-lg leading-tight font-medium">Informe as medidas</p>
               )}
               {resumo.total > 0 && settings.descontoPix > 0 && (
                 <p className="text-sm text-foreground-subtle">
-                  No Pix: <span className="font-semibold text-foreground tabular-nums">{formatarMoeda(resumo.totalPix)}</span>
+                  No Pix: <span className="font-medium text-foreground tabular-nums">{formatarMoeda(resumo.totalPix)}</span>
                 </p>
               )}
             </div>
