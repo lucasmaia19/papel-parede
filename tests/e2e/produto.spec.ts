@@ -126,7 +126,7 @@ test("avisa quando falta medida e mostra o guia de medição", async ({ page }, 
 })
 
 test("produto pronta entrega mostra envio imediato", async ({ page }, testInfo) => {
-  await page.goto("/produtos/liso-fosco")
+  await page.goto("/produtos/linho-texturizado-branco")
   await esperarHidratacao(page)
   await expect(page.locator("[data-slot=prazo]")).toHaveText("Pronta entrega — envio imediato")
   if (!ehMobile(testInfo)) {

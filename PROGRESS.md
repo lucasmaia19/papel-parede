@@ -127,7 +127,11 @@ Para ativar a IA real: criar `.env.local` com `OPENAI_API_KEY=...` (ver `.env.ex
   - Botões de WhatsApp com texto já passaram ao estilo secundário (exigência de contraste; previsto no item 5)
   - Números do painel do admin em Jost fina (o "1" da Cormorant parece "I")
   - Verificação: lint, tsc, build, 41 Vitest, 115 Playwright (inclui axe sem violações) + screenshots revisados
-- [ ] 2. Texto da pronta entrega: "Linho com textura nas cores branco e off-white (sem estampa)…" + seeds "Linho texturizado Branco/Off-white"
+- [x] 2. Texto da pronta entrega
+  - Home, /pronta-entrega (texto e descrição da página) e /produtos: "Linho com textura nas cores branco e off-white (sem estampa), já na loja e com envio imediato."
+  - Seeds: pronta entrega = "Linho texturizado Branco" e "Linho texturizado Off-white" (um produto por cor, sem estampa); o "Texturizado Palha" saiu dos dados de exemplo e o "Liso Fosco" virou sob encomenda (5 dias úteis). O catálogo continua com 12 produtos
+  - Imagens regeneradas; busca por "texturizados e lisos": 0 ocorrências
+  - Verificação: lint, tsc, build, 41 Vitest, 115 Playwright + screenshot da pronta entrega revisado
 - [ ] 3. Régua fora da imagem: réguas nas margens, cotas técnicas fora da foto, legenda embaixo; preview do admin igual
 - [ ] 4. Material (Texturizado linho / Adesivo liso) por produto: modelo, seletor obrigatório, preço por material, todo o fluxo até o admin, pricing + testes
 - [ ] 5. WhatsApp flutuante só ícone (52px, verde suave), sem sobrepor clicáveis (teste de interseção); demais botões de WhatsApp no estilo secundário

@@ -89,7 +89,7 @@ A loja vende para todo o Brasil (com frete) e oferece aplicação e visita técn
 
 **WorkGallery:** id, titulo, cidade, fotoAntes, fotoDepois, produtoId?, destaque.
 
-**Seeds:** ~12 produtos (listrado azul/rosa, quadriculado, borboletas, floral, infantil, texturizados/lisos Branco e Off-white como pronta entrega) e 4 trabalhos na galeria. Imagens placeholder locais em `public/` (padrões gerados em SVG, sem depender de serviço externo).
+**Seeds:** ~12 produtos (listrado azul/rosa, quadriculado, borboletas, floral, infantil, "Linho texturizado Branco" e "Linho texturizado Off-white", sem estampa, como os únicos de pronta entrega) e 4 trabalhos na galeria. Imagens placeholder locais em `public/` (padrões gerados em SVG, sem depender de serviço externo).
 
 Busca de CEP simulada: mapear faixa de CEP → UF → região; tratar Uberlândia (384xx), Araguari (3844x) e Uberaba (380xx–381xx) como cidades atendidas.
 
@@ -100,7 +100,7 @@ Busca de CEP simulada: mapear faixa de CEP → UF → região; tratar Uberlândi
 **Páginas:**
 - **Home:** foto grande de ambiente; chamadas "Calcule seu papel de parede", "Veja na sua parede" e "Pronta entrega"; categorias; destaques; trechos da galeria; faixa "Enviamos para todo o Brasil • Aplicamos em Uberlândia, Araguari, Uberaba e região".
 - **Catálogo** `/produtos`: filtros por categoria e cor com botões grandes (no celular, em gaveta/sheet).
-- **Pronta Entrega** `/pronta-entrega` (aba no menu): produtos de envio imediato, com destaque para texturizados e lisos em Branco e Off-white.
+- **Pronta Entrega** `/pronta-entrega` (aba no menu): produtos de envio imediato. Texto padrão: "Linho com textura nas cores branco e off-white (sem estampa), já na loja e com envio imediato." (usar também na chamada da home).
 - **Produto** `/produtos/[slug]` (ver abaixo).
 - **Trabalhos realizados** `/trabalhos`: antes/depois com slider de comparação arrastável e filtro por cidade.
 - **Carrinho**, **Checkout**, **Pedido confirmado**.

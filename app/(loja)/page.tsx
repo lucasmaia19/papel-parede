@@ -68,11 +68,11 @@ export default function HomePage() {
           />
           <Chamada
             titulo="Pronta entrega"
-            texto="Texturizados e lisos em Branco e Off-white, já na loja e com envio imediato."
+            texto="Linho com textura nas cores branco e off-white (sem estampa), já na loja e com envio imediato."
             href="/pronta-entrega"
             rotuloLink="Ver pronta entrega"
-            imagem="/img/produtos/texturizado-linho-ambiente.svg"
-            alt="Sala com papel texturizado linho branco e um sofá"
+            imagem="/img/produtos/linho-texturizado-branco-ambiente.svg"
+            alt="Sala com papel de linho texturizado branco e um sofá"
           />
         </div>
 

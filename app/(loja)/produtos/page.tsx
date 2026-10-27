@@ -4,7 +4,7 @@ import { Catalogo, CatalogoSemFiltros } from "@/components/produto/catalogo"
 
 export const metadata: Metadata = {
   title: "Papéis de parede",
-  description: "Listrados, quadriculados, florais, infantis, texturizados e lisos. Preço por m², sob medida.",
+  description: "Listrados, quadriculados, florais, infantis, linho texturizado e lisos. Preço por m², sob medida.",
 }
 
 const props = {

@@ -63,7 +63,7 @@ test("catálogo filtra por estilo e cor", async ({ page }, testInfo) => {
   await expect(cards(page)).toHaveCount(12)
 
   await page.goto("/produtos?cor=off-white")
-  await expect(cards(page)).toHaveCount(3)
+  await expect(cards(page)).toHaveCount(2)
   await page.getByRole("button", { name: "Limpar filtros" }).click()
   await expect(cards(page)).toHaveCount(12)
 })
@@ -72,11 +72,13 @@ test("pronta entrega mostra só produtos de envio imediato", async ({ page }, te
   await page.goto("/pronta-entrega")
   await esperarHidratacao(page)
   await expect(page.getByRole("heading", { level: 1, name: "Pronta entrega" })).toBeVisible()
-  await expect(cards(page)).toHaveCount(3)
+  await expect(cards(page)).toHaveCount(2)
   for (const card of await cards(page).all()) {
     await expect(card.getByText("Pronta entrega")).toBeVisible()
   }
-  await expect(page.getByText(/texturizados e lisos em Branco e Off-white/)).toBeVisible()
+  await expect(page.getByText(/Linho com textura nas cores branco e off-white \(sem estampa\)/)).toBeVisible()
+  await expect(cards(page).first()).toContainText("Linho texturizado Branco")
+  await expect(cards(page).nth(1)).toContainText("Linho texturizado Off-white")
   await verificarLayout(page)
   await screenshot(page, testInfo, "fase2-pronta-entrega")
 })

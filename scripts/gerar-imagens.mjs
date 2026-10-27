@@ -212,24 +212,6 @@ function linho({ base, fio }, seed) {
   return { w: t, h: t, body: `<rect width="${t}" height="${t}" fill="${base}"/>${linhas}` }
 }
 
-function palha({ base, trama }) {
-  // Trançado de cesto: blocos de 2 cm alternando fios horizontais e verticais
-  const b = c(2)
-  const fio = b / 3
-  const bloco = (x, y, horizontal) =>
-    Array.from({ length: 3 }, (_, i) =>
-      horizontal
-        ? `<rect x="${x + 2}" y="${y + i * fio + 2}" width="${b - 4}" height="${fio - 4}" rx="4" fill="${trama}" opacity="${0.45 + i * 0.12}"/>`
-        : `<rect x="${x + i * fio + 2}" y="${y + 2}" width="${fio - 4}" height="${b - 4}" rx="4" fill="${trama}" opacity="${0.45 + i * 0.12}"/>`,
-    ).join("")
-  return {
-    w: b * 2,
-    h: b * 2,
-    body: `<rect width="${b * 2}" height="${b * 2}" fill="${base}"/>
-      ${bloco(0, 0, true)}${bloco(b, 0, false)}${bloco(0, b, false)}${bloco(b, b, true)}`,
-  }
-}
-
 function liso({ base, ponto }, seed) {
   const t = c(6)
   const r = rng(seed)
@@ -280,13 +262,11 @@ export const PADROES = {
     terracota: arcosIris({ base: "#F8F3EA", cores: ["#C47F62", "#E0B07A", "#9FB09A"] }),
     pastel: arcosIris({ base: "#F8F4EE", cores: ["#E3A9A9", "#F0D29A", "#A9C3D8"] }),
   },
-  "texturizado-linho": {
+  "linho-texturizado-branco": {
     branco: linho({ base: "#F8F7F3", fio: "#8C8678" }, 11),
-    "off-white": linho({ base: "#EFE8DA", fio: "#8A7C62" }, 12),
   },
-  "texturizado-palha": {
-    "off-white": palha({ base: "#EFE9DC", trama: "#CFC2A6" }),
-    areia: palha({ base: "#E3D6BD", trama: "#B9A47F" }),
+  "linho-texturizado-off-white": {
+    "off-white": linho({ base: "#EFE8DA", fio: "#8A7C62" }, 12),
   },
   "liso-fosco": {
     branco: liso({ base: "#F9F8F5", ponto: "#9A958A" }, 21),

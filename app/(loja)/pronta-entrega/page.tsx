@@ -4,7 +4,7 @@ import { Catalogo, CatalogoSemFiltros } from "@/components/produto/catalogo"
 
 export const metadata: Metadata = {
   title: "Pronta entrega",
-  description: "Papéis de parede texturizados e lisos em Branco e Off-white, com envio imediato.",
+  description: "Linho com textura nas cores branco e off-white (sem estampa), já na loja e com envio imediato.",
 }
 
 const props = {
@@ -12,9 +12,10 @@ const props = {
   somenteProntaEntrega: true,
   descricao: (
     <p>
-      Papéis que já estão na loja e saem no mesmo dia. Destaque para os{" "}
-      <strong className="font-medium text-foreground">texturizados e lisos em Branco e Off-white</strong>, que
-      combinam com qualquer ambiente.
+      <strong className="font-medium text-foreground">
+        Linho com textura nas cores branco e off-white (sem estampa)
+      </strong>
+      , já na loja e com envio imediato. Combina com qualquer ambiente.
     </p>
   ),
 }

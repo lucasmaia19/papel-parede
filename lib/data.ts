@@ -250,43 +250,36 @@ export const produtosIniciais: Product[] = [
     medidas: [medida("m1", "Cada arco-íris", 8, 4)],
     ia: ["Usar só tons de azul", "Colocar nuvens embaixo dos arco-íris"],
   }),
+  // Pronta entrega: só o linho com textura, sem estampa, em branco e off-white
   produto(10, {
-    slug: "texturizado-linho",
-    nome: "Texturizado Linho",
+    slug: "linho-texturizado-branco",
+    nome: "Linho texturizado Branco",
     descricao:
-      "Imita a trama do tecido de linho. Liso de longe, com textura de perto. Disponível para envio imediato.",
+      "Linho com textura na cor branca, sem estampa. Liso de longe, com a trama do linho de perto. Já na loja, com envio imediato.",
     categoria: "texturizado",
     precoM2: 85,
     prontaEntrega: true,
     prazoProducaoDias: 0,
-    cores: [
-      ["branco", "Branco", "#F8F7F3"],
-      ["off-white", "Off-white", "#EFE8DA"],
-    ],
+    cores: [["branco", "Branco", "#F8F7F3"]],
   }),
   produto(11, {
-    slug: "texturizado-palha",
-    nome: "Texturizado Palha",
-    descricao: "Trama de palha trançada, natural e aconchegante. Disponível para envio imediato.",
+    slug: "linho-texturizado-off-white",
+    nome: "Linho texturizado Off-white",
+    descricao:
+      "Linho com textura na cor off-white, sem estampa. Um tom quente e suave que combina com tudo. Já na loja, com envio imediato.",
     categoria: "texturizado",
     precoM2: 85,
     prontaEntrega: true,
     prazoProducaoDias: 0,
-    cores: [
-      ["off-white", "Off-white", "#EFE9DC"],
-      ["areia", "Areia", "#E3D6BD"],
-    ],
-    medidas: [medida("m1", "Cada trama", 2, 2)],
+    cores: [["off-white", "Off-white", "#EFE8DA"]],
   }),
   produto(12, {
     slug: "liso-fosco",
     nome: "Liso Fosco",
-    descricao:
-      "Cor única, fosca, com leve textura. Renova a parede sem pintura e sem cheiro. Disponível para envio imediato.",
+    descricao: "Cor única, fosca, com leve textura. Renova a parede sem pintura e sem cheiro.",
     categoria: "liso",
     precoM2: 70,
-    prontaEntrega: true,
-    prazoProducaoDias: 0,
+    prazoProducaoDias: 5,
     cores: [
       ["branco", "Branco", "#F9F8F5"],
       ["off-white", "Off-white", "#F1EADF"],
