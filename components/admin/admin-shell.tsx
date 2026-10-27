@@ -12,6 +12,7 @@ import { cn } from "@/lib/utils"
 export const LINKS_ADMIN = [
   { href: "/admin", rotulo: "Painel" },
   { href: "/admin/produtos", rotulo: "Papéis de parede" },
+  { href: "/admin/ambientes", rotulo: "Ambientes" },
   { href: "/admin/trabalhos", rotulo: "Trabalhos realizados" },
   { href: "/admin/configuracoes", rotulo: "Configurações" },
   { href: "/admin/pedidos", rotulo: "Pedidos" },

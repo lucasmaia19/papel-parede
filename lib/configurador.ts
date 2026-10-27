@@ -101,6 +101,8 @@ export function textoPersonalizacoes(lista: PersonalizacaoEscolhida[]): string {
 
 export function mensagemDuvidaProduto(args: {
   produto: Product
+  /** Linha pronta, ex.: "Ambiente: Quarto (Infantil • Menina)" */
+  ambiente?: string | null
   cor: string
   material: string | null
   personalizacoes: PersonalizacaoEscolhida[]
@@ -111,6 +113,7 @@ export function mensagemDuvidaProduto(args: {
 }): string {
   const linhas = [
     `Olá! Tenho uma dúvida sobre o papel de parede *${args.produto.nome}*.`,
+    ...(args.ambiente ? [args.ambiente] : []),
     `Cor: ${args.cor}`,
     `Material: ${args.material ?? "ainda não escolhi"}`,
     ...args.personalizacoes.map((p) => `${p.grupo}: ${p.opcao}`),

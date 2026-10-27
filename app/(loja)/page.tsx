@@ -1,7 +1,7 @@
 import Link from "next/link"
 import { AdesivoLavavel } from "@/components/home/adesivo-lavavel"
 import { HeroCarrossel } from "@/components/home/hero-carrossel"
-import { CategoriasHome, Chamada, DestaquesHome, FaixaEntrega, TrabalhosHome } from "@/components/home/home-secoes"
+import { AmbientesHome, CategoriasHome, Chamada, DestaquesHome, FaixaEntrega, TrabalhosHome } from "@/components/home/home-secoes"
 
 function CabecalhoSecao({ titulo, href, rotuloLink }: { titulo: string; href: string; rotuloLink: string }) {
   return (
@@ -22,6 +22,8 @@ export default function HomePage() {
       <FaixaEntrega />
 
       <div className="container-loja flex flex-col gap-16 py-12 md:gap-24 md:py-20">
+        <AmbientesHome />
+
         <div className="flex flex-col gap-14 md:gap-20">
           <Chamada
             titulo="Calcule seu papel de parede"

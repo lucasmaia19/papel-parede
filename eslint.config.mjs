@@ -12,6 +12,10 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    // Temporários dos testes (cache do Playwright/npm, ignorados pelo git) e builds separados por sessão
+    "tests/.tmp/**",
+    "tests/.resultados/**",
+    ".next-*/**",
   ]),
 ]);
 

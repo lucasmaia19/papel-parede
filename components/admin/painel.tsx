@@ -31,6 +31,7 @@ function Numero({ rotulo, valor, href }: { rotulo: string; valor: number | strin
 
 const ATALHOS = [
   { href: "/admin/produtos", titulo: "Papéis de parede", texto: "Cadastrar, editar fotos, cores, preços e régua." },
+  { href: "/admin/ambientes", titulo: "Ambientes", texto: "O filtro “Para qual ambiente?”: cômodos, perguntas e opções." },
   { href: "/admin/trabalhos", titulo: "Trabalhos realizados", texto: "Fotos de antes e depois que aparecem na loja." },
   { href: "/admin/configuracoes", titulo: "Configurações", texto: "Preços de serviços, frete, cidades, contatos." },
   { href: "/admin/pedidos", titulo: "Pedidos", texto: "Pedidos do site e do WhatsApp, com status." },
@@ -79,7 +80,7 @@ export function Painel() {
       <section aria-label="Dados de exemplo" className="flex flex-col items-start gap-3 border-t border-border pt-6">
         <h2 className="text-xl">Dados de exemplo</h2>
         <p className="max-w-prose text-foreground-subtle">
-          Volta os papéis, trabalhos e configurações para os dados de exemplo e apaga os pedidos. Útil para testar o
+          Volta os papéis, ambientes, trabalhos e configurações para os dados de exemplo e apaga os pedidos. Útil para testar o
           protótipo do zero.
         </p>
         <Button variant="outline" onClick={() => setConfirmar(true)}>

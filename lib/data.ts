@@ -1,4 +1,5 @@
 import type {
+  Ambiente,
   Categoria,
   CorProduto,
   GrupoPersonalizacao,
@@ -7,6 +8,7 @@ import type {
   Settings,
   WorkGallery,
 } from "@/types"
+import { criarSorteio } from "@/lib/ambientes"
 import { materiaisPadrao } from "@/lib/materiais"
 
 export const settingsIniciais: Settings = {
@@ -124,12 +126,13 @@ function produto(n: number, b: Base): Product {
     regua: b.pixelsPorCm ? { pixelsPorCm: b.pixelsPorCm, medidas: b.medidas ?? [] } : null,
     iaHabilitada: Boolean(b.ia?.length),
     sugestoesIA: b.ia ?? [],
+    ambientes: [],
   }
 }
 
 const tamanhoEstampa = (id: string) => grupo(id, "Tamanho da estampa", [["P"], ["M"], ["G", 6]])
 
-export const produtosIniciais: Product[] = [
+const produtosBase: Product[] = [
   produto(1, {
     slug: "delicado",
     nome: "Delicado",
@@ -293,3 +296,208 @@ export const trabalhosIniciais: WorkGallery[] = [
     destaque: true,
   },
 ]
+
+// ——— Ambientes (filtro "Para qual ambiente?") ———
+
+type OpcaoSeed = string | [nome: string, slug: string, combinaComTodas?: boolean]
+
+function ambienteSeed(
+  ordem: number,
+  slug: string,
+  nome: string,
+  grupos: { slug: string; pergunta: string; multiplo?: boolean; opcoes: OpcaoSeed[] }[] = [],
+  destaque?: string,
+): Ambiente {
+  return {
+    id: `amb-${slug}`,
+    nome,
+    slug,
+    imagem: `/img/ambientes/${slug}.svg`,
+    ordem,
+    ativo: true,
+    ...(destaque ? { destaque } : {}),
+    grupos: grupos.map((g) => ({
+      id: `amb-${slug}-${g.slug}`,
+      pergunta: g.pergunta,
+      slug: g.slug,
+      multiplo: g.multiplo ?? true,
+      opcoes: g.opcoes.map((o) => {
+        const [nomeOpcao, slugOpcao, combinaComTodas] = typeof o === "string" ? [o, o.toLowerCase()] : o
+        return {
+          id: `amb-${slug}-${g.slug}-${slugOpcao}`,
+          nome: nomeOpcao,
+          slug: slugOpcao,
+          ...(combinaComTodas ? { combinaComTodas } : {}),
+        }
+      }),
+    })),
+  }
+}
+
+const estilos = {
+  slug: "estilo",
+  pergunta: "Qual estilo?",
+  opcoes: [["Clássico", "classico"], "Moderno", ["Rústico", "rustico"], "Delicado"] as OpcaoSeed[],
+}
+
+export const ambientesIniciais: Ambiente[] = [
+  ambienteSeed(1, "quarto", "Quarto", [
+    {
+      slug: "idade",
+      pergunta: "Para qual idade?",
+      opcoes: [["Bebê", "bebe"], "Infantil", ["Juvenil/Adolescente", "juvenil"], ["Adulto/Casal", "adulto"]],
+    },
+    {
+      slug: "para-quem",
+      pergunta: "Para quem?",
+      opcoes: ["Menina", "Menino", ["Neutro (para todos)", "neutro", true]],
+    },
+  ]),
+  ambienteSeed(2, "sala-de-estar", "Sala de estar", [estilos]),
+  ambienteSeed(3, "sala-de-jantar", "Sala de jantar", [estilos]),
+  ambienteSeed(4, "cozinha", "Cozinha"),
+  ambienteSeed(5, "banheiro", "Banheiro e lavabo", [], "Combina com o papel adesivo lavável"),
+  ambienteSeed(6, "teto", "Teto"),
+  ambienteSeed(7, "escritorio", "Escritório / Home office"),
+  ambienteSeed(8, "corredor", "Corredor e hall de entrada"),
+  ambienteSeed(9, "brinquedoteca", "Brinquedoteca"),
+  ambienteSeed(10, "comercial", "Comercial", [
+    {
+      slug: "tipo",
+      pergunta: "Qual tipo?",
+      opcoes: [
+        "Loja",
+        ["Consultório/Clínica", "consultorio"],
+        ["Restaurante/Café", "restaurante"],
+        ["Salão de beleza", "salao"],
+        ["Escritório", "escritorio"],
+      ],
+    },
+  ]),
+]
+
+/**
+ * Regras de coerência para sortear os ambientes de cada papel de exemplo.
+ * "fixo" entra sempre; os demais, por sorteio. Em cada pergunta, "fixas" entram sempre e
+ * cada "extra" entra por sorteio (se nenhuma entrar, sorteia uma). Pergunta sem regra: sorteia entre todas.
+ */
+interface RegraAmbienteSeed {
+  slug: string
+  fixo?: boolean
+  opcoes?: Record<string, { fixas?: string[]; extras?: string[] }>
+}
+
+const todosEstilos = { extras: ["classico", "moderno", "rustico", "delicado"] }
+
+const REGRAS_AMBIENTES: Record<string, RegraAmbienteSeed[]> = {
+  // Estampas infantis e delicadas: quarto de bebê/criança e brinquedoteca
+  delicado: [
+    { slug: "quarto", fixo: true, opcoes: { idade: { fixas: ["bebe"], extras: ["infantil", "adulto"] }, "para-quem": { fixas: ["neutro"], extras: ["menina", "menino"] } } },
+    { slug: "brinquedoteca", fixo: true },
+    { slug: "sala-de-estar", opcoes: { estilo: { fixas: ["delicado"] } } },
+  ],
+  "lacos-e-flores": [
+    { slug: "quarto", fixo: true, opcoes: { idade: { fixas: ["infantil"], extras: ["bebe"] }, "para-quem": { fixas: ["menina"] } } },
+    { slug: "brinquedoteca", fixo: true },
+  ],
+  "ramos-e-lacos": [
+    { slug: "quarto", fixo: true, opcoes: { idade: { fixas: ["bebe"], extras: ["infantil", "adulto"] }, "para-quem": { fixas: ["menina"], extras: ["neutro"] } } },
+    { slug: "banheiro", fixo: true },
+    { slug: "brinquedoteca" },
+  ],
+  "xadrez-aquarela": [
+    { slug: "quarto", fixo: true, opcoes: { idade: { fixas: ["infantil"], extras: ["juvenil"] }, "para-quem": { fixas: ["neutro"], extras: ["menino"] } } },
+    { slug: "brinquedoteca", fixo: true },
+    { slug: "escritorio" },
+  ],
+  // Listrados e quadriculados: quarto juvenil, sala e escritório
+  "listra-e-flores": [
+    { slug: "quarto", fixo: true, opcoes: { idade: { fixas: ["juvenil"], extras: ["adulto"] }, "para-quem": { extras: ["menina", "neutro"] } } },
+    { slug: "sala-de-estar", fixo: true, opcoes: { estilo: { fixas: ["classico"], extras: ["delicado"] } } },
+    { slug: "sala-de-jantar", opcoes: { estilo: { fixas: ["classico"] } } },
+    { slug: "escritorio" },
+  ],
+  "xadrez-3cm": [
+    { slug: "quarto", fixo: true, opcoes: { idade: { fixas: ["bebe", "juvenil"] }, "para-quem": { fixas: ["menino"], extras: ["neutro"] } } },
+    { slug: "cozinha", fixo: true },
+    { slug: "banheiro" },
+    { slug: "escritorio" },
+  ],
+  // Florais e clássicos: salas e quarto de adulto
+  "flores-linho": [
+    { slug: "sala-de-estar", fixo: true, opcoes: { estilo: { fixas: ["delicado"], extras: ["classico"] } } },
+    { slug: "quarto", opcoes: { idade: { fixas: ["adulto"] }, "para-quem": { fixas: ["neutro"] } } },
+    { slug: "sala-de-jantar", opcoes: { estilo: { fixas: ["delicado"] } } },
+  ],
+  "toile-de-jouy": [
+    { slug: "quarto", fixo: true, opcoes: { idade: { fixas: ["adulto"] }, "para-quem": { fixas: ["neutro"] } } },
+    { slug: "sala-de-estar", opcoes: { estilo: { fixas: ["classico"] } } },
+    { slug: "sala-de-jantar", opcoes: { estilo: { fixas: ["classico"] } } },
+  ],
+  // Bons no adesivo lavável: cozinha, banheiro e teto
+  "azulejos-cozinha": [
+    { slug: "cozinha", fixo: true },
+    { slug: "banheiro", fixo: true },
+    { slug: "comercial", opcoes: { tipo: { fixas: ["restaurante"] } } },
+  ],
+  "madeira-fria": [
+    { slug: "sala-de-estar", fixo: true, opcoes: { estilo: { fixas: ["rustico"], extras: ["moderno"] } } },
+    { slug: "teto", fixo: true },
+    { slug: "escritorio" },
+    { slug: "comercial" },
+  ],
+  "madeira-louro-freijo": [
+    { slug: "sala-de-estar", fixo: true, opcoes: { estilo: { fixas: ["moderno"], extras: ["rustico"] } } },
+    { slug: "escritorio", fixo: true },
+    { slug: "teto" },
+    { slug: "corredor" },
+    { slug: "comercial" },
+  ],
+  "cimento-queimado-areia": [
+    { slug: "corredor", fixo: true },
+    { slug: "comercial", fixo: true },
+    { slug: "sala-de-estar", opcoes: { estilo: { fixas: ["moderno"] } } },
+    { slug: "banheiro" },
+    { slug: "teto" },
+  ],
+  // Linho liso: sala, quarto de adulto, corredor e comercial
+  "linho-texturizado-off-white": [
+    { slug: "sala-de-estar", fixo: true, opcoes: { estilo: todosEstilos } },
+    { slug: "quarto", fixo: true, opcoes: { idade: { fixas: ["adulto"] }, "para-quem": { fixas: ["neutro"] } } },
+    { slug: "corredor" },
+    { slug: "comercial" },
+  ],
+}
+
+/** Semente fixa: os papéis de exemplo recebem sempre os mesmos ambientes (os testes dependem disso). */
+export const SEMENTE_AMBIENTES = 20261027
+
+/** Sorteia (de forma reproduzível) os ambientes de cada papel, respeitando as regras de coerência. */
+export function distribuirAmbientes(produtos: Product[], ambientes: Ambiente[], semente = SEMENTE_AMBIENTES): Product[] {
+  const sortear = criarSorteio(semente)
+  return produtos.map((p) => {
+    const regras = REGRAS_AMBIENTES[p.slug] ?? []
+    const escolhidas = regras.filter((r) => r.fixo || sortear() < 0.5)
+    // Pelo menos 2 ambientes por papel
+    for (const r of regras) {
+      if (escolhidas.length >= 2) break
+      if (!escolhidas.includes(r)) escolhidas.push(r)
+    }
+    const lista = escolhidas.flatMap((r) => {
+      const ambiente = ambientes.find((a) => a.slug === r.slug)
+      if (!ambiente) return []
+      const opcoes = ambiente.grupos.flatMap((g) => {
+        const regra = r.opcoes?.[g.slug] ?? { extras: g.opcoes.map((o) => o.slug) }
+        const extras = regra.extras ?? []
+        const slugs = [...(regra.fixas ?? []), ...extras.filter(() => sortear() < 0.5)]
+        if (slugs.length === 0 && extras.length) slugs.push(extras[Math.floor(sortear() * extras.length)])
+        return g.opcoes.filter((o) => slugs.includes(o.slug)).map((o) => o.id)
+      })
+      return [{ ambienteId: ambiente.id, opcoes }]
+    })
+    const ordem = (id: string) => ambientes.findIndex((a) => a.id === id)
+    return { ...p, ambientes: lista.sort((a, b) => ordem(a.ambienteId) - ordem(b.ambienteId)) }
+  })
+}
+
+export const produtosIniciais: Product[] = distribuirAmbientes(produtosBase, ambientesIniciais)

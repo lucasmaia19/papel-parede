@@ -61,10 +61,22 @@ test("cadastro de produto completo aparece na loja", async ({ page }, testInfo) 
   await page.getByRole("button", { name: "Salvar" }).click()
   await expect(page.locator("[data-slot=resumo-erros]")).toContainText("Falta corrigir")
   await expect(page.getByText("Envie pelo menos uma foto.")).toBeVisible()
+  await expect(page.getByText("Marque pelo menos um ambiente onde este papel pode ser usado.")).toBeVisible()
 
   await page.getByRole("textbox", { name: "Nome", exact: true }).fill("Linho Natural")
   await expect(page.getByText("Fica assim: /produtos/linho-natural")).toBeVisible()
   await page.getByLabel("Estilo (categoria)").selectOption("texturizado")
+
+  // Onde usar: Quarto exige uma opção em cada pergunta; Banheiro e Teto não têm perguntas
+  const ondeUsar = page.getByRole("region", { name: "Onde usar este papel" })
+  await ondeUsar.getByRole("checkbox", { name: "Quarto" }).check()
+  await ondeUsar.getByRole("checkbox", { name: "Infantil" }).check()
+  await page.getByRole("button", { name: "Salvar" }).click()
+  await expect(ondeUsar.getByText("Quarto: marque pelo menos uma opção em “Para quem?”.")).toBeVisible()
+  await ondeUsar.getByRole("checkbox", { name: "Quarto" }).uncheck()
+  await ondeUsar.getByRole("checkbox", { name: "Banheiro e lavabo" }).check()
+  await ondeUsar.getByRole("checkbox", { name: "Teto" }).check()
+  await expect(ondeUsar.locator("[data-slot=resumo-ambientes]")).toHaveText("Este papel aparece em: Banheiro e lavabo, Teto")
   // Materiais: cada um com o seu preço
   await expect(visiveis(page, "[data-slot=material-admin]")).toHaveCount(2)
   await page.getByRole("textbox", { name: "Preço por m²" }).nth(0).fill("90,5")
@@ -119,10 +131,20 @@ test("cadastro de produto completo aparece na loja", async ({ page }, testInfo) 
   await expect(page).toHaveURL(/\/admin\/produtos\/p[a-z0-9]+$/)
   await screenshot(page, testInfo, "fase7-produto-form")
 
-  // Na loja
+  // Na loja, no catálogo filtrado pelos ambientes marcados
+  for (const ambiente of ["banheiro", "teto"]) {
+    await page.goto(`/produtos?ambiente=${ambiente}`)
+    await esperarHidratacao(page)
+    await expect(visiveis(page, "main [data-slot=produto-card]").filter({ hasText: "Linho Natural" })).toHaveCount(1)
+  }
+  await page.goto("/produtos?ambiente=quarto")
+  await expect(visiveis(page, "main [data-slot=produto-card]").first()).toBeVisible()
+  await expect(visiveis(page, "main [data-slot=produto-card]").filter({ hasText: "Linho Natural" })).toHaveCount(0)
+
   await page.goto("/produtos/linho-natural")
   await esperarHidratacao(page)
   await expect(page.getByRole("heading", { level: 1, name: "Linho Natural" })).toBeVisible()
+  await expect(page.locator("[data-slot=indicado-para]")).toHaveText("Indicado para: Banheiro e lavabo • Teto")
   await expect(page.locator("[data-slot=preco-m2]")).toContainText("a partir de R$ 90,50")
   // Trocar o material atualiza o total na hora: 2 × 2,5 = 5 m² + 10% = 5,5 m²
   const parede = page.locator("[data-slot=parede]").first()

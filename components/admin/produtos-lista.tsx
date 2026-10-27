@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation"
 import { useId, useState } from "react"
 import { CopyIcon, EyeIcon, EyeOffIcon, PencilIcon, PlusIcon, SearchIcon, Trash2Icon } from "lucide-react"
 import { CabecalhoAdmin } from "@/components/admin/admin-shell"
+import { CampoSelect } from "@/components/admin/campos"
 import { Badge } from "@/components/ui/badge"
 import { Button, buttonVariants } from "@/components/ui/button"
 import {
@@ -17,6 +18,7 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog"
 import { Input } from "@/components/ui/input"
+import { ambientesOrdenados, indicacoesProduto } from "@/lib/ambientes"
 import { ROTULO_CATEGORIA } from "@/lib/data"
 import { filtrarProdutos, imagemPrincipal } from "@/lib/catalogo"
 import { materiaisAtivos, precoAPartirDe } from "@/lib/materiais"
@@ -33,10 +35,19 @@ export function ProdutosLista() {
   const duplicar = useLoja((s) => s.duplicarProduto)
   const alternarAtivo = useLoja((s) => s.alternarAtivoProduto)
   const excluir = useLoja((s) => s.excluirProduto)
+  const taxonomia = useLoja((s) => s.ambientes)
   const [busca, setBusca] = useState("")
+  /** "" = todos, "sem" = sem ambiente, ou o id do ambiente */
+  const [ambienteFiltro, setAmbienteFiltro] = useState("")
   const [paraExcluir, setParaExcluir] = useState<Product | null>(null)
 
-  const lista = filtrarProdutos(produtos, { busca })
+  const ambientesDe = (p: Product) => indicacoesProduto(p, taxonomia, true).map((i) => i.ambiente)
+  const semAmbiente = produtos.filter((p) => ambientesDe(p).length === 0).length
+  const lista = filtrarProdutos(produtos, { busca }).filter((p) => {
+    if (!ambienteFiltro) return true
+    const ids = ambientesDe(p).map((a) => a.id)
+    return ambienteFiltro === "sem" ? ids.length === 0 : ids.includes(ambienteFiltro)
+  })
 
   return (
     <div className="container-loja flex flex-col gap-6 py-8">
@@ -51,6 +62,19 @@ export function ProdutosLista() {
         }
       />
 
+      {hidratado && semAmbiente > 0 && (
+        <p role="note" className="rounded-md border border-warning-border bg-warning-bg p-4">
+          <strong className="font-medium">
+            {semAmbiente === 1 ? "1 papel está sem ambiente" : `${semAmbiente} papéis estão sem ambiente`}
+          </strong>{" "}
+          e não aparece{semAmbiente === 1 ? "" : "m"} no filtro “Para qual ambiente?”.{" "}
+          <button type="button" className="min-h-12 font-medium underline underline-offset-4" onClick={() => setAmbienteFiltro("sem")}>
+            Ver quais
+          </button>
+        </p>
+      )}
+
+      <div className="grid gap-3 md:grid-cols-[1fr_18rem] md:items-end">
       <div className="relative">
         <label htmlFor={idBusca} className="sr-only">
           Buscar papel de parede
@@ -64,6 +88,16 @@ export function ProdutosLista() {
           onChange={(e) => setBusca(e.target.value)}
           className="pl-12"
         />
+      </div>
+      <CampoSelect rotulo="Ambiente" valor={ambienteFiltro} onChange={setAmbienteFiltro}>
+        <option value="">Todos os ambientes</option>
+        <option value="sem">Sem ambiente</option>
+        {ambientesOrdenados(taxonomia).map((a) => (
+          <option key={a.id} value={a.id}>
+            {a.nome}
+          </option>
+        ))}
+      </CampoSelect>
       </div>
 
       {hidratado && lista.length === 0 && <p className="text-lg">Nenhum papel encontrado.</p>}
@@ -86,7 +120,13 @@ export function ProdutosLista() {
                   <p className="text-sm text-foreground-subtle">
                     {materiaisAtivos(p).map((m) => m.nome).join(" · ") || "Nenhum material ativo"}
                   </p>
+                  {ambientesDe(p).length > 0 && (
+                    <p data-slot="ambientes-admin" className="text-sm">
+                      <span className="font-medium">Ambientes:</span> {ambientesDe(p).map((a) => a.nome).join(" · ")}
+                    </p>
+                  )}
                   <div className="flex flex-wrap gap-1.5">
+                    {ambientesDe(p).length === 0 && <Badge variant="destructive">Sem ambiente</Badge>}
                     {p.prontaEntrega && <Badge variant="soft">Pronta entrega</Badge>}
                     {!p.ativo && <Badge variant="outline">Desativado</Badge>}
                     {p.iaHabilitada && <Badge variant="secondary">IA</Badge>}

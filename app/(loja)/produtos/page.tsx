@@ -9,7 +9,7 @@ export const metadata: Metadata = {
 
 const props = {
   titulo: "Papéis de parede",
-  descricao: "Escolha um estilo e uma cor. Em cada papel você informa as medidas da parede e vê o preço na hora.",
+  descricao: "Escolha o ambiente e, se quiser, o estilo e a cor. Em cada papel você informa as medidas da parede e vê o preço na hora.",
 }
 
 export default function ProdutosPage() {

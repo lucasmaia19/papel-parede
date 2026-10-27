@@ -13,10 +13,12 @@ interface ProdutoCardProps {
   prioridade?: boolean
   /** Nível do título, para manter a hierarquia da página (h2 no catálogo, h3 dentro de seções) */
   nivelTitulo?: 2 | 3
+  /** Selo discreto embaixo do preço (ex.: "Combina com todos") */
+  selo?: string
 }
 
 /** Card minimalista: foto grande, nome e preço por m². O card inteiro é o link. */
-export function ProdutoCard({ produto, className, prioridade, nivelTitulo = 3 }: ProdutoCardProps) {
+export function ProdutoCard({ produto, className, prioridade, nivelTitulo = 3, selo }: ProdutoCardProps) {
   const Titulo = nivelTitulo === 2 ? "h2" : "h3"
   return (
     <article data-slot="produto-card" className={cn("group relative flex flex-col gap-3", className)}>
@@ -58,6 +60,11 @@ export function ProdutoCard({ produto, className, prioridade, nivelTitulo = 3 }:
             />
           ))}
         </div>
+        {selo && (
+          <span data-slot="selo-card" className="w-fit rounded-sm bg-sage px-2 py-0.5 text-sm text-sage-foreground">
+            {selo}
+          </span>
+        )}
       </div>
     </article>
   )
@@ -67,10 +74,13 @@ export function GradeProdutos({
   produtos,
   className,
   nivelTitulo,
+  selos,
 }: {
   produtos: Product[]
   className?: string
   nivelTitulo?: 2 | 3
+  /** Selo por id do produto */
+  selos?: Record<string, string>
 }) {
   return (
     <ul
@@ -79,7 +89,7 @@ export function GradeProdutos({
     >
       {produtos.map((p, i) => (
         <li key={p.id}>
-          <ProdutoCard produto={p} prioridade={i < 2} nivelTitulo={nivelTitulo} />
+          <ProdutoCard produto={p} prioridade={i < 2} nivelTitulo={nivelTitulo} selo={selos?.[p.id]} />
         </li>
       ))}
     </ul>

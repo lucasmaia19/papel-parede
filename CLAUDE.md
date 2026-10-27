@@ -69,7 +69,19 @@ A loja vende para todo o Brasil (com frete) e oferece aplicação e visita técn
 
 ## 2. MODELO DE DADOS (`types/index.ts`)
 
-**Product:** id, slug, nome, descricao, categoria (`estampado | listrado | quadriculado | floral | infantil | texturizado | liso`), imagens (ordenadas, com principal), precoM2 (derivado: menor preço entre os materiais ativos — "a partir de"), materiais (`{id, nome, descricao, precoM2, ativo}[]`), prontaEntrega, prazoProducaoDias, ativo, cores (`{nome, hex, imagem}`), gruposPersonalizacao (`{nome, opcoes: {rotulo, acrescimoM2?}[]}`), regua (`{pixelsPorCm, medidas: {rotulo, larguraCm, alturaCm}[]}`), iaHabilitada, sugestoesIA (string[]).
+**Product:** id, slug, nome, descricao, categoria (`estampado | listrado | quadriculado | floral | infantil | texturizado | liso`), imagens (ordenadas, com principal), precoM2 (derivado: menor preço entre os materiais ativos — "a partir de"), materiais (`{id, nome, descricao, precoM2, ativo}[]`), prontaEntrega, prazoProducaoDias, ativo, cores (`{nome, hex, imagem}`), gruposPersonalizacao (`{nome, opcoes: {rotulo, acrescimoM2?}[]}`), regua (`{pixelsPorCm, medidas: {rotulo, larguraCm, alturaCm}[]}`), iaHabilitada, sugestoesIA (string[]), ambientes (`{ambienteId, opcoes: string[]}[]` — um papel pode servir para vários ambientes; `opcoes` são ids das opções marcadas).
+
+**Ambiente** (taxonomia do filtro, persistida no store e editável no admin; é a fonte de verdade da loja): id, nome, slug, imagem (ilustração/ícone), ordem, ativo, destaque? (frase curta, ex.: "Combina com o papel adesivo lavável"), grupos (`GrupoAmbiente[]`).
+**GrupoAmbiente** (pergunta): id, pergunta, slug (vira o parâmetro da URL, ex. `?idade=`; não pode ser `ambiente`, `categoria`, `cor` ou `material`), multiplo (boolean), opcoes (`{id, nome, slug, combinaComTodas?}[]`). `combinaComTodas` = opção como o "Neutro": o papel aparece em qualquer escolha daquela pergunta.
+
+Ambientes iniciais:
+- Quarto — "Para qual idade?": Bebê, Infantil, Juvenil/Adolescente, Adulto/Casal • "Para quem?": Menina, Menino, Neutro (para todos)
+- Sala de estar — "Qual estilo?": Clássico, Moderno, Rústico, Delicado
+- Sala de jantar — "Qual estilo?": Clássico, Moderno, Rústico, Delicado
+- Cozinha • Banheiro e lavabo (destaque: combina com o adesivo lavável) • Teto • Escritório / Home office • Corredor e hall de entrada • Brinquedoteca
+- Comercial — "Qual tipo?": Loja, Consultório/Clínica, Restaurante/Café, Salão de beleza, Escritório
+
+Regras do filtro (`lib/ambientes.ts`): opções da mesma pergunta = "OU"; perguntas diferentes = "E"; ao escolher Menina ou Menino entram também os papéis Neutro, com o selo "Combina com todos"; ambientes ou opções sem nenhum produto ativo não aparecem para o cliente.
 
 **Settings:**
 - precoM2Padrao: 80
@@ -89,7 +101,7 @@ A loja vende para todo o Brasil (com frete) e oferece aplicação e visita técn
 
 **WorkGallery:** id, titulo, cidade, fotoAntes, fotoDepois, produtoId?, destaque.
 
-**Seeds:** ~12 produtos (listrado azul/rosa, quadriculado, borboletas, floral, infantil, "Linho texturizado Branco" e "Linho texturizado Off-white", sem estampa, como os únicos de pronta entrega) e 4 trabalhos na galeria. Imagens placeholder locais em `public/` (padrões gerados em SVG, sem depender de serviço externo).
+**Seeds:** ~12 produtos (listrado azul/rosa, quadriculado, borboletas, floral, infantil, "Linho texturizado Branco" e "Linho texturizado Off-white", sem estampa, como os únicos de pronta entrega) e 4 trabalhos na galeria. Imagens placeholder locais em `public/` (padrões gerados em SVG, sem depender de serviço externo). Ambientes dos papéis de exemplo: sorteio com semente fixa (`distribuirAmbientes` em `lib/data.ts`, para os testes não variarem) e coerente — estampas infantis/delicadas em Quarto (Bebê/Infantil) e Brinquedoteca; listrados e quadriculados em Quarto Juvenil, Sala e Escritório; papéis bons no adesivo em Banheiro, Cozinha e Teto; linho liso em Sala, Quarto Adulto, Corredor e Comercial; todo papel com pelo menos 2 ambientes. Ilustrações dos ambientes em `public/img/ambientes/` (`node scripts/gerar-ambientes.mjs`).
 
 Busca de CEP simulada: mapear faixa de CEP → UF → região; tratar Uberlândia (384xx), Araguari (3844x) e Uberaba (380xx–381xx) como cidades atendidas.
 
@@ -98,8 +110,15 @@ Busca de CEP simulada: mapear faixa de CEP → UF → região; tratar Uberlândi
 ## 3. LOJA (CLIENTE)
 
 **Páginas:**
-- **Home:** foto grande de ambiente; chamadas "Calcule seu papel de parede", "Veja na sua parede" e "Pronta entrega"; categorias; destaques; trechos da galeria; faixa "Enviamos para todo o Brasil • Aplicamos em Uberlândia, Araguari, Uberaba e região".
-- **Catálogo** `/produtos`: filtros por categoria e cor com botões grandes (no celular, em gaveta/sheet).
+- **Home:** foto grande de ambiente; seção "Para qual ambiente?" logo depois do carrossel (ilustrações em grade, 2 colunas no celular, nome em serifada fina; toca e vai para `/produtos?ambiente=quarto`); chamadas "Calcule seu papel de parede", "Veja na sua parede" e "Pronta entrega"; categorias; destaques; trechos da galeria; faixa "Enviamos para todo o Brasil • Aplicamos em Uberlândia, Araguari, Uberaba e região".
+- **Catálogo** `/produtos`: filtro em etapas, simples e grande:
+  1. "Para qual ambiente?" no topo, sempre visível: blocos grandes com imagem e nome (rolagem horizontal no celular, com o próximo bloco aparecendo e a dica "Deslize para ver mais ambientes"; grade no desktop). O bloco escolhido fica à vista no carrossel e, ao escolher, a tela rola até os resultados.
+  2. Ambiente com perguntas abre logo abaixo (fade + altura) uma pergunta por linha, opções em pílulas ≥ 48px.
+  3. Resultados na hora, com contador "12 papéis encontrados"; filtros escolhidos como etiquetas removíveis ("Quarto ×", "Infantil ×") + "Limpar filtros".
+  - Os outros filtros (tipo de estampa, cor, material) ficam na gaveta "Mais filtros" no celular e na coluna lateral no desktop.
+  - Estado na URL (`?ambiente=quarto&idade=infantil&para-quem=menina,neutro&categoria=…&cor=…&material=…`): dá para compartilhar e voltar sem perder o filtro.
+  - Ordem aleatória, mas estável na sessão (semente no sessionStorage).
+  - Sem resultado: "Ainda não temos papéis cadastrados para essa combinação" + papéis do mesmo ambiente + "Pedir um papel personalizado no WhatsApp" (mensagem com o ambiente e as opções escolhidas).
 - **Pronta Entrega** `/pronta-entrega` (aba no menu): produtos de envio imediato. Texto padrão: "Linho com textura nas cores branco e off-white (sem estampa), já na loja e com envio imediato." (usar também na chamada da home).
 - **Produto** `/produtos/[slug]` (ver abaixo).
 - **Trabalhos realizados** `/trabalhos`: antes/depois com slider de comparação arrastável e filtro por cidade.
@@ -147,7 +166,9 @@ h) **Resumo de preço em tempo real** — barra fixa no rodapé no celular (TOTA
 - "No Pix: R$ … (X% de desconto)"
 - Na região: "Total sem aplicação" e "Total com aplicação" lado a lado.
 
-i) Botões "Adicionar ao carrinho" e "Tirar dúvidas no WhatsApp" (mensagem com produto, cor, metragem).
+i) Botões "Adicionar ao carrinho" e "Tirar dúvidas no WhatsApp" (mensagem com produto, ambiente, cor, metragem). O ambiente é o que o cliente filtrou no catálogo (se o papel serve para ele); senão, os ambientes indicados.
+
+j) Linha discreta "Indicado para: Quarto (Infantil, Menina) • Brinquedoteca" abaixo da descrição; cada item leva ao catálogo filtrado.
 
 ### Carrinho e checkout
 
@@ -175,10 +196,11 @@ Sem login por enquanto. Aviso fixo no topo de todas as páginas do admin:
 
 Responsivo e usável no celular, mesmo padrão visual. Botão "Restaurar dados de exemplo".
 
-- **Painel** `/admin`: atalhos (Papéis de parede, Trabalhos realizados, Configurações, Pedidos) e números (produtos, pedidos novos, pedidos via WhatsApp).
-- **Produtos** `/admin/produtos`: cards com foto, nome, preço/m², selo "Pronta entrega"; busca; Editar, Duplicar, Ativar/Desativar, Excluir (com confirmação).
+- **Painel** `/admin`: atalhos (Papéis de parede, Ambientes, Trabalhos realizados, Configurações, Pedidos) e números (produtos, pedidos novos, pedidos via WhatsApp).
+- **Produtos** `/admin/produtos`: cards com foto, nome, preço/m², ambientes, selo "Pronta entrega"; busca; filtro por ambiente (inclui "Sem ambiente"); aviso e selo "Sem ambiente" para os que faltam cadastrar; Editar, Duplicar, Ativar/Desativar, Excluir (com confirmação).
 - **Cadastro/edição** `/admin/produtos/novo` e `/admin/produtos/[id]`:
   a) Dados básicos: nome, descrição, categoria, pronta entrega, prazo de produção, ativo.
+  a1) Onde usar este papel (logo depois dos dados básicos): ambientes como caixas grandes de marcar (vários); ao marcar um ambiente com perguntas, abrem as opções dele; resumo "Este papel aparece em: Quarto (Bebê, Infantil • Menina, Neutro), Brinquedoteca". Obrigatório pelo menos 1 ambiente e, em ambiente com perguntas, pelo menos 1 opção em cada pergunta (mensagem junto do campo).
   a2) Materiais: ativar/desativar cada material, editar nome, descrição e preço/m², adicionar novos (pelo menos um ativo).
   b) Fotos: upload múltiplo (redimensionar e salvar em base64), reordenar, definir principal.
   c) Cores: nome, seletor, foto da variação.
@@ -187,6 +209,7 @@ Responsivo e usável no celular, mesmo padrão visual. Botão "Restaurar dados d
   f) IA: habilitar/desabilitar e sugestões de observação.
   g) "Ver como o cliente vê" e "Salvar" fixo no rodapé no celular. Validação com mensagens claras.
 - **Trabalhos** `/admin/trabalhos`: CRUD + reordenar (título, cidade, antes, depois, produto relacionado, destaque).
+- **Ambientes** `/admin/ambientes`: criar, editar (nome, imagem, frase de destaque), ativar/desativar, reordenar e excluir ambientes; dentro de cada um, criar, editar, reordenar e excluir perguntas e opções ("cliente pode marcar mais de uma"; "combina com todas as outras"). Ao excluir ambiente ou opção em uso, avisa quantos papéis usam e pede confirmação; a referência sai desses papéis. Slugs gerados automaticamente e mantidos ao renomear (links continuam valendo).
 - **Configurações** `/admin/configuracoes`: todos os campos de Settings. Tudo reflete na loja.
 - **Pedidos** `/admin/pedidos`: cliente, cidade/UF, canal, itens, m², cor, material, personalização, observação e imagem de IA, serviços, frete/deslocamento, desconto, total, status editável (Novo, Medição agendada, Em produção, Enviado, Aplicado, Concluído). Filtros por status e canal. "Chamar no WhatsApp".
 
@@ -200,5 +223,5 @@ Responsivo e usável no celular, mesmo padrão visual. Botão "Restaurar dados d
 4. **Carrinho e checkout:** carrinho, checkout em 3 passos, finalizar pelo WhatsApp, pedido confirmado.
 5. **IA:** rota /api/simular com mock, as duas abas, comparação, integração com carrinho.
 6. **Trabalhos e contato:** /trabalhos com slider, /contato com mapa.
-7. **Admin:** painel, produtos (com régua por clique), trabalhos, configurações, pedidos.
+7. **Admin:** painel, produtos (com régua por clique e "Onde usar"), ambientes, trabalhos, configurações, pedidos.
 8. **Revisão final:** passar todos os fluxos no Playwright no mobile, acessibilidade (axe), revisão visual por screenshots, Lighthouse mobile.

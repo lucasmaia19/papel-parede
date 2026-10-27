@@ -3,8 +3,10 @@
 import Image from "next/image"
 import Link from "next/link"
 import { ArrowRightIcon } from "lucide-react"
+import { GradeAmbientes } from "@/components/produto/filtro-ambientes"
 import { GradeProdutos } from "@/components/produto/produto-card"
 import { buttonVariants } from "@/components/ui/button"
+import { ambientesVisiveis } from "@/lib/ambientes"
 import { ROTULO_CATEGORIA } from "@/lib/data"
 import { categoriasDisponiveis, imagemPrincipal } from "@/lib/catalogo"
 import { useLoja, useProdutosAtivos } from "@/lib/store"
@@ -21,6 +23,23 @@ export function FaixaEntrega() {
       <br className="sm:hidden" />
       Aplicamos em {cidades} e região
     </p>
+  )
+}
+
+export function AmbientesHome() {
+  const produtos = useProdutosAtivos()
+  const ambientes = ambientesVisiveis(useLoja((s) => s.ambientes), produtos)
+  if (ambientes.length === 0) return null
+  return (
+    <section aria-labelledby="titulo-ambientes-home" className="flex flex-col gap-6">
+      <div className="flex flex-col gap-2 border-b border-border pb-4">
+        <h2 id="titulo-ambientes-home" className="text-2xl md:text-3xl">
+          Para qual ambiente?
+        </h2>
+        <p className="text-foreground-subtle">Escolha o cômodo e veja os papéis que combinam com ele.</p>
+      </div>
+      <GradeAmbientes ambientes={ambientes} />
+    </section>
   )
 }
 

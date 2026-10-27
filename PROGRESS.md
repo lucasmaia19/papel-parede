@@ -153,6 +153,25 @@ Para ativar a IA real: criar `.env.local` com `OPENAI_API_KEY=...` (ver `.env.ex
 - [ ] 5. WhatsApp flutuante só ícone (52px, verde suave), sem sobrepor clicáveis (teste de interseção); demais botões de WhatsApp no estilo secundário
 - [ ] CLAUDE.md atualizado (direção visual, modelo de dados, página do produto)
 
+## Filtro por ambiente (rodada 2) ✅
+
+- [x] Modelo: `Ambiente` → `GrupoAmbiente` (pergunta) → `OpcaoAmbiente` (`combinaComTodas` = "Neutro"); `Product.ambientes: { ambienteId, opcoes }[]`; taxonomia no store (persist v4: migração dá os ambientes de exemplo aos papéis salvos; os criados no admin ficam "Sem ambiente")
+- [x] Seeds: 10 ambientes com as perguntas pedidas; `distribuirAmbientes` sorteia com semente fixa (20261027) seguindo regras de coerência por papel (todos com ≥ 2 ambientes); "Restaurar dados de exemplo" volta a taxonomia também
+- [x] Ilustrações SVG delicadas dos 10 ambientes (`scripts/gerar-ambientes.mjs`, sem preto/branco), revisadas numa prancha
+- [x] `lib/ambientes.ts`: OU no grupo, E entre grupos, "combina com todos", ambientes/opções sem papel escondidos, URL ↔ filtro, ordem aleatória estável (hash por id + semente da sessão: filtrar não embaralha de novo), textos "Indicado para"/resumo, contagem e remoção de referências; `lib/admin-ambientes.ts` (validação e slugs automáticos e estáveis)
+- [x] Vitest: 16 testes novos (61 no total)
+- [x] Home: "Para qual ambiente?" logo após o carrossel (grade 2 colunas no celular)
+- [x] Catálogo: blocos de ambiente no topo (carrossel no celular com dica de arrastar; o escolhido fica à vista; ao escolher, rola até os resultados), perguntas com fade + altura, pílulas ≥ 48px, contador "N papéis encontrados", etiquetas removíveis, "Mais filtros" (tipo de estampa, cor e o novo filtro de material), URL, estado vazio com sugestões do ambiente e WhatsApp com o que foi procurado
+- [x] Produto: "Indicado para" com links; mensagem de dúvida com o ambiente procurado no catálogo (ou os indicados)
+- [x] Admin: seção "Onde usar este papel" (caixas, opções, resumo, validação); lista com ambientes, filtro por ambiente e aviso/selo "Sem ambiente"; `/admin/ambientes` (CRUD, perguntas e opções, reordenar, ativar/desativar, excluir com aviso de quantos papéis usam); atalho no painel e no menu
+- [x] Playwright: `tests/e2e/ambientes.spec.ts` (7 cenários × 4 larguras) + catálogo e admin atualizados — 64 passando; screenshots do celular revisados (ajustes: bloco escolhido escondido no fim do carrossel, dica de arrastar curta, descrição do catálogo)
+- [x] lint (ignora `tests/.tmp`), tsc, build, Vitest
+
+Obs.:
+- O catálogo usava "Estilo" para a categoria; virou "Tipo de estampa" para não confundir com a pergunta "Qual estilo?" das salas.
+- A rolagem até os resultados ao escolher o ambiente entrou depois da última rodada de testes (o usuário pediu para não rodar mais testes nesta etapa).
+- Suíte completa: falham 5 testes de `tests/e2e/whatsapp.spec.ts` (WhatsApp flutuante cobrindo campos no produto/carrinho/checkout no celular). São do ajuste 5, ainda em andamento, sem commit; não fazem parte desta entrega. Corrigida aqui a migração v4 que esvaziava os produtos de quem tinha dados v3 (o teste semeia v3).
+
 ## Pendências / observações
 - Valores marcados como fictícios na especificação (aplicação, visita, Pix, deslocamento, frete) precisam ser confirmados com a loja — todos editáveis em /admin/configuracoes.
 - Regras de cálculo adotadas (ver Fase 1) devem ser validadas com a loja.

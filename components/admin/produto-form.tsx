@@ -5,6 +5,7 @@ import { useState } from "react"
 import { ArrowDownIcon, ArrowLeftIcon, ArrowUpIcon, ExternalLinkIcon, PlusIcon, SaveIcon, Trash2Icon } from "lucide-react"
 import { CampoArea, CampoSelect, CampoTexto, EnviarFotos, ErroCampo, Interruptor, SecaoAdmin } from "@/components/admin/campos"
 import { FotosProduto } from "@/components/admin/fotos-produto"
+import { OndeUsar } from "@/components/admin/onde-usar"
 import { ReguaCalibracao } from "@/components/admin/regua-calibracao"
 import { Galeria } from "@/components/produto/galeria"
 import { Button, buttonVariants } from "@/components/ui/button"
@@ -61,6 +62,7 @@ function reguaDaForma(f: Form): Regua | null {
 
 export function ProdutoForm({ inicial, novo }: ProdutoFormProps) {
   const produtos = useLoja((s) => s.produtos)
+  const ambientes = useLoja((s) => s.ambientes)
   const salvarProduto = useLoja((s) => s.salvarProduto)
   const [f, setF] = useState<Form>(inicial)
   const [erros, setErros] = useState<ErrosProduto>({})
@@ -78,7 +80,7 @@ export function ProdutoForm({ inicial, novo }: ProdutoFormProps) {
   }
 
   function salvar() {
-    const { produto, erros: novos } = validarProduto(f, produtos)
+    const { produto, erros: novos } = validarProduto(f, produtos, ambientes)
     setErros(novos)
     if (!produto) {
       setMensagem(null)
@@ -174,6 +176,14 @@ export function ProdutoForm({ inicial, novo }: ProdutoFormProps) {
             marcado={f.ativo}
             onChange={(ativo) => alterar({ ativo })}
           />
+        </SecaoAdmin>
+
+        {/* Onde usar: ambientes do filtro da loja */}
+        <SecaoAdmin
+          titulo="Onde usar este papel"
+          descricao="Marque os ambientes em que ele aparece no filtro da loja. Pode marcar vários."
+        >
+          <OndeUsar valor={f.ambientes} onChange={(ambientes) => alterar({ ambientes })} erros={erros} />
         </SecaoAdmin>
 
         {/* Materiais: cada um com seu preço por m² */}

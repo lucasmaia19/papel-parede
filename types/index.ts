@@ -61,6 +61,45 @@ export interface MaterialProduto {
   ativo: boolean
 }
 
+/** Opção de uma pergunta do ambiente (ex.: "Menina" em "Para quem?") */
+export interface OpcaoAmbiente {
+  id: string
+  nome: string
+  slug: string
+  /** Papel com esta opção aparece em qualquer escolha da pergunta, com o selo "Combina com todos" (ex.: Neutro) */
+  combinaComTodas?: boolean
+}
+
+/** Pergunta do filtro dentro de um ambiente (ex.: "Para qual idade?") */
+export interface GrupoAmbiente {
+  id: string
+  pergunta: string
+  /** Nome do parâmetro na URL (?idade=infantil) */
+  slug: string
+  /** O cliente pode marcar mais de uma opção (funcionam como "ou") */
+  multiplo: boolean
+  opcoes: OpcaoAmbiente[]
+}
+
+export interface Ambiente {
+  id: string
+  nome: string
+  slug: string
+  /** Ilustração em /public ou data URL enviada pelo admin */
+  imagem: string
+  ordem: number
+  ativo: boolean
+  /** Frase curta de destaque (ex.: "Combina com o papel adesivo lavável") */
+  destaque?: string
+  grupos: GrupoAmbiente[]
+}
+
+/** Onde o papel pode ser usado: o ambiente e os ids das opções marcadas */
+export interface AmbienteProduto {
+  ambienteId: string
+  opcoes: string[]
+}
+
 export interface Product {
   id: string
   slug: string
@@ -80,6 +119,8 @@ export interface Product {
   regua: Regua | null
   iaHabilitada: boolean
   sugestoesIA: string[]
+  /** Ambientes indicados (um papel pode servir para vários) */
+  ambientes: AmbienteProduto[]
 }
 
 export interface FaixaCep {

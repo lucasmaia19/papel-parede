@@ -10,11 +10,13 @@ import { OpcaoBotao } from "@/components/opcao-botao"
 import { Passo } from "@/components/passo"
 import { Calculadora } from "@/components/produto/calculadora"
 import { Galeria, type ImagemGaleria } from "@/components/produto/galeria"
+import { IndicadoPara } from "@/components/produto/indicado-para"
 import { SimulacaoIA } from "@/components/produto/simulacao-ia"
 import { Button, buttonVariants } from "@/components/ui/button"
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet"
 import { WhatsappLink } from "@/components/whatsapp-link"
+import { avaliarProduto, lerFiltroAmbiente, resumoAmbientes, textoFiltroAmbiente } from "@/lib/ambientes"
 import { textoPrazo } from "@/lib/catalogo"
 import { materiaisAtivos, precoAPartirDe, temPrecosDiferentes } from "@/lib/materiais"
 import {
@@ -36,6 +38,7 @@ import {
 } from "@/lib/pricing"
 import { useHidratado, useLoja } from "@/lib/store"
 import { useBarraInferior, useOcultarWhatsappDesktop } from "@/lib/use-barra-inferior"
+import { useUltimoAmbiente } from "@/lib/use-sessao-catalogo"
 import { cn } from "@/lib/utils"
 import type { Product, SimulacaoIA as SimulacaoEscolhida } from "@/types"
 
@@ -152,8 +155,20 @@ function Configurador({ produto }: { produto: Product }) {
   const entregaOk = Boolean(local) && (!naRegiao || (servicos.aplicacao !== null && servicos.visita !== null))
   const passoAtual = !material ? "material" : !medidasOk ? "medidas" : !entregaOk ? "entrega" : null
 
+  // Ambiente na mensagem: o que o cliente procurou no catálogo (se este papel serve), senão os indicados
+  const taxonomia = useLoja((s) => s.ambientes)
+  const ultimoAmbiente = lerFiltroAmbiente(new URLSearchParams(useUltimoAmbiente()), taxonomia)
+  const ambienteProcurado = taxonomia.find((a) => a.slug === ultimoAmbiente.ambiente)
+  const textoAmbiente =
+    ambienteProcurado && avaliarProduto(produto, ambienteProcurado, ultimoAmbiente.opcoes).combina
+      ? `Ambiente: ${textoFiltroAmbiente(ultimoAmbiente, taxonomia)}`
+      : resumoAmbientes(produto, taxonomia)
+        ? `Indicado para: ${resumoAmbientes(produto, taxonomia)}`
+        : null
+
   const mensagemWhatsapp = mensagemDuvidaProduto({
     produto,
+    ambiente: textoAmbiente,
     cor: cor?.nome ?? "",
     material: material?.nome ?? null,
     personalizacoes,
@@ -244,6 +259,7 @@ function Configurador({ produto }: { produto: Product }) {
                   {textoPrazo(produto)}
                 </p>
                 <p className="text-foreground-subtle">{produto.descricao}</p>
+                <IndicadoPara produto={produto} />
               </div>
             </div>
 

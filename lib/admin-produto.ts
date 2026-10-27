@@ -2,7 +2,7 @@ import { gerarIdSimples } from "@/lib/id"
 import { materiaisPadrao } from "@/lib/materiais"
 import { normalizar } from "@/lib/catalogo"
 import { parseDecimal } from "@/lib/pricing"
-import type { Categoria, ImagemProduto, Product } from "@/types"
+import type { Ambiente, AmbienteProduto, Categoria, ImagemProduto, Product } from "@/types"
 
 /** Produto como editado no formulário: números como texto (aceita vírgula). */
 export interface ProdutoForm {
@@ -21,6 +21,7 @@ export interface ProdutoForm {
   regua: { pixelsPorCm: string; medidas: { id: string; rotulo: string; larguraCm: string; alturaCm: string }[] }
   iaHabilitada: boolean
   sugestoesIA: string[]
+  ambientes: AmbienteProduto[]
 }
 
 export type ErrosProduto = Record<string, string>
@@ -51,6 +52,7 @@ export function produtoVazio(precoM2Padrao: number): ProdutoForm {
     regua: { pixelsPorCm: "", medidas: [] },
     iaHabilitada: false,
     sugestoesIA: [],
+    ambientes: [],
   }
 }
 
@@ -75,6 +77,7 @@ export function produtoParaForm(p: Product): ProdutoForm {
       })),
     },
     sugestoesIA: [...p.sugestoesIA],
+    ambientes: (p.ambientes ?? []).map((a) => ({ ambienteId: a.ambienteId, opcoes: [...a.opcoes] })),
   }
 }
 
@@ -89,6 +92,8 @@ function numero(texto: string): number | null {
 export function validarProduto(
   form: ProdutoForm,
   outros: Pick<Product, "id" | "slug">[],
+  /** Taxonomia de ambientes; sem ela (testes antigos), "Onde usar" não é validado */
+  ambientes?: Ambiente[],
 ): { produto: Product | null; erros: ErrosProduto } {
   const erros: ErrosProduto = {}
 
@@ -142,6 +147,25 @@ export function validarProduto(
   })
   if (form.regua.medidas.length > 0 && !pxCm) erros["regua.pixelsPorCm"] = "Calibre a régua para mostrar as medidas."
 
+  // Onde usar: só ambientes que ainda existem, com as opções na ordem do cadastro
+  const marcados = ambientes
+    ? form.ambientes.flatMap((m) => {
+        const a = ambientes.find((x) => x.id === m.ambienteId)
+        if (!a) return []
+        const ids = a.grupos.flatMap((g) => g.opcoes.map((o) => o.id)).filter((id) => m.opcoes.includes(id))
+        return [{ ambiente: a, marcacao: { ambienteId: a.id, opcoes: ids } }]
+      })
+    : form.ambientes.map((marcacao) => ({ ambiente: null, marcacao }))
+  if (ambientes) {
+    if (marcados.length === 0) erros.ambientes = "Marque pelo menos um ambiente onde este papel pode ser usado."
+    for (const { ambiente, marcacao } of marcados) {
+      for (const g of ambiente?.grupos ?? []) {
+        if (!g.opcoes.some((o) => marcacao.opcoes.includes(o.id)))
+          erros[`ambientes.${ambiente!.id}.${g.id}`] = `${ambiente!.nome}: marque pelo menos uma opção em “${g.pergunta}”.`
+      }
+    }
+  }
+
   if (Object.keys(erros).length > 0) return { produto: null, erros }
 
   return {
@@ -179,6 +203,7 @@ export function validarProduto(
         : null,
       iaHabilitada: form.iaHabilitada,
       sugestoesIA: form.sugestoesIA.map((s) => s.trim()).filter(Boolean),
+      ambientes: marcados.map((m) => m.marcacao),
     },
     erros,
   }

@@ -15,7 +15,7 @@ test("home mostra chamadas, estilos, destaques e trabalhos", async ({ page }, te
   await expect(page.getByRole("heading", { level: 1 })).toBeVisible()
   await expect(page.getByText(/Enviamos para todo o Brasil/).first()).toBeVisible()
   await expect(page.locator("[data-slot=faixa-entrega]")).toContainText("Aplicamos em Uberlândia, Araguari, Uberaba e região")
-  for (const titulo of ["Calcule seu papel de parede", "Veja na sua parede", "Pronta entrega", "Escolha pelo estilo", "Mais procurados", "Trabalhos realizados"]) {
+  for (const titulo of ["Para qual ambiente?", "Calcule seu papel de parede", "Veja na sua parede", "Pronta entrega", "Escolha pelo estilo", "Mais procurados", "Trabalhos realizados"]) {
     await expect(page.getByRole("heading", { name: titulo, exact: true })).toBeVisible()
   }
   await expect(cards(page)).toHaveCount(4)
@@ -33,33 +33,34 @@ test("catálogo filtra por estilo e cor", async ({ page }, testInfo) => {
   await page.goto("/produtos")
   await esperarHidratacao(page)
   await expect(cards(page)).toHaveCount(13)
-  await expect(page.getByText("13 papéis de parede")).toBeVisible()
+  await expect(page.getByText("13 papéis encontrados")).toBeVisible()
   await verificarLayout(page)
   await screenshot(page, testInfo, "fase2-produtos")
 
   if (ehMobile(testInfo)) {
-    await page.getByRole("button", { name: "Filtrar" }).click()
-    const gaveta = page.getByRole("dialog", { name: "Filtrar" })
+    await page.getByRole("button", { name: "Mais filtros" }).click()
+    const gaveta = page.getByRole("dialog", { name: "Mais filtros" })
     await expect(gaveta).toBeVisible()
     await gaveta.getByRole("button", { name: "Florais" }).click()
     await expect(page).toHaveURL(/categoria=floral/)
     await verificarLayout(page)
     await screenshot(page, testInfo, "fase2-filtros", false)
-    await gaveta.getByRole("button", { name: "Ver 3 papéis de parede" }).click()
+    await gaveta.getByRole("button", { name: "Ver 3 papéis" }).click()
     await expect(gaveta).toBeHidden()
   } else {
-    await page.getByRole("complementary", { name: "Filtros" }).getByRole("button", { name: "Florais" }).click()
+    await page.getByRole("complementary", { name: "Mais filtros" }).getByRole("button", { name: "Florais" }).click()
     await expect(page).toHaveURL(/categoria=floral/)
   }
 
   await expect(cards(page)).toHaveCount(3)
-  await expect(cards(page).first()).toContainText("Delicado")
-  await expect(page.getByRole("button", { name: "Filtrar (1)" }).or(page.getByRole("complementary"))).toBeVisible()
+  // A ordem é aleatória (estável na sessão): confere só quem aparece
+  await expect(cards(page).filter({ hasText: "Delicado" })).toHaveCount(1)
+  await expect(page.getByRole("button", { name: "Mais filtros (1)" }).or(page.getByRole("complementary"))).toBeVisible()
 
   // Filtro de cor junto com estilo → nenhum resultado e opção de ver todos
   await page.goto("/produtos?categoria=floral&cor=lilas")
-  await expect(page.getByText("Nenhum papel de parede com esses filtros.")).toBeVisible()
-  await page.getByRole("button", { name: "Ver todos" }).click()
+  await expect(page.getByText("Ainda não temos papéis cadastrados para essa combinação.")).toBeVisible()
+  await page.locator("[data-slot=sem-resultado]").getByRole("button", { name: "Limpar filtros" }).click()
   await expect(cards(page)).toHaveCount(13)
 
   await page.goto("/produtos?cor=off-white")
