@@ -118,6 +118,49 @@ export async function nadaCobreBotoes(page: Page, escopo = "main") {
   expect(cobertos, "botões cobertos por elementos fixos").toEqual([])
 }
 
+/**
+ * O WhatsApp flutuante não pode ficar por cima de nada clicável (botões, links, campos, miniaturas).
+ * Confere a interseção dos retângulos com a página no topo e com cada elemento rolado até a tela
+ * (como acontece ao tocar/usar o teclado: o scroll-padding reserva o espaço do botão).
+ */
+export async function whatsappNaoSobrepoe(page: Page) {
+  const sobrepostos = await page.evaluate(async () => {
+    const botao = document.querySelector("[data-slot=whatsapp-flutuante]")
+    if (!botao || botao.getBoundingClientRect().width === 0) return ["botão flutuante não encontrado"]
+    const seletor = "a[href], button, input, select, textarea, [role=button], [role=tab], [tabindex]:not([tabindex='-1'])"
+    const alvos = (Array.from(document.querySelectorAll(seletor)) as HTMLElement[]).filter(
+      (el) =>
+        el !== botao &&
+        !botao.contains(el) &&
+        !el.closest("[role=dialog], [aria-hidden=true], .sr-only, [inert]") &&
+        getComputedStyle(el).visibility !== "hidden" &&
+        el.getBoundingClientRect().width > 0 &&
+        // campos escondidos de arquivo/range ocupam a área de outro controle
+        !(el instanceof HTMLInputElement && ["file", "range"].includes(el.type)),
+    )
+    const cruza = (a: DOMRect, b: DOMRect) =>
+      a.left < b.right - 1 && a.right > b.left + 1 && a.top < b.bottom - 1 && a.bottom > b.top + 1
+    const nome = (el: HTMLElement) =>
+      (el.getAttribute("aria-label") || el.textContent || el.getAttribute("placeholder") || el.tagName).trim().slice(0, 40)
+    const problemas = new Set<string>()
+    const esperar = () => new Promise((r) => requestAnimationFrame(() => requestAnimationFrame(() => r(null))))
+
+    window.scrollTo(0, 0)
+    await esperar()
+    for (const el of alvos) {
+      if (cruza(el.getBoundingClientRect(), botao.getBoundingClientRect())) problemas.add(`no topo: "${nome(el)}"`)
+    }
+    for (const el of alvos) {
+      el.scrollIntoView({ block: "nearest", inline: "nearest" })
+      await esperar()
+      if (cruza(el.getBoundingClientRect(), botao.getBoundingClientRect())) problemas.add(`rolando até: "${nome(el)}"`)
+    }
+    window.scrollTo(0, 0)
+    return [...problemas].slice(0, 15)
+  })
+  expect(sobrepostos, "elementos clicáveis embaixo do WhatsApp flutuante").toEqual([])
+}
+
 export async function verificarLayout(page: Page) {
   await semRolagemHorizontal(page)
   await semElementoCortado(page)

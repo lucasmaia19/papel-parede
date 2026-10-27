@@ -1,5 +1,6 @@
 import type { ResultadoCep } from "@/lib/cep"
 import { textoPersonalizacoes } from "@/lib/configurador"
+import { nomeMaterialMensagem } from "@/lib/materiais"
 import {
   arredondarDinheiro,
   calcularAplicacao,
@@ -111,7 +112,7 @@ export function mensagemOrcamento(d: DadosMensagem): string {
     l.push("")
     l.push(`*${i + 1}. ${item.produtoNome}*`)
     l.push(`Cor: ${item.cor.nome}`)
-    if (item.material) l.push(`Material: ${item.material.nome}`)
+    if (item.material) l.push(`Material: ${nomeMaterialMensagem(item.material)}`)
     if (item.personalizacoes.length) l.push(textoPersonalizacoes(item.personalizacoes))
     l.push(`Metragem: ${formatarM2(item.m2)} (paredes: ${textoParedes(item)})`)
     if (item.simulacao?.observacao) l.push(`Observação (simulação com IA): ${item.simulacao.observacao}`)

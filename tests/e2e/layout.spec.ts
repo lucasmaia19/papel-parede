@@ -18,6 +18,17 @@ test("layout base: cabeçalho, rodapé e contato", async ({ page }, testInfo) =>
   await expect(flutuante).toHaveAttribute("href", /^https:\/\/wa\.me\/5534996804044\?text=/)
   await expect(flutuante).toHaveAttribute("target", "_blank")
   await expect(flutuante).toHaveAttribute("rel", "noopener noreferrer")
+  // Só o ícone, sem texto, com nome acessível e tamanho de toque ≥ 48 px
+  await expect(flutuante).toHaveText("")
+  await expect(flutuante).toHaveAccessibleName("Falar no WhatsApp")
+  await expect(flutuante).toHaveAttribute("title", "Falar no WhatsApp")
+  const caixaFlutuante = (await flutuante.boundingBox())!
+  // Círculo de 52 px, ícone de 26 px, a 16 px da borda direita
+  expect(caixaFlutuante.width).toBeCloseTo(52, 0)
+  expect(caixaFlutuante.height).toBeCloseTo(52, 0)
+  expect((await flutuante.locator("svg").boundingBox())!.width).toBeCloseTo(26, 0)
+  const larguraTela = page.viewportSize()!.width
+  expect(larguraTela - (caixaFlutuante.x + caixaFlutuante.width)).toBeCloseTo(16, 0)
 
   // Rodapé
   const rodape = page.locator("footer")

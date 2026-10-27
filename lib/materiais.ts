@@ -11,8 +11,18 @@ export const MATERIAL_TEXTURIZADO: Omit<MaterialProduto, "precoM2"> = {
 export const MATERIAL_ADESIVO: Omit<MaterialProduto, "precoM2"> = {
   id: "adesivo",
   nome: "Adesivo liso",
-  descricao: "Liso, fácil de aplicar, só tirar o papel e colar",
+  descricao: "Liso e lavável. Limpa com pano úmido e pode ser aplicado em banheiros e tetos.",
   ativo: true,
+}
+
+/** É o papel adesivo (lavável)? */
+export function ehAdesivo(material: { id: string } | null | undefined): boolean {
+  return material?.id === MATERIAL_ADESIVO.id
+}
+
+/** Nome do material nas mensagens de WhatsApp: o adesivo leva "(lavável)" */
+export function nomeMaterialMensagem(material: { id: string; nome: string }): string {
+  return ehAdesivo(material) ? `${material.nome} (lavável)` : material.nome
 }
 
 /** Materiais padrão de uma estampa: os dois, no mesmo preço. Linho sem estampa: só o texturizado. */

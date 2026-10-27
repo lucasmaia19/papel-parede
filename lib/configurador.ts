@@ -1,4 +1,5 @@
 import { gerarIdSimples } from "@/lib/id"
+import { nomeMaterialMensagem } from "@/lib/materiais"
 import { formatarM2, formatarMoeda, parseDecimal } from "@/lib/pricing"
 import type { Abertura, Parede, PersonalizacaoEscolhida, Product, TipoAbertura } from "@/types"
 
@@ -104,7 +105,7 @@ export function mensagemDuvidaProduto(args: {
   /** Linha pronta, ex.: "Ambiente: Quarto (Infantil • Menina)" */
   ambiente?: string | null
   cor: string
-  material: string | null
+  material: { id: string; nome: string } | null
   personalizacoes: PersonalizacaoEscolhida[]
   m2: number
   /** Preço/m² do item (material + acréscimos) */
@@ -115,7 +116,7 @@ export function mensagemDuvidaProduto(args: {
     `Olá! Tenho uma dúvida sobre o papel de parede *${args.produto.nome}*.`,
     ...(args.ambiente ? [args.ambiente] : []),
     `Cor: ${args.cor}`,
-    `Material: ${args.material ?? "ainda não escolhi"}`,
+    `Material: ${args.material ? nomeMaterialMensagem(args.material) : "ainda não escolhi"}`,
     ...args.personalizacoes.map((p) => `${p.grupo}: ${p.opcao}`),
     args.m2 > 0 ? `Metragem: ${formatarM2(args.m2)}` : "Ainda não calculei a metragem.",
     `Preço: ${formatarMoeda(args.precoM2)}/m²`,

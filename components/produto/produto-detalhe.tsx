@@ -6,6 +6,7 @@ import { ArrowLeftIcon, CheckIcon, ChevronUpIcon, ClockIcon, PackageCheckIcon, S
 import { CampoCep, useResultadoCep } from "@/components/entrega/campo-cep"
 import { InfoFrete, ServicosRegiao, type EscolhaServicos } from "@/components/entrega/info-entrega"
 import { ResumoPrecoLista } from "@/components/entrega/resumo-preco"
+import { IconeBanheiro, IconeLavavel, IconePano, IconeTeto } from "@/components/icones-adesivo"
 import { OpcaoBotao } from "@/components/opcao-botao"
 import { Passo } from "@/components/passo"
 import { Calculadora } from "@/components/produto/calculadora"
@@ -18,7 +19,7 @@ import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sh
 import { WhatsappLink } from "@/components/whatsapp-link"
 import { avaliarProduto, lerFiltroAmbiente, resumoAmbientes, textoFiltroAmbiente } from "@/lib/ambientes"
 import { textoPrazo } from "@/lib/catalogo"
-import { materiaisAtivos, precoAPartirDe, temPrecosDiferentes } from "@/lib/materiais"
+import { ehAdesivo, materiaisAtivos, precoAPartirDe, temPrecosDiferentes } from "@/lib/materiais"
 import {
   mensagemDuvidaProduto,
   paredeInicial,
@@ -82,6 +83,31 @@ export function ProdutoDetalhe({ slug }: { slug: string }) {
       )}
       <Configurador key={produto.id} produto={produto} />
     </>
+  )
+}
+
+/** Linha discreta abaixo do seletor quando o material é o adesivo */
+function BeneficiosAdesivo() {
+  const itens = [
+    { texto: "Lavável", Icone: IconeLavavel },
+    { texto: "Pano úmido", Icone: IconePano },
+    { texto: "Banheiro", Icone: IconeBanheiro },
+    { texto: "Teto", Icone: IconeTeto },
+  ]
+  return (
+    <ul data-slot="adesivo-beneficios" aria-label="Vantagens do adesivo" className="flex flex-wrap items-center gap-x-1 gap-y-1 text-sm text-foreground-subtle">
+      {itens.map(({ texto, Icone }, i) => (
+        <li key={texto} className="flex items-center gap-1.5">
+          {i > 0 && (
+            <span aria-hidden className="mr-1">
+              •
+            </span>
+          )}
+          <Icone className="size-5 shrink-0" />
+          {texto}
+        </li>
+      ))}
+    </ul>
   )
 }
 
@@ -170,7 +196,7 @@ function Configurador({ produto }: { produto: Product }) {
     produto,
     ambiente: textoAmbiente,
     cor: cor?.nome ?? "",
-    material: material?.nome ?? null,
+    material: material ?? null,
     personalizacoes,
     m2: metragem.m2,
     precoM2: precoFinal,
@@ -308,6 +334,7 @@ function Configurador({ produto }: { produto: Product }) {
                   )
                 })}
               </div>
+              {ehAdesivo(material) && <BeneficiosAdesivo />}
               {erroMaterial && !material && (
                 <p role="alert" className="rounded-md border border-destructive/40 bg-destructive/10 p-3 font-medium text-destructive">
                   Escolha o material antes de adicionar ao carrinho: {opcoesMaterial.map((m) => m.nome).join(" ou ")}.
