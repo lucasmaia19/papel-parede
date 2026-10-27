@@ -2,49 +2,19 @@
 
 import { usePathname, useRouter, useSearchParams } from "next/navigation"
 import { useState } from "react"
-import { CheckIcon, SlidersHorizontalIcon, XIcon } from "lucide-react"
+import { SlidersHorizontalIcon, XIcon } from "lucide-react"
+import { OpcaoBotao } from "@/components/opcao-botao"
 import { GradeProdutos } from "@/components/produto/produto-card"
 import { Button } from "@/components/ui/button"
 import { Sheet, SheetContent, SheetFooter, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet"
 import { ROTULO_CATEGORIA } from "@/lib/data"
 import { categoriasDisponiveis, coresDisponiveis, ehCategoria, filtrarProdutos } from "@/lib/catalogo"
 import { useProdutosAtivos } from "@/lib/store"
-import { cn } from "@/lib/utils"
 import type { Categoria, Product } from "@/types"
 
 interface Filtros {
   categoria: Categoria | null
   cor: string | null
-}
-
-function BotaoFiltro({
-  ativo,
-  onClick,
-  children,
-  className,
-}: {
-  ativo: boolean
-  onClick: () => void
-  children: React.ReactNode
-  className?: string
-}) {
-  return (
-    <button
-      type="button"
-      aria-pressed={ativo}
-      onClick={onClick}
-      className={cn(
-        "inline-flex min-h-12 items-center gap-2.5 rounded-md border px-3.5 py-2 text-left text-base font-medium transition-colors outline-none focus-visible:ring-3 focus-visible:ring-ring/50",
-        ativo
-          ? "border-primary bg-primary text-primary-foreground"
-          : "border-input bg-surface-raised text-foreground hover:bg-accent",
-        className,
-      )}
-    >
-      {children}
-      {ativo && <CheckIcon className="ml-auto size-5 shrink-0" aria-hidden />}
-    </button>
-  )
 }
 
 function PainelFiltros({
@@ -66,31 +36,31 @@ function PainelFiltros({
       <fieldset className="flex flex-col gap-3">
         <legend className="mb-3 font-heading text-xl font-semibold">Estilo</legend>
         <div className="grid grid-cols-2 gap-2 lg:grid-cols-1">
-          <BotaoFiltro ativo={!filtros.categoria} onClick={() => alterar({ categoria: null })}>
+          <OpcaoBotao ativo={!filtros.categoria} onClick={() => alterar({ categoria: null })}>
             Todos
-          </BotaoFiltro>
+          </OpcaoBotao>
           {categorias.map((c) => (
-            <BotaoFiltro key={c} ativo={filtros.categoria === c} onClick={() => alterar({ categoria: c })}>
+            <OpcaoBotao key={c} ativo={filtros.categoria === c} onClick={() => alterar({ categoria: c })}>
               {ROTULO_CATEGORIA[c]}
-            </BotaoFiltro>
+            </OpcaoBotao>
           ))}
         </div>
       </fieldset>
       <fieldset className="flex flex-col gap-3">
         <legend className="mb-3 font-heading text-xl font-semibold">Cor</legend>
         <div className="grid grid-cols-2 gap-2 lg:grid-cols-1">
-          <BotaoFiltro ativo={!filtros.cor} onClick={() => alterar({ cor: null })}>
+          <OpcaoBotao ativo={!filtros.cor} onClick={() => alterar({ cor: null })}>
             Todas
-          </BotaoFiltro>
+          </OpcaoBotao>
           {cores.map((c) => (
-            <BotaoFiltro key={c.chave} ativo={filtros.cor === c.chave} onClick={() => alterar({ cor: c.chave })}>
+            <OpcaoBotao key={c.chave} ativo={filtros.cor === c.chave} onClick={() => alterar({ cor: c.chave })}>
               <span
                 aria-hidden
                 className="size-6 shrink-0 rounded-[2px] border border-foreground/30"
                 style={{ backgroundColor: c.hex }}
               />
               {c.nome}
-            </BotaoFiltro>
+            </OpcaoBotao>
           ))}
         </div>
       </fieldset>

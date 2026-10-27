@@ -82,6 +82,40 @@ export async function botoesGrandes(page: Page, escopo = "body") {
   expect(pequenos, "botões menores que 48px").toEqual([])
 }
 
+/**
+ * Cada botão de `escopo`, quando rolado para a tela, não pode ficar coberto
+ * (pela barra de preço fixa, pelo WhatsApp flutuante ou pelo cabeçalho).
+ */
+export async function nadaCobreBotoes(page: Page, escopo = "main") {
+  const cobertos = await page.evaluate(async (seletor) => {
+    const raiz = document.querySelector(seletor) ?? document.body
+    const alvos = Array.from(raiz.querySelectorAll("button, a[data-slot=whatsapp-link], a[class*=min-h-1]")) as HTMLElement[]
+    const problemas: string[] = []
+    for (const el of alvos) {
+      const r0 = el.getBoundingClientRect()
+      if (r0.width === 0 || r0.height === 0 || el.closest("[role=dialog]")) continue
+      el.scrollIntoView({ block: "nearest", inline: "nearest" })
+      await new Promise((r) => requestAnimationFrame(() => r(null)))
+      const r = el.getBoundingClientRect()
+      const pontos = [
+        [r.left + r.width / 2, r.top + r.height / 2],
+        [r.left + 6, r.bottom - 4],
+        [r.right - 6, r.bottom - 4],
+      ]
+      for (const [x, y] of pontos) {
+        const topo = document.elementFromPoint(x, y)
+        if (topo && topo !== el && !el.contains(topo)) {
+          const quem = topo.closest("[data-slot]")?.getAttribute("data-slot") ?? topo.tagName
+          problemas.push(`"${(el.textContent ?? "").trim().slice(0, 30)}" coberto por ${quem}`)
+          break
+        }
+      }
+    }
+    return problemas
+  }, escopo)
+  expect(cobertos, "botões cobertos por elementos fixos").toEqual([])
+}
+
 export async function verificarLayout(page: Page) {
   await semRolagemHorizontal(page)
   await semElementoCortado(page)

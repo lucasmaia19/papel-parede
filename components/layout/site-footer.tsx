@@ -64,7 +64,7 @@ export function SiteFooter() {
   const cidades = settings.cidadesAtendidas.map((c) => c.nome)
 
   return (
-    <footer data-slot="site-footer" className="mt-16 border-t border-border bg-muted/60 pb-28 md:pb-16">
+    <footer data-slot="site-footer" className="mt-16 border-t border-border bg-muted/60 pb-[calc(7rem+var(--barra-inferior))] md:pb-[calc(4rem+var(--barra-inferior))]">
       <div className="container-loja grid gap-10 pt-10 md:grid-cols-2 md:gap-12 lg:grid-cols-[1fr_1fr_1.2fr]">
         <section aria-labelledby="rodape-contato" className="flex flex-col gap-4">
           <Logo className="self-start" />

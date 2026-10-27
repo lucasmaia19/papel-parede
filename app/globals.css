@@ -126,6 +126,8 @@
     @apply font-sans;
     -webkit-text-size-adjust: 100%;
     scroll-padding-top: 5rem;
+    /* Rolagem automática (foco, âncoras) não deixa nada atrás da barra fixa nem do WhatsApp flutuante */
+    scroll-padding-bottom: calc(var(--barra-inferior) + 5.5rem);
   }
   body {
     @apply bg-background text-base text-foreground antialiased;

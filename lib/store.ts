@@ -4,11 +4,9 @@ import { useSyncExternalStore } from "react"
 import { create } from "zustand"
 import { createJSONStorage, persist, type StateStorage } from "zustand/middleware"
 import { produtosIniciais, settingsIniciais, trabalhosIniciais } from "@/lib/data"
+import { gerarIdSimples as gerarId } from "@/lib/id"
 import type { CartItem, Order, Product, Settings, StatusPedido, WorkGallery } from "@/types"
 
-export function gerarId(prefixo = ""): string {
-  return `${prefixo}${Date.now().toString(36)}${Math.random().toString(36).slice(2, 8)}`
-}
 
 export const EVENTO_ARMAZENAMENTO_CHEIO = "rodovalho:armazenamento-cheio"
 

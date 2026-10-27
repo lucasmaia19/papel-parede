@@ -34,8 +34,21 @@ Regras de preço adotadas (confirmar com a loja):
 
 Obs.: o Next 16 mantém a página anterior escondida no DOM após navegar (Activity) — nos testes, contar só elementos visíveis.
 
-## Fase 3 — Produto
-- [ ] Galeria + régua, cores, personalizações, calculadora + guia, CEP/entrega/serviços, resumo de preço
+## Fase 3 — Produto ✅
+- [x] Rota `/produtos/[slug]` (produtos de exemplo pré-gerados; criados no admin funcionam na 1ª visita) com `<Suspense>`
+- [x] Galeria com swipe (scroll-snap), miniaturas, contador, "Ampliar foto" com zoom (botões + pinça)
+- [x] Régua em cm sobreposta (eixos H/V escalados pelo tamanho renderizado × `pixelsPorCm`) + desenho e legenda das medidas; botão "Mostrar/Ocultar régua"
+- [x] Cores com amostra (troca a foto); personalizações em botões grandes com acréscimo por m²
+- [x] Prazo junto do preço (pronta entrega / produção em X dias úteis)
+- [x] Calculadora: várias paredes, portas/janelas com medidas sugeridas, desenho SVG proporcional, validação simples, vírgula ou ponto, explicação da sobra
+- [x] Guia "Como medir sua parede?" (3 passos ilustrados + visita técnica pelo WhatsApp)
+- [x] CEP: região atendida (aplicação Sim/Não, visita Sim/Não, deslocamento) ou frete/prazo + aviso; CEP salvo e compartilhado
+- [x] Resumo em tempo real: barra fixa no celular (total, Pix, "Ver detalhes", "Adicionar ao carrinho"), card lateral fixo no desktop; totais sem/com aplicação
+- [x] Passos numerados com ✓ e "Você está aqui"
+- [x] Adicionar ao carrinho (avisa se faltar medida) + "Tirar dúvidas no WhatsApp" com produto, cor, personalização e m²
+- [x] Testes Playwright: régua, cor, personalização, cálculo (1 e 2 paredes, janela), CEP região/fora, carrinho, guia, botões não cobertos por elementos fixos
+- [x] Ajustes após revisar screenshots: botões da régua quebrando, rótulo cortado na régua, personalização em lista no celular, WhatsApp flutuante escondido no desktop da página de produto (cobria o card lateral), galeria maior, barra "Informe as medidas"
+- [x] Commit
 
 ## Fase 4 — Carrinho e checkout
 - [ ] Carrinho, checkout 3 passos, finalizar pelo WhatsApp, pedido confirmado
