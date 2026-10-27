@@ -1,0 +1,164 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
+
+/* A loja não tem modo escuro: "dark:" só valeria dentro de .dark (nunca usado) */
+@custom-variant dark (&:is(.dark *));
+
+/*
+ * Tema "papel": fundo creme, texto grafite, bordas bege-acinzentadas
+ * e UMA cor de destaque (verde-sálvia escuro) para ações principais e total.
+ */
+:root {
+  --background: #faf8f5;
+  --surface: #fffdf9;
+  --surface-raised: #ffffff;
+  --foreground: #2b2b2b;
+  --foreground-subtle: #57524a;
+
+  --card: var(--surface);
+  --card-foreground: var(--foreground);
+  --popover: var(--surface);
+  --popover-foreground: var(--foreground);
+
+  --primary: #43584a;
+  --primary-hover: #34463a;
+  --primary-foreground: #ffffff;
+  --primary-soft: #e6ebe4;
+
+  --secondary: #ffffff;
+  --secondary-foreground: #2b2b2b;
+  --muted: #f1ece4;
+  --muted-foreground: #57524a;
+  --accent: #ede6db;
+  --accent-foreground: #2b2b2b;
+
+  --destructive: #a3392b;
+  --destructive-foreground: #ffffff;
+  --success: #2f6b45;
+  --warning-bg: #fbf1dc;
+  --warning-border: #d9b76a;
+
+  /* linhas finas de separação */
+  --border: #ddd5c9;
+  /* borda de campos/controles: contraste ≥ 3:1 com o fundo */
+  --input: #8c8376;
+  --ring: #43584a;
+
+  --whatsapp: #1b6e4a;
+  --whatsapp-hover: #145a3c;
+
+  --radius: 5px;
+
+  /* altura ocupada embaixo por barras fixas (ex.: barra de preço) — o WhatsApp flutuante sobe junto */
+  --barra-inferior: 0px;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-foreground-subtle: var(--foreground-subtle);
+  --color-surface: var(--surface);
+  --color-surface-raised: var(--surface-raised);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-hover: var(--primary-hover);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary-soft: var(--primary-soft);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-success: var(--success);
+  --color-warning-bg: var(--warning-bg);
+  --color-warning-border: var(--warning-border);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-whatsapp: var(--whatsapp);
+  --color-whatsapp-hover: var(--whatsapp-hover);
+
+  --font-sans: var(--font-figtree), ui-sans-serif, system-ui, sans-serif;
+  --font-heading: var(--font-fraunces), ui-serif, Georgia, serif;
+
+  /* Escala de texto maior: a base é 18px (público inclui pessoas idosas) */
+  --text-xs: 0.875rem;
+  --text-xs--line-height: 1.4;
+  --text-sm: 1rem;
+  --text-sm--line-height: 1.5;
+  --text-base: 1.125rem;
+  --text-base--line-height: 1.6;
+  --text-lg: 1.25rem;
+  --text-lg--line-height: 1.5;
+  --text-xl: 1.5rem;
+  --text-xl--line-height: 1.35;
+  --text-2xl: 1.75rem;
+  --text-2xl--line-height: 1.25;
+  --text-3xl: 2.125rem;
+  --text-3xl--line-height: 1.2;
+  --text-4xl: 2.625rem;
+  --text-4xl--line-height: 1.12;
+  --text-5xl: 3.25rem;
+  --text-5xl--line-height: 1.08;
+
+  /* Cantos discretos: 3–6px */
+  --radius-sm: 3px;
+  --radius-md: 4px;
+  --radius-lg: var(--radius);
+  --radius-xl: 6px;
+  --radius-2xl: 6px;
+  --radius-3xl: 6px;
+  --radius-4xl: 6px;
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  html {
+    @apply font-sans;
+    -webkit-text-size-adjust: 100%;
+    scroll-padding-top: 5rem;
+  }
+  body {
+    @apply bg-background text-base text-foreground antialiased;
+  }
+  h1,
+  h2,
+  h3 {
+    @apply font-heading text-balance;
+    font-optical-sizing: auto;
+  }
+  button:not(:disabled),
+  [role="button"]:not(:disabled) {
+    cursor: pointer;
+  }
+  ::selection {
+    background: var(--primary-soft);
+  }
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+}
+
+@utility container-loja {
+  width: 100%;
+  max-width: 76rem;
+  margin-inline: auto;
+  padding-inline: 1rem;
+  @media (width >= 48rem) {
+    padding-inline: 2rem;
+  }
+}
