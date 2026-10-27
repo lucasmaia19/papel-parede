@@ -132,7 +132,13 @@ Para ativar a IA real: criar `.env.local` com `OPENAI_API_KEY=...` (ver `.env.ex
   - Seeds: pronta entrega = "Linho texturizado Branco" e "Linho texturizado Off-white" (um produto por cor, sem estampa); o "Texturizado Palha" saiu dos dados de exemplo e o "Liso Fosco" virou sob encomenda (5 dias úteis). O catálogo continua com 12 produtos
   - Imagens regeneradas; busca por "texturizados e lisos": 0 ocorrências
   - Verificação: lint, tsc, build, 41 Vitest, 115 Playwright + screenshot da pronta entrega revisado
-- [ ] 3. Régua fora da imagem: réguas nas margens, cotas técnicas fora da foto, legenda embaixo; preview do admin igual
+- [x] 3. Régua fora da imagem
+  - Novo `components/produto/regua-imagem.tsx`: foto limpa em tamanho natural (sem corte, escala exata) com régua horizontal acima e vertical à esquerda; cota da medida principal destacada nas réguas (rótulo "10 cm" fora da foto, ao lado do trecho quando ele é estreito); legenda "Cada quadrado mede 10 cm x 10 cm" (ou "Cada listra mede 5 cm de largura")
+  - Régua oculta = carrossel em largura total; o antigo overlay sobre a foto foi removido; o preview do admin usa a mesma galeria
+  - Teste Playwright: nenhum elemento da régua com interseção sobre a foto, réguas fora dos limites da foto, escala (cota de 10 cm = 1/6 da amostra de 60 cm, nos dois eixos), régua oculta = largura total
+  - Números da régua 13px e cotas 14px (legíveis em 360px); conferido em xadrez, listrado e borboletas
+  - Playwright: tempo de espera das asserções 10 s (a suíte paralela no build de produção ficou mais lenta e um teste oscilou)
+  - Verificação: lint, tsc, build, 41 Vitest, 115 Playwright + screenshots revisados
 - [ ] 4. Material (Texturizado linho / Adesivo liso) por produto: modelo, seletor obrigatório, preço por material, todo o fluxo até o admin, pricing + testes
 - [ ] 5. WhatsApp flutuante só ícone (52px, verde suave), sem sobrepor clicáveis (teste de interseção); demais botões de WhatsApp no estilo secundário
 - [ ] CLAUDE.md atualizado (direção visual, modelo de dados, página do produto)

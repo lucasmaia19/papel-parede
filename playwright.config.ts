@@ -7,6 +7,8 @@ export default defineConfig({
   outputDir: "./tests/.resultados",
   fullyParallel: true,
   retries: 0,
+  // Com vários testes em paralelo o build de produção fica mais lento: 10 s por asserção
+  expect: { timeout: 10_000 },
   reporter: [["list"]],
   use: {
     baseURL: `http://localhost:${PORTA}`,

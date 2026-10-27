@@ -21,12 +21,45 @@ test("régua, cor e personalização", async ({ page }, testInfo) => {
   await expect(page.getByRole("heading", { level: 1, name: "Xadrez Vichy" })).toBeVisible()
   await expect(page.locator("[data-slot=prazo]")).toHaveText("Produção em 7 dias úteis + entrega")
 
+  // Régua oculta: a foto ocupa a largura toda da galeria
+  const galeria = page.locator("[data-slot=galeria]")
+  const larguraGaleria = (await galeria.boundingBox())!.width
+  const fotoCarrossel = (await galeria.locator("[aria-roledescription=foto]").first().boundingBox())!
+  expect(Math.abs(fotoCarrossel.width - larguraGaleria)).toBeLessThanOrEqual(2) // só a borda de 1px
+
   await page.getByRole("button", { name: "Mostrar régua" }).click()
-  await expect(page.locator("[data-slot=regua]")).toBeVisible()
-  await expect(page.getByText("Cada quadrado: 10 cm × 10 cm")).toBeVisible()
+  const foto = page.locator("[data-slot=foto-regua]")
+  await expect(foto).toBeVisible()
+  await expect(page.getByText("Cada quadrado mede 10 cm x 10 cm")).toBeVisible()
   await expect(page.getByRole("button", { name: "Ocultar régua" })).toBeVisible()
+
+  // Nada da régua sobre a foto: réguas e cotas ficam nas margens de fora
+  const caixaFoto = (await foto.boundingBox())!
+  const horizontal = (await page.locator("[data-slot=regua-horizontal]").boundingBox())!
+  const vertical = (await page.locator("[data-slot=regua-vertical]").boundingBox())!
+  expect(horizontal.y + horizontal.height).toBeLessThanOrEqual(caixaFoto.y + 0.5)
+  expect(vertical.x + vertical.width).toBeLessThanOrEqual(caixaFoto.x + 0.5)
+  const sobreAFoto = await page.evaluate(() => {
+    const f = document.querySelector("[data-slot=foto-regua]")!.getBoundingClientRect()
+    return Array.from(document.querySelectorAll("[data-slot=regua-imagem] svg *")).filter((el) => {
+      const r = el.getBoundingClientRect()
+      if (r.width === 0 && r.height === 0) return false
+      return r.left < f.right - 0.5 && r.right > f.left + 0.5 && r.top < f.bottom - 0.5 && r.bottom > f.top + 0.5
+    }).length
+  })
+  expect(sobreAFoto, "elementos da régua sobre a foto").toBe(0)
+
+  // Escala: a amostra tem 60 cm de largura, então a cota de 10 cm = 1/6 da foto
+  const cota = (await page.locator("[data-slot=cota-horizontal] rect").boundingBox())!
+  expect(cota.width / caixaFoto.width).toBeCloseTo(10 / 60, 2)
+  const cotaV = (await page.locator("[data-slot=cota-vertical] rect").boundingBox())!
+  expect(cotaV.height / caixaFoto.height).toBeCloseTo(10 / 60, 2)
+  await expect(page.locator("[data-slot=cota-horizontal] text")).toHaveText("10 cm")
+  await expect(page.locator("[data-slot=regua-horizontal] text", { hasText: /^20$/ })).toHaveCount(1)
+
   await page.locator("[data-slot=galeria]").scrollIntoViewIfNeeded()
   await screenshot(page, testInfo, "fase3-regua", false)
+  await page.getByRole("button", { name: "Ocultar régua" }).click()
 
   await conteudo(page).getByRole("button", { name: "Verde", exact: true }).click()
   await expect(page.locator("[data-slot=galeria] img").first()).toHaveAttribute("src", /xadrez-vichy-verde/)

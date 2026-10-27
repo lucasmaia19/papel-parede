@@ -108,7 +108,7 @@ Busca de CEP simulada: mapear faixa de CEP → UF → região; tratar Uberlândi
 
 ### Página do produto
 
-a) **Galeria** com swipe e zoom por toque. **Régua** sobreposta (eixos horizontal e vertical em cm, usando `pixelsPorCm`, escalando conforme o tamanho renderizado da imagem) + marcações das medidas do elemento ("cada quadrado: 10 cm x 10 cm"). Botão grande "Mostrar/ocultar régua". Legível no celular.
+a) **Galeria** com swipe e zoom por toque. **Régua fora da imagem**: a foto fica 100% limpa (nada sobreposto); réguas em cm nas margens externas — horizontal acima e vertical à esquerda — na escala real (`pixelsPorCm` × tamanho renderizado da foto). A medida do elemento aparece como cota técnica nas réguas (trecho destacado + linhas de cota finas + rótulo "10 cm" fora da foto, alinhado ao início da estampa) e, embaixo da foto, a legenda "Cada quadrado mede 10 cm x 10 cm". Tudo em taupe, traço fino, nada preto. Botão grande "Mostrar/ocultar régua"; com a régua oculta, a foto ocupa a largura toda. O preview do admin usa o mesmo componente.
 
 b) **Cor:** botões grandes com amostra e nome; a foto troca ao selecionar.
 
